@@ -84,8 +84,66 @@
 	</dependencies>
 
 	<build>
-
+		<finalName>orion-server</finalName>
 		<plugins>
+	      <plugin>
+	        <groupId>org.apache.maven.plugins</groupId>
+	        <artifactId>maven-war-plugin</artifactId>
+	        <version>2.1.1</version>
+	        <configuration>
+	          <webResources>
+	            <resource>
+	              <!-- copy resources this is relative to the pom.xml directory -->
+	              <directory>../orion-web/dist/prod</directory>
+	              <excludes>
+	              	<exclude>*.html</exclude>
+	              </excludes>
+	              <targetPath>/resources/</targetPath>
+	            </resource>
+	            
+	          </webResources>
+	        </configuration>
+	      </plugin>
+
+
+	    <plugin>
+	      <artifactId>maven-antrun-plugin</artifactId>
+	      <version>1.7</version>
+	      <executions>
+	        <execution>
+	          <phase>prepare-package</phase>
+	          <configuration>
+	            <target>
+	              <copy file="${project.build.directory}/../../orion-web/dist/prod/index.html"
+	                tofile="${project.build.directory}/orion-server/WEB-INF/index.jsp" />
+	            </target>
+	          </configuration>
+	          <goals>
+	            <goal>run</goal>
+	          </goals>
+	        </execution>
+	      </executions>
+	    </plugin>
+
+		 <plugin>
+		    <groupId>com.coderplus.maven.plugins</groupId>
+		    <artifactId>copy-rename-maven-plugin</artifactId>
+		    <version>1.0.1</version>
+		    <executions>
+		      <execution>
+		        <id>rename-file</id>
+		        <phase>deploy</phase>
+		        <goals>
+		          <goal>rename</goal>
+		        </goals>
+		        <configuration>
+		          <sourceFile>/WEB-INF/index.html</sourceFile>
+		          <destinationFile>/WEB-INF/index.jsp</destinationFile>
+		        </configuration>
+		      </execution>
+		    </executions>
+		  </plugin>
+		  
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
