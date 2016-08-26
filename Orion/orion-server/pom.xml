@@ -4,7 +4,7 @@
 	
 	  <parent>
 	    <groupId>com.sesnu</groupId>
-	    <artifactId>Orion-Parent</artifactId>
+	    <artifactId>Orion</artifactId>
 	    <version>0.0.1-SNAPSHOT</version>
 	  </parent>
   
