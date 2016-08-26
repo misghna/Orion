@@ -84,7 +84,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>orion-server</finalName>
+		<finalName>ROOT</finalName>
 		<plugins>
 	      <plugin>
 	        <groupId>org.apache.maven.plugins</groupId>
@@ -115,7 +115,7 @@
 	          <configuration>
 	            <target>
 	              <copy file="${project.build.directory}/../../orion-web/dist/prod/index.html"
-	                tofile="${project.build.directory}/orion-server/WEB-INF/index.jsp" />
+	                tofile="${project.build.directory}/orion-server/WEB-INF/views/index.jsp" />
 	            </target>
 	          </configuration>
 	          <goals>
@@ -124,25 +124,6 @@
 	        </execution>
 	      </executions>
 	    </plugin>
-
-		 <plugin>
-		    <groupId>com.coderplus.maven.plugins</groupId>
-		    <artifactId>copy-rename-maven-plugin</artifactId>
-		    <version>1.0.1</version>
-		    <executions>
-		      <execution>
-		        <id>rename-file</id>
-		        <phase>deploy</phase>
-		        <goals>
-		          <goal>rename</goal>
-		        </goals>
-		        <configuration>
-		          <sourceFile>/WEB-INF/index.html</sourceFile>
-		          <destinationFile>/WEB-INF/index.jsp</destinationFile>
-		        </configuration>
-		      </execution>
-		    </executions>
-		  </plugin>
 		  
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
