@@ -93,7 +93,7 @@
 	        <configuration>
 	          <webResources>
 	            <resource>
-	              <!-- copy resources this is relative to the pom.xml directory -->
+	              <!-- copy resources - this is relative to the pom.xml directory -->
 	              <directory>../orion-web/dist/prod</directory>
 	              <excludes>
 	              	<exclude>*.html</exclude>
@@ -115,7 +115,7 @@
 	          <configuration>
 	            <target>
 	              <copy file="${project.build.directory}/../../orion-web/dist/prod/index.html"
-	                tofile="${project.build.directory}/orion-server/WEB-INF/views/index.jsp" />
+	                tofile="${project.build.directory}/ROOT/WEB-INF/views/index.jsp" />
 	            </target>
 	          </configuration>
 	          <goals>
