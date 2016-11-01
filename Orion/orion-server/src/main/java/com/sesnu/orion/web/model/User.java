@@ -1,29 +1,30 @@
 package com.sesnu.orion.web.model;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.sesnu.orion.web.jsonview.Views;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+@Entity
+@Table(name = "USERS")
 public class User {
+	
+	private long id;
+	private String username;
+	private String passphrase;
+	private long level;
 
-	@JsonView(Views.Public.class)
-	String username;
-	String password;
-	@JsonView(Views.Public.class)
-	String email;
-	@JsonView(Views.Public.class)
-	String phone;
-	String address;
-
-	public User() {
+	
+	@Id
+	@GeneratedValue
+	@Column(name = "id")
+	public long getId() {
+		return id;
 	}
 
-	public User(String username, String password, String email, String phone, String address) {
-		super();
-		this.username = username;
-		this.password = password;
-		this.email = email;
-		this.phone = phone;
-		this.address = address;
+	public void setId(long id) {
+		this.id = id;
 	}
 
 	public String getUsername() {
@@ -34,42 +35,21 @@ public class User {
 		this.username = username;
 	}
 
-	public String getPassword() {
-		return password;
+	public String getPassphrase() {
+		return passphrase;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	public void setPassphrase(String passphrase) {
+		this.passphrase = passphrase;
 	}
 
-	public String getEmail() {
-		return email;
+	public long getLevel() {
+		return level;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
+	public void setLevel(long level) {
+		this.level = level;
 	}
 
-	public String getPhone() {
-		return phone;
-	}
-
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	@Override
-	public String toString() {
-		return "User [username=" + username + ", password=" + password + ", email=" + email + ", phone=" + phone
-				+ ", address=" + address + "]";
-	}
-
+	
 }
