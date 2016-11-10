@@ -81,14 +81,15 @@ public class UserController {
 		User user = userDao.get(Long.parseLong(userDetail.get("userId").toString()));
 		user.setStatus(userDetail.get("status").toString());
 		userDao.saveOrUpdate(user);
-		
-		StringBuilder msg = new StringBuilder();
-		msg.append("Hello  "+user.getFullname()+",\n\n ");
-		msg.append("Your access request to eriango webapp is approved!");
-		msg.append("\n\n  To access your account please go to the webapp and login");
-		msg.append("\n\n Do not replay to this email, this is an automated message.");
-		msg.append("\n\n Thank you!!");
-		util.sendMail("Account Activated", user.getEmail() ,msg.toString());		
+		if(user.getStatus().equals("Active")){
+			StringBuilder msg = new StringBuilder();
+			msg.append("Hello  "+user.getFullname()+",\n\n ");
+			msg.append("Your access request to eriango webapp is approved!");
+			msg.append("\n\n  To access your account please go to the webapp and login");
+			msg.append("\n\n Do not replay to this email, this is an automated message.");
+			msg.append("\n\n Thank you!!");
+			util.sendMail("Account Activated", user.getEmail() ,msg.toString());	
+		}
 		return filterUsers(userDao.list());
 	}
 	

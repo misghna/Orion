@@ -12,8 +12,11 @@ import { UserService } from '../service/user.service';
 export class UsersComponent implements OnInit {
   private data;
   detail;
+  loggedUserId;
+  userIdDelete;
+
     constructor(private userService: UserService) {
-        
+        this.loggedUserId= this.activeUserId();
     }
 
 
@@ -23,7 +26,6 @@ export class UsersComponent implements OnInit {
 
   activateUser(userHeader,value){
     var userId : string[] = userHeader.split("-")[1];
-    console.log(userId);
     var toStatus;
     if(value=='Activate'){
       toStatus='Active';
@@ -67,18 +69,32 @@ export class UsersComponent implements OnInit {
     this.detail = userH[0];
   }
 
+  activeUserId(){
+    var activeUser = JSON.parse(localStorage.getItem('accessDetail'));
+    return activeUser['id'];
+  }
 
-  deleteUser(userId){
-    //  this.userService.deleteUser(userId)
-    // .subscribe(
-    //     response => {
-    //         this.data = response;     
-    //     },
-    //     error => {
-    //       console.error(error);
-    //       return {};
-    //     }
-    //   );
+  storeUserId(userHeader){
+    var userId : string[] = userHeader.split("-")[1];
+    this.userIdDelete=userId;
+  }
+
+  clearUserId(){
+    this.userIdDelete;
+  }
+
+
+  deleteUser(){
+     this.userService.deleteUser(this.userIdDelete)
+    .subscribe(
+        response => {
+            this.data = response;     
+        },
+        error => {
+          console.error(error);
+          return {};
+        }
+      );
   }
 
   loadUserTable(){

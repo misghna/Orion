@@ -29,7 +29,8 @@
         <td class="text-left">{{user.status}}</td>
         <td class="text-center" >
             <div class="dropdown" style="border: 0">
-            <button class="btn btn-default dropdown-toggle" 
+            <button id= {{user.id}} class="btn btn-default dropdown-toggle" 
+                [class.disabled]="loggedUserId == user.id ? true : false"
                 style="border:0px solid transparent !important" type="button" id="dropdownMenu1"
                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                 <span class="caret"></span>
@@ -40,8 +41,8 @@
                 <li role="separator" class="divider"></li>
                 <li><a #changerole (click)="changeRole(changerole.parentElement.parentElement.id,changerole.text)">Change to role to {{user.role == 'User' ? 'Admin' : 'User'}}</a></li>
                 <li role="separator" class="divider"></li>
-                <li><a #deleteuser data-toggle="modal" data-target="#myModal"
-                 (click)="deleteUser(deleteuser.parentElement.parentElement.id)">Delete</a></li>
+                <li><a #deleteuser data-toggle="modal" data-target="#userModal"
+                 (click)="storeUserId(deleteuser.parentElement.parentElement.id)">Delete</a></li>
             </ul>
             </div>
         </td>
@@ -57,7 +58,7 @@
 </table>
 
   <!-- Modal -->
-  <div class="modal fade" id="myModal" role="dialog">
+  <div class="modal fade" id="userModal" role="dialog">
     <div class="modal-dialog modal-sm">
       <div class="modal-content">
         <div class="modal-header">
@@ -65,11 +66,11 @@
           <h4 class="modal-title">User</h4>
         </div>
         <div class="modal-body">
-          <p>Are you sure you want to delete user '{{detail}}'</p>
+          <p>Are you sure you want to delete user '{{detail}}'?</p>
         </div>
         <div class="modal-footer">
-<button type="button" class="btn btn-danger" data-dismiss="modal">Yes</button>
-          <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+          <button type="button" (click) = "deleteUser()" class="btn btn-danger" data-dismiss="modal">Yes</button>
+          <button type="button" (click) = "clearUserId()" class="btn btn-default" data-dismiss="modal">No</button>
         </div>
       </div>
     </div>
