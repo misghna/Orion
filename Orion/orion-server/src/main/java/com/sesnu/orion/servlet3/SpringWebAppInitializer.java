@@ -9,6 +9,7 @@ import javax.servlet.ServletRegistration.Dynamic;
 import org.springframework.web.context.request.RequestContextListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 import com.sesnu.orion.config.CorsFilter;
@@ -33,14 +34,12 @@ public class SpringWebAppInitializer extends AbstractAnnotationConfigDispatcherS
                 "SpringDispatcher", new DispatcherServlet(appContext));
         dispatcher.setInitParameter("dispatchOptionsRequest", "true");
         dispatcher.setLoadOnStartup(1);
-        dispatcher.addMapping("/*");
+        dispatcher.addMapping("/");
         
 	}
 
-//	@Override
-//    protected void customizeRegistration(Dynamic registration) {
-//        registration.setInitParameter("dispatchOptionsRequest", "true");
-//    }
+
+
 	
 	@Override
 	  protected Filter[] getServletFilters() {

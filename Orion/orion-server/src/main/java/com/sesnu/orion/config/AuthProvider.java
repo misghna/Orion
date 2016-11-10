@@ -1,14 +1,10 @@
 package com.sesnu.orion.config;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import com.sesnu.orion.dao.UserDAO;
 import com.sesnu.orion.web.model.User;
+import com.sesnu.orion.web.utility.Util;
 
 
 
@@ -34,24 +31,24 @@ public class AuthProvider implements AuthenticationProvider  {
 	public Authentication authenticate(Authentication authentication)
 			throws AuthenticationException {
 		
-		String name = authentication.getName();
+		String email = authentication.getName();
 		String password = authentication.getCredentials().toString();
-		System.out.println("credentials" + name + "-" + password);
+		System.out.println("credentials" + email + "-" + password);
 
-		if(name ==null || password ==null){
+		if(email ==null || password ==email){
 			return null;
 		}
 		
-		User user = userDao.getUserByName(name);
+		User user = userDao.getUserByEmail(email);
 		
 		
 		if(user==null){
-			return null; // Bad username
+			return null; // Bad emailAddress
 		}
 		
 
 		
-		if (name.equals(user.getUsername()) && password.equals(user.getPassphrase())) {
+		if (email.equals(user.getEmail()) && Util.passwordMatch(user.getPassphrase(), password)) {
 				if(request.getSession()!=null){
 					request.getSession().setAttribute("user", user);
 				}
@@ -59,7 +56,7 @@ public class AuthProvider implements AuthenticationProvider  {
 				List<GrantedAuthority> grantedAuths = new ArrayList<>();
 				GrantedAuthority ga = new SimpleGrantedAuthority("SECURE");
 				grantedAuths.add(ga);           
-				return new UsernamePasswordAuthenticationToken(name, password, grantedAuths);
+				return new UsernamePasswordAuthenticationToken(email, password, grantedAuths);
 		}
 		
 		return null;

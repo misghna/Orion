@@ -9,11 +9,11 @@ import com.sesnu.orion.web.model.User;
 public interface UserDAO {
 	public List<User> list();
 	
-	public User getUserByName(String username);
+	public User getUserByEmail(String email);
 	
-//	public User get(int id);
-//	
-//	public void saveOrUpdate(User user);
-//	
-//	public void delete(int id);
+	public User get(long id);
+
+	public void saveOrUpdate(User user);
+	
+	public void delete(long id);
 }

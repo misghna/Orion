@@ -19,6 +19,7 @@ import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -43,8 +44,13 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 		registry.addResourceHandler("/js/**").addResourceLocations("/resources/js/");
 		registry.addResourceHandler("/vendor/**").addResourceLocations("/resources/vendor/");
 		registry.addResourceHandler("/app/**").addResourceLocations("/resources/app/");
-		registry.addResourceHandler("/*").addResourceLocations("/resources/");
+	//	registry.addResourceHandler("/*").addResourceLocations("/resources/");
 	}
+	
+	@Override
+    public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
+        configurer.enable();
+    }
 	
 	@Bean
 	public InternalResourceViewResolver viewResolver() {
@@ -93,7 +99,13 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**");
+        registry.addMapping("/*").
+        		allowedOrigins("*").
+        		allowedMethods("GET", "POST","DELETE", "OPTIONS", "PUT")
+                .allowedHeaders("Content-Type", "X-Requested-With", "accept", "Origin", "Access-Control-Request-Method",
+                        "Access-Control-Request-Headers")
+                .exposedHeaders("Access-Control-Allow-Origin", "Access-Control-Allow-Credentials")
+                .allowCredentials(true).maxAge(3600);
     }
     
 

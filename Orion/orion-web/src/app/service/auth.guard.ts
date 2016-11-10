@@ -9,9 +9,8 @@ export class AuthGuard implements CanActivate {
 
   canActivate() {
     // Check to see if a user has a valid JWT
-    var access = localStorage.getItem('access');
-    if (access == "granted") {
-      // If they do, return true and allow the user to load the home component
+    var userDetails = JSON.parse(localStorage.getItem('accessDetail'));
+    if(userDetails!=null && userDetails['access'] =='granted'){
       return true;
     }
 

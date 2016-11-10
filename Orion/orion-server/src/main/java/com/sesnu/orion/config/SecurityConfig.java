@@ -38,9 +38,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 			     http.authorizeRequests()
 			    .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-		        .antMatchers("/loginPage").permitAll() 
-		        .antMatchers("/api/**").access("hasRole('SECURE')")	
-		        .antMatchers("/*").permitAll() 
+			    .antMatchers(HttpMethod.GET,"/api/users").permitAll() 
+		        .antMatchers("/login").permitAll() 
+		        .antMatchers("/api/xyz/**").access("hasRole('SECURE')")	
+		        .antMatchers("/api/**").permitAll() 
 				.and().csrf().disable().httpBasic()
 			 	.and().exceptionHandling().accessDeniedPage("/logout");	
 

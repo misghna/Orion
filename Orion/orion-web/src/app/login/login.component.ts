@@ -10,29 +10,41 @@ import { Http,Headers } from '@angular/http';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
+  loginMsg ="";
   constructor(public router: Router, public http: Http) {
+
   }
 
-  login(event, username, password) {
+  
+
+  login(event, email, password) {
     event.preventDefault();
-    let body = JSON.stringify({ username, password });
-//    let body = JSON.stringify({ "login": "web" });
+    var email_regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
+    if(!email_regex.test(email)){
+      this.loginMsg="Email Address is invalid format";
+      return;
+    }
+
     let headerContent = new Headers();
-    console.log(username + ":" + password)
-    headerContent.append("Authorization", "Basic " + btoa(username + ":" + password)); 
+    headerContent.append("Authorization", "Basic " + btoa(email + ":" + password)); 
     headerContent.append("Content-Type", "application/x-www-form-urlencoded");
-    this.http.post('http://localhost:8080/api/login', body, { headers: headerContent })
+    this.http.post('http://localhost:8080/api/login', null, { headers: headerContent })
       .subscribe(
         response => {
           if(response.status==200){
-            localStorage.setItem('access', "granted");
-          }
-          console.log(response.status)
+            localStorage.setItem('accessDetail', JSON.stringify(response.json()));
+            localStorage.setItem('sid',"JSESSIONID=" + response.json()['sId']);
+          }else{
+            console.log(response.json());
+          }      
           this.router.navigate(['']);
         },
         error => {
-          alert(error.text());
-          console.log(error.text());
+          if(error.status==403){
+            this.loginMsg="Account is in active, wait for admit to activate it.";
+          }else{
+            this.loginMsg="bad username/password";
+          }
         }
       );
   }

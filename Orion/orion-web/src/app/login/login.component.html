@@ -1,13 +1,14 @@
-<form id="login" (submit)="login($event, username.value, password.value)">
+<form id="login" (submit)="login($event, email.value, password.value)">
     <h1>Log In</h1>
     <fieldset id="inputs">
-        <input id="username" #username type="text" placeholder="Username" autofocus required>   
+        <input id="email" #email type="text" placeholder="Email" autofocus required>   
         <input id="password" #password type="password" placeholder="Password" required>
     </fieldset>
+    <span class="text-danger">{{loginMsg}}</span>
     <fieldset id="actions">
         <input type="submit" id="submit" value="Log in">
         <a [routerLink]="['/signup']">Forgot your password?</a>
-        <a [routerLink]="['/signup']">Register</a>
+        <a [routerLink]="['/register']">Register</a>
     </fieldset>
 </form>
 

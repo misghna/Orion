@@ -3,7 +3,9 @@ package com.sesnu.orion.web.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
@@ -11,13 +13,16 @@ import javax.persistence.Table;
 public class User {
 	
 	private long id;
-	private String username;
+	private String email;
 	private String passphrase;
-	private long level;
-
+	private String role;
+	private String fullname;
+	private String status;
+	
 	
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="user_seq")
+	@SequenceGenerator(name="user_seq",sequenceName="user_seq",allocationSize=20)
 	@Column(name = "id")
 	public long getId() {
 		return id;
@@ -27,12 +32,14 @@ public class User {
 		this.id = id;
 	}
 
-	public String getUsername() {
-		return username;
+
+
+	public String getEmail() {
+		return email;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public String getPassphrase() {
@@ -43,13 +50,32 @@ public class User {
 		this.passphrase = passphrase;
 	}
 
-	public long getLevel() {
-		return level;
+	public String getRole() {
+		return role;
 	}
 
-	public void setLevel(long level) {
-		this.level = level;
+	public void setRole(String role) {
+		this.role = role;
 	}
+
+	public String getFullname() {
+		return fullname;
+	}
+
+	public void setFullname(String fullname) {
+		this.fullname = fullname;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+
+
 
 	
 }

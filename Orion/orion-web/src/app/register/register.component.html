@@ -1,0 +1,16 @@
+<form id="register" [style.height]="formHeight" (submit)="register($event,fullname.value, email.value, password.value,rpassword.value)">
+    <h1>Register</h1>    
+    <fieldset id="inputs">
+        <input id="fullname" #fullname type="text" placeholder="Full Name" autofocus required> 
+        <input id="email" #email type="text" placeholder="Email" autofocus required>   
+        <input id="password" #password type="password" placeholder="Password" autofocus required>
+        <input id="rpassword" #rpassword type="rpassword" placeholder="Repeat Password" autofocus required>      
+    </fieldset>
+   <span class="text-danger">{{registerMsg}}</span>
+    <fieldset id="actions">       
+        <input type="submit" id="submit" value="Request Access">
+        <a [routerLink]="['/signup']">Forgot your password?</a>
+        <a [routerLink]="['/signup']">Log in</a>
+    </fieldset>
+</form>
+

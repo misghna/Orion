@@ -1,9 +1,11 @@
 package com.sesnu.orion.web.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.sesnu.orion.dao.UserDAO;
 import com.sesnu.orion.web.model.User;
 
-
+@CrossOrigin(origins = "http://localhost:4200")
 @Controller
 public class WelcomeController {
 
@@ -29,7 +31,7 @@ public class WelcomeController {
 	UserDAO userDao;
 	
 	
-	@RequestMapping(value = "/", method = RequestMethod.GET)
+	@RequestMapping(value = {"/","/admin/users"}, method = RequestMethod.GET)
 	public String printWelcome(ModelMap model) {
 
 		List<User> listUsers = userDao.list();
@@ -57,13 +59,28 @@ public class WelcomeController {
 
 	@RequestMapping(value = "/api/login", method = RequestMethod.POST)
 	public @ResponseBody JSONObject printTest(ModelMap model,HttpServletRequest request,HttpServletResponse response) {		
-		JSONObject jo = new JSONObject();
-		if(request.getAttribute("user")!=null){
-			System.out.println("granted");
-			User user = (User) request.getSession().getAttribute("user");
-			jo.put("access", "granted");
+		JSONObject jo = new JSONObject();	
+		try {
+		if(request.getSession().getAttribute("user")!=null){
+			HttpSession session = request.getSession();
+			User user = (User) session.getAttribute("user");
+			if(!user.getStatus().equals("Active")){
+			    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			    new SecurityContextLogoutHandler().logout(request, response, auth);
+			    response.sendError(403,"inactive");
+				jo.put("access", "inactive");
+			}else{
+				jo.put("access", "granted");
+				jo.put("role", user.getRole());
+				jo.put("fname", user.getFullname());
+				jo.put("status", user.getStatus());
+				jo.put("sId", session.getId());
+			}
+			System.out.println(jo);
 			return jo;
 		}		
+			response.sendError(401);
+		} catch (IOException e) {}
 		jo.put("access", "denied");
 		return jo;
 	}
