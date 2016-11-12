@@ -9,13 +9,26 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-
+import java.security.SecureRandom;
+import java.math.BigInteger;
 import org.springframework.stereotype.Component;
+
 
 @Component
 public class Util {
 	
+	static SecureRandom random = new SecureRandom();
+
+	  
+
+	  public static String generateString() {
+	    return new BigInteger(130, random).toString(32);
+	  }
 	
+	
+	public static Long getTime(){
+		return System.currentTimeMillis();
+	}
 	public static boolean passwordMatch(String real, String supplied){
 		try {
 			return encodePassword(supplied).equals(real);

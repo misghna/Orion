@@ -1,3 +1,4 @@
+
 <form id="login" (submit)="login($event, email.value, password.value)">
     <h1>Log In</h1>
     <fieldset id="inputs">
@@ -7,9 +8,12 @@
     <span class="text-danger">{{loginMsg}}</span>
     <fieldset id="actions">
         <input type="submit" id="submit" value="Log in">
-        <a [routerLink]="['/signup']">Forgot your password?</a>
+        <a [routerLink]="['/passrenew']">Forgot your password?</a>
         <a [routerLink]="['/register']">Register</a>
     </fieldset>
 </form>
 
- 
+<div id="loaderWrapper" class="hidden" [class.hidden]="loaderHidden">
+    <img id="loader" src="http://localhost:8080/images/Loading.gif" alt="Loading..." >
+</div>
+

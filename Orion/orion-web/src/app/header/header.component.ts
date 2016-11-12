@@ -1,4 +1,4 @@
-import { Component, OnInit,Output,EventEmitter } from '@angular/core';
+import { Component, OnInit,Output,Input,EventEmitter } from '@angular/core';
 import { Http,Headers } from '@angular/http';
 import { UserService } from '../service/user.service';
 
@@ -8,9 +8,13 @@ import { UserService } from '../service/user.service';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
+  @Input() loaderHidden = true;
+
   @Output() loadUser = new EventEmitter();
   regUser = true;
-  constructor(private http:Http, private userService:UserService) { }
+  constructor(private http:Http, private userService:UserService) {
+    this.loaderHidden = true;
+   }
 
   ngOnInit() {
       var access = JSON.parse(localStorage.getItem('accessDetail'));
@@ -22,7 +26,6 @@ export class HeaderComponent implements OnInit {
 
  loadUserTable(){
       this.loadUser.emit({"load":"user"});
-      console.log("trying to emmit");
   }
 
     logout() {

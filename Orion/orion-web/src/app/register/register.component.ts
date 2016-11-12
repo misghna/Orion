@@ -9,7 +9,10 @@ import { Http,Headers } from '@angular/http';
 export class RegisterComponent implements OnInit {
   formHeight = 480;
   registerMsg = "";
-  constructor(public http: Http) { }
+  loaderHidden = true;
+  constructor(public http: Http) {
+    this.loaderHidden = true;
+   }
 
   ngOnInit() {
   }
@@ -28,18 +31,25 @@ export class RegisterComponent implements OnInit {
       return;
     }  
 
+    if(password.length<8){
+      this.registerMsg="Password must be minimum of 8 characters";
+      return;
+    }
+
     let body = JSON.stringify({"fullname":fullname,"email":email,"passphrase":password});
     let headerContent = new Headers();
     headerContent.append("Content-Type", "application/json");
+    this.loaderHidden = false;
     this.http.post('http://localhost:8080/api/user', body, { headers: headerContent })
       .subscribe(
         response => {
-          console.log(response)
+          this.loaderHidden = true;
           if(response.status==200){
             this.registerMsg = "your request is pendding approval, you will get email once approved!";
           }     
         },
         error => {
+          this.loaderHidden = true;
           if(error.status==404){
             this.registerMsg="Email address already exists";
           }else{

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Http,Headers } from '@angular/http';
-//import { contentHeaders } from '../common/headers';
+import {LoadingIndicator, LoadingPage} from '../service/loading-indicator';
 
 
 @Component({
@@ -10,9 +10,10 @@ import { Http,Headers } from '@angular/http';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
+  loaderHidden:boolean = true;
   loginMsg ="";
   constructor(public router: Router, public http: Http) {
-
+    
   }
 
   
@@ -25,27 +26,33 @@ export class LoginComponent {
       return;
     }
 
+    this.loaderHidden=false;
+
     let headerContent = new Headers();
     headerContent.append("Authorization", "Basic " + btoa(email + ":" + password)); 
     headerContent.append("Content-Type", "application/x-www-form-urlencoded");
     this.http.post('http://localhost:8080/api/login', null, { headers: headerContent })
       .subscribe(
         response => {
+          this.loaderHidden=true;
           if(response.status==200){
             localStorage.setItem('accessDetail', JSON.stringify(response.json()));
             localStorage.setItem('sid',"JSESSIONID=" + response.json()['sId']);
           }else{
             console.log(response.json());
           }      
-          this.router.navigate(['']);
+          
+          this.router.navigate(['']);         
         },
         error => {
+          this.loaderHidden=true;
           if(error.status==403){
             this.loginMsg="Account is in active, wait for admit to activate it.";
           }else{
             this.loginMsg="bad username/password";
           }
         }
+        
       );
   }
 

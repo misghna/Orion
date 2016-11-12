@@ -1,0 +1,39 @@
+<form id="register"  [class.hidden] = "reqCodeForm" (submit)="reqCode($event,email.value)">
+    <h1>Forgot Password</h1>  
+    <fieldset id="inputs">
+        <input id="email" #email type="text" placeholder="Email" autofocus required>   
+    </fieldset>
+   <span class="text-danger">{{verifMsg}}</span>
+    <fieldset id="actions">       
+        <input type="submit" id="submit" value="Submit" >
+        <a [routerLink]="['/register']">Register</a>
+        <a [routerLink]="['/login']">Log in</a>
+    </fieldset>
+</form>
+
+<form id="register" [class.hidden]="newPassForm" 
+  (submit)="changePass($event,vemail.value, vcode.value, password.value,rpassword.value)">
+    <h1>Forgot Password</h1>  
+    <input style="display:none"><input type="password" style="display:none">
+    <fieldset id="inputs">
+        <input id="vemail" #vemail type="text" placeholder="Email" autofocus required value="{{emailId}}"> 
+        <input id="vcode" #vcode type="vcode" placeholder="Verification code from email" autocomplete="off"
+           autofocus required >
+        <input id="password" #password type="password" placeholder="New Password" autofocus required
+           autofocus required >
+        <input id="rpassword" #rpassword type="password" placeholder="Repeat Password" autofocus required
+           autofocus required >
+    </fieldset>
+   <span class="text-danger">{{changePassMsg}}</span>
+    <fieldset id="actions">       
+        <input type="submit" id="submit" value="Submit" >
+        <a [routerLink]="['/register']">Register</a>
+        <a [routerLink]="['/login']">Log in</a>
+    </fieldset>
+</form>
+
+<div id="loaderWrapper" class="hidden" [class.hidden]="loaderHidden">
+    <img id="loader" src="http://localhost:8080/images/Loading.gif" alt="Loading..." >
+</div>
+
+

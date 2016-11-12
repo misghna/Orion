@@ -7,7 +7,7 @@
     background-image: -ms-linear-gradient(top, #fff, #eee);
     background-image: -o-linear-gradient(top, #fff, #eee);
     background-image: linear-gradient(top, #fff, #eee);  
-    /*height: 420px;*/
+    /*height: 410px;*/
     width: 450px;
     margin: -150px 0 0 -230px;
     padding: 30px;
@@ -129,6 +129,11 @@ fieldset
 }
 
 #email
+{
+    background-position: 5px -2px !important;
+}
+
+#rpassword
 {
     background-position: 5px -2px !important;
 }

@@ -1,16 +1,20 @@
-<form id="register" [style.height]="formHeight" (submit)="register($event,fullname.value, email.value, password.value,rpassword.value)">
-    <h1>Register</h1>    
-    <fieldset id="inputs">
+<form id="register"  (submit)="register($event,fullname.value, email.value, password.value,rpassword.value)">
+    <h1>Register</h1>   
+    <input style="display:none"><input type="password" style="display:none"> 
+    <fieldset id="inputs">       
         <input id="fullname" #fullname type="text" placeholder="Full Name" autofocus required> 
         <input id="email" #email type="text" placeholder="Email" autofocus required>   
         <input id="password" #password type="password" placeholder="Password" autofocus required>
-        <input id="rpassword" #rpassword type="rpassword" placeholder="Repeat Password" autofocus required>      
+        <input id="rpassword" #rpassword type="password" placeholder="Repeat Password" autofocus required>      
     </fieldset>
    <span class="text-danger">{{registerMsg}}</span>
     <fieldset id="actions">       
         <input type="submit" id="submit" value="Request Access">
-        <a [routerLink]="['/signup']">Forgot your password?</a>
-        <a [routerLink]="['/signup']">Log in</a>
+        <a [routerLink]="['/passrenew']">Forgot your password?</a>
+        <a [routerLink]="['/login']">Log in</a>
     </fieldset>
 </form>
 
+<div id="loaderWrapper" class="hidden" [class.hidden]="loaderHidden">
+    <img id="loader" src="http://localhost:8080/images/Loading.gif" alt="Loading..." >
+</div>

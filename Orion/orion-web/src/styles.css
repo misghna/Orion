@@ -1,1 +1,25 @@
 /* You can add global styles to this file, and also import other style files */
+
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+#loaderWrapper {
+    margin-top: 0px;
+    min-width:100%;
+    min-height: 100%; 
+    background-color:#74767a;
+    position: fixed;
+    z-index: 214748364;
+    opacity: 0.20;
+}
+#loader{
+    display: block;
+    margin-left:auto;
+    margin-right:auto;
+    vertical-align: middle;
+    height: 100%;
+    width:100%;
+}

@@ -76,6 +76,7 @@ public class WelcomeController {
 				jo.put("status", user.getStatus());
 				jo.put("sId", session.getId());
 				jo.put("id", user.getId());
+				jo.put("email", user.getEmail());
 			}
 			System.out.println(jo);
 			return jo;

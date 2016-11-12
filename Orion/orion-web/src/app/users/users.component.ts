@@ -14,8 +14,10 @@ export class UsersComponent implements OnInit {
   detail;
   loggedUserId;
   userIdDelete;
+  hideLoader;
 
     constructor(private userService: UserService) {
+        this.hideLoader=true;
         this.loggedUserId= this.activeUserId();
     }
 
@@ -32,12 +34,15 @@ export class UsersComponent implements OnInit {
     }else{
       toStatus="Inactive"
     }
+    this.hideLoader=false;
      this.userService.changeStatus(userId,toStatus)
     .subscribe(
         response => {
-            this.data = response;     
+           this.hideLoader=true;
+           this.data = response;     
         },
         error => {
+          this.hideLoader=true;
           console.error(error);
           return {};
         }
@@ -52,13 +57,15 @@ export class UsersComponent implements OnInit {
     }else{
       role="User"
     }
+    this.hideLoader=false;
      this.userService.changeRole(userId,role)
     .subscribe(
         response => {
+            this.hideLoader=true;
             this.data = response;     
         },
         error => {
-          console.error(error);
+          this.hideLoader=true;
           return {};
         }
       );
@@ -85,20 +92,21 @@ export class UsersComponent implements OnInit {
 
 
   deleteUser(){
+    this.hideLoader=false;
      this.userService.deleteUser(this.userIdDelete)
     .subscribe(
         response => {
+            this.hideLoader=true;
             this.data = response;     
         },
         error => {
-          console.error(error);
+          this.hideLoader=true;
           return {};
         }
       );
   }
 
   loadUserTable(){
-    console.log("emit received");
     this.userService.getAllUsers()
     .subscribe(
         response => {

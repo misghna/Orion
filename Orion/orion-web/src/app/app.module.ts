@@ -11,7 +11,7 @@ import { HomeComponent }  from './home/home.component';
 import { AuthGuard } from './service/auth.guard';
 import { UtilService } from './service/util.service';
 import { UserService } from './service/user.service';
-
+import {LoadingIndicator} from './service/loading-indicator';
 import { RegisterComponent } from './register/register.component';
 import { AdminComponent } from './admin/admin.component';
 import { HeaderComponent } from './header/header.component';
@@ -20,6 +20,8 @@ import {DataTableModule} from "angular2-datatable";
 import {Http, Request, RequestOptionsArgs, Response, XHRBackend, RequestOptions, ConnectionBackend, Headers} from '@angular/http';
 import { HttpInterceptor } from "./service/httpInterceptor";
 import { Router } from '@angular/router';
+import { PassRenewComponent } from './passrenew/passrenew.component';
+import { ChangePasswordComponent } from './change-password/change-password.component';
 
 @NgModule({
   imports: [HttpModule, DataTableModule,
@@ -34,7 +36,10 @@ import { Router } from '@angular/router';
                 RegisterComponent,
                 AdminComponent,
                 HeaderComponent,
-                UsersComponent
+                UsersComponent,
+                LoadingIndicator,
+                PassRenewComponent,
+                ChangePasswordComponent
                  ],
   providers:[AuthGuard,UtilService,UserService,
         {

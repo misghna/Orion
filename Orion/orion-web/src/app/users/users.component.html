@@ -1,4 +1,4 @@
- <app-header (loadUser)="loadUserTable()"></app-header>
+ <app-header (loadUser)="loadUserTable()" [loaderHidden]="hideLoader"></app-header>
 
 
 <table class="table table-striped" [mfData]="data" #mf="mfDataTable" [mfRowsOnPage]="5" >
@@ -75,3 +75,4 @@
       </div>
     </div>
   </div>
+

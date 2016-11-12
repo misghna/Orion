@@ -85,7 +85,7 @@ public class UserController {
 			StringBuilder msg = new StringBuilder();
 			msg.append("Hello  "+user.getFullname()+",\n\n ");
 			msg.append("Your access request to eriango webapp is approved!");
-			msg.append("\n\n  To access your account please go to the webapp and login");
+			msg.append("\n\n To access your account please go to the webapp and login");
 			msg.append("\n\n Do not replay to this email, this is an automated message.");
 			msg.append("\n\n Thank you!!");
 			util.sendMail("Account Activated", user.getEmail() ,msg.toString());	
@@ -109,6 +109,114 @@ public class UserController {
 		userDao.delete(id);
 		System.out.println(id);
 		return filterUsers(userDao.list());
+	}
+
+	
+	@RequestMapping(value = "/api/open/reqCode", method = RequestMethod.POST)
+	public @ResponseBody String reqCode(@RequestBody JSONObject body,
+			HttpServletRequest request,HttpServletResponse response)
+			throws Exception {
+		String email = body.get("email").toString();
+		System.out.println("email " + email);
+		User user = userDao.getUserByEmail(email);
+		if(user==null){
+			response.sendError(404,"user with the given Email-Id doesnt exist");
+			return null;
+		}
+		
+		String generatedCode = util.generateString();
+		request.getServletContext().setAttribute(email, util.getTime().toString().concat("-").concat(generatedCode));
+		StringBuilder msg = new StringBuilder();
+
+		msg.append("Hello  "+user.getFullname()+",\n\n ");
+		msg.append("please use the following code to recover your password");
+		msg.append("\n\n verification code = " + generatedCode);
+		msg.append("\n\n if you didnt initiate this request plz inform admin");
+		msg.append("\n\n Do not replay to this email, this is an automated message.");
+		msg.append("\n\n Thank you!!");
+		util.sendMail("Password recovery code", email ,msg.toString());
+		response.setStatus(200);
+		return "{\"response\" : \"please check your email for verification code!\"}";
+	}
+	
+	@RequestMapping(value = "/api/open/changeForgotenPass", method = RequestMethod.POST)
+	public @ResponseBody String changeForgotenPass(@RequestBody JSONObject body,
+			HttpServletRequest request,HttpServletResponse response)
+			throws Exception {
+		
+		String email = body.get("email").toString();
+		
+		User user = userDao.getUserByEmail(email);
+		if(user==null){
+			response.sendError(404,"user with the given Email-Id doesnt exist");
+			return null;
+		}
+		
+		if(request.getServletContext().getAttribute(email)==null){
+			System.out.println("email not found in context");
+			response.sendError(404, "start the recovery again");
+			return null;
+		}
+		
+		String realVCodeWithTStamp = request.getServletContext().getAttribute(email).toString();
+		if(realVCodeWithTStamp==null){
+			System.out.println("recovery code not found");
+			response.sendError(404, "start the recovery again");
+			return null;
+		}else{
+			long tStamp = Long.parseLong(realVCodeWithTStamp.split("-")[0].toString());
+			if (Util.getTime()-tStamp>3600000){
+				System.out.println("recovery code expired");
+				response.sendError(404, "start the recovery again");
+				return null;
+			}
+		}
+		String vcode = body.get("vCode").toString().trim();
+		String realVCode = realVCodeWithTStamp.split("-")[1].toString().trim();
+		
+		if(!realVCode.equals(vcode)){
+			System.out.println("invalid verification code");
+			response.sendError(404, "invalid verification code");
+			return null;
+		}
+		
+		String password = body.get("password").toString();
+		
+		user.setPassphrase(Util.encodePassword(password));
+		userDao.saveOrUpdate(user);
+
+		return "{\"result\": \"Password successfully changed!\"}";
+		
+	}
+	
+	@RequestMapping(value = "/api/changePass", method = RequestMethod.POST)
+	public @ResponseBody String changePass(@RequestBody JSONObject body,
+			HttpServletRequest request,HttpServletResponse response)
+			throws Exception {
+		
+		long id = Long.parseLong(body.get("id").toString());
+		
+		User user = userDao.get(id);
+		if(user==null){
+			response.sendError(404,"user with the given Email-Id doesnt exist");
+			return null;
+		}
+		
+		String cPass = body.get("cPass").toString();
+		
+		if(!util.encodePassword(cPass).equals(user.getPassphrase())){
+			System.out.println("incorrect password");
+			response.sendError(404, "incorrect password");
+			return null;
+		}
+			
+		String password = body.get("nPass").toString();
+		
+		user.setPassphrase(Util.encodePassword(password));
+		userDao.saveOrUpdate(user);
+
+		return "{\"result\": \"Password successfully changed!\"}";
+		
 	}
 	
 	private JSONArray filterUsers(List<User> userList){
