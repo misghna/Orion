@@ -35,7 +35,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-
+		boolean isDevMode =false;
+		
+			if(isDevMode){
 			     http.authorizeRequests()
 			    .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 			    .antMatchers(HttpMethod.GET,"/api/users").permitAll() 
@@ -44,6 +46,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		        .antMatchers("/api/**").permitAll() 
 				.and().csrf().disable().httpBasic()
 			 	.and().exceptionHandling().accessDeniedPage("/logout");	
+			}else{
+			     http.authorizeRequests()
+			    .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+		        .antMatchers("/api/**").access("hasRole('User')")	
+		        .antMatchers("/api/admin/**").access("hasRole('Admin')")
+		        .antMatchers("/api/open/**").permitAll()
+		        .antMatchers("/api/**").permitAll()
+				.and().csrf().disable().httpBasic()
+			 	.and().exceptionHandling().accessDeniedPage("/logout");	
+			}
 
 	}
 

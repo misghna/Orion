@@ -1,7 +1,10 @@
 package com.sesnu.orion.web.utility;
 
+import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.security.SecureRandom;
 import java.util.Properties;
+
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
@@ -9,17 +12,17 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.security.SecureRandom;
-import java.math.BigInteger;
+
+import org.springframework.security.crypto.encrypt.Encryptors;
+import org.springframework.security.crypto.encrypt.TextEncryptor;
+import org.springframework.security.crypto.keygen.KeyGenerators;
 import org.springframework.stereotype.Component;
 
 
 @Component
 public class Util {
 	
-	static SecureRandom random = new SecureRandom();
-
-	  
+	static SecureRandom random = new SecureRandom();	
 
 	  public static String generateString() {
 	    return new BigInteger(130, random).toString(32);
@@ -90,5 +93,21 @@ public class Util {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public String encrypText(String clearText){
+		/* Encrypt the message. */
+        TextEncryptor encryptor = Encryptors.text("myAnsebaSalt2016", "73621314587861349519");      
+        String encryptedText = encryptor.encrypt(clearText);
+
+        return encryptedText;    		
+	}
+	
+	
+	public String decryptText(String encriptedTex){
+        TextEncryptor decryptor = Encryptors.text("myAnsebaSalt2016", "73621314587861349519");
+        String decryptedText = decryptor.decrypt(encriptedTex);
+        return  decryptedText;
+	}
+	
 }
 

@@ -2,7 +2,6 @@ package com.sesnu.orion.config;
  
 import java.util.Properties;
 
-import javax.servlet.Filter;
 import javax.sql.DataSource;
 
 import org.apache.commons.dbcp2.BasicDataSource;
@@ -12,8 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
-import org.springframework.context.annotation.Import;
-import org.springframework.core.annotation.Order;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.stereotype.Controller;
@@ -26,6 +23,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
+import com.sesnu.orion.web.utility.ConfigFile;
+import com.sesnu.orion.web.utility.Util;
+
 
  
 @EnableWebMvc
@@ -35,6 +35,10 @@ includeFilters = @ComponentScan.Filter(value = Controller.class, type = FilterTy
 @EnableTransactionManagement
 public class SpringWebConfig extends WebMvcConfigurerAdapter {
  
+	@Autowired Util util;
+	@Autowired ConfigFile conf;
+	
+	
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 	//	registry.addResourceHandler("/resources/prod/assets/**").addResourceLocations("/assets/");
@@ -59,11 +63,14 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
  
 	@Bean(name = "dataSource")
     public DataSource getDataSource() {
+		Properties prop = conf.getProp();
+		
     	BasicDataSource dataSource = new BasicDataSource();
     	dataSource.setDriverClassName("org.postgresql.Driver");
-    	dataSource.setUrl("jdbc:postgresql://localhost:5432/postgres");
-    	dataSource.setUsername("postgres");
-    	dataSource.setPassword("Msghe1624");
+    	dataSource.setUrl("jdbc:postgresql://" + prop.getProperty("dbUrl"));
+    	dataSource.setUsername(prop.getProperty("dbUsername"));
+    //	dataSource.setPassword("ansebagroup2016");
+    	dataSource.setPassword(util.decryptText(prop.getProperty("dbPassword").trim()));
     	
     	return dataSource;
     }
@@ -73,6 +80,7 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
     	Properties properties = new Properties();
     	properties.put("hibernate.show_sql", "true");
     	properties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+    	properties.put("hibernate.temp.use_jdbc_metadata_defaults","false");
     	return properties;
     }
     

@@ -54,7 +54,7 @@ public class AuthProvider implements AuthenticationProvider  {
 				}
 			    request.setAttribute("user", user);
 				List<GrantedAuthority> grantedAuths = new ArrayList<>();
-				GrantedAuthority ga = new SimpleGrantedAuthority("SECURE");
+				GrantedAuthority ga = new SimpleGrantedAuthority(user.getRole());
 				grantedAuths.add(ga);           
 				return new UsernamePasswordAuthenticationToken(email, password, grantedAuths);
 		}
