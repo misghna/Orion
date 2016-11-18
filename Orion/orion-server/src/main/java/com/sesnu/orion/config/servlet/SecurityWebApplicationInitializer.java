@@ -1,4 +1,4 @@
-package com.sesnu.orion.servlet3;
+package com.sesnu.orion.config.servlet;
 
 import javax.servlet.Filter;
 

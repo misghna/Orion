@@ -9,18 +9,24 @@ import javax.servlet.http.HttpSession;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import com.sesnu.orion.dao.UserDAO;
 import com.sesnu.orion.web.model.User;
+
 
 @CrossOrigin(origins = "http://localhost:4200")
 @Controller
@@ -31,16 +37,23 @@ public class WelcomeController {
 	UserDAO userDao;
 	
 	
-	@RequestMapping(value = {"/","/admin/users"}, method = RequestMethod.GET)
-	public String printWelcome(ModelMap model) {
-
-		List<User> listUsers = userDao.list();
-
-		System.out.println("size ....."  + listUsers.size());
+	@RequestMapping(value = {"/","/admin/users","register","changePassowrd","passrenew"},
+			method = RequestMethod.GET)
+	public String allPageRequests(HttpServletRequest request,ModelMap model) {
+		
+		if(request.getSession().getAttribute("user")==null){
+			return "redirect:/login";
+		}
 		
 		return "index";
 	}
 
+	@RequestMapping(value = {"/login"},
+			method = RequestMethod.GET)
+	public String login(HttpServletRequest request,ModelMap model) {
+		
+		return "index";
+	}
 
 	@RequestMapping(value="/logout", method = RequestMethod.GET)
 	public String logoutPage (HttpServletRequest request, HttpServletResponse response) {
@@ -48,16 +61,11 @@ public class WelcomeController {
 	    if (auth != null){    
 	        new SecurityContextLogoutHandler().logout(request, response, auth);
 	    }
-	    return "redirect:/";//You can redirect wherever you want, but generally it's a good practice to show login screen again.
+	    return "redirect:/login";//You can redirect wherever you want, but generally it's a good practice to show login screen again.
 	}
 	
-	@RequestMapping(value = "/login", method = RequestMethod.GET)
-	public String loginPage(ModelMap model) {
-		
-		return "index";
-	}
 
-	@RequestMapping(value = "/api/login", method = RequestMethod.POST)
+	@RequestMapping(value = "/api/user/login", method = RequestMethod.POST)
 	public @ResponseBody JSONObject printTest(ModelMap model,HttpServletRequest request,HttpServletResponse response) {		
 		JSONObject jo = new JSONObject();	
 		try {
@@ -86,5 +94,25 @@ public class WelcomeController {
 		jo.put("access", "denied");
 		return jo;
 	}
+	
+    @RequestMapping(value = {"/404"}, method = RequestMethod.GET)
+    public String NotFoudPage() {
+    	System.out.println("404");
+        return "index";
+
+    } 
+    
+//	@RequestMapping(value = {"/**"}, method = RequestMethod.GET)
+//	public String notFound(HttpServletRequest request,ModelMap model) {
+//
+//		List<User> listUsers = userDao.list();
+//
+//		System.out.println("size ....."  + listUsers.size());
+//		if(request.getSession().getAttribute("user")==null){
+//			return "redirect:/login";
+//		}
+//		
+//		return "index";
+//	}
 	
 }

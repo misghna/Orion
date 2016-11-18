@@ -1,19 +1,30 @@
-import { Injectable } from '@angular/core';
+import { Injectable,Inject,isDevMode } from '@angular/core';
 import { Http,Headers,RequestOptions } from '@angular/http';
 import { UtilService } from './util.service';
+
 import 'rxjs/add/operator/map';
 
 
 @Injectable()
 export class UserService {
-  baseUrl ="http://localhost:8080/";
+  baseUrl; // = AppSettings.BASE_URL;
 
-  constructor(private http: Http,private util:UtilService) {}
+//@Inject('ApiEndpoint') private apiEndpoint: string
 
+  constructor(private http: Http,private util:UtilService) {
+    this.baseUrl = util.getBaseUrl();
+  }
+
+signup(body){
+    let headerContent = new Headers();
+    headerContent.append("Content-Type", "application/json");
+    return this.http.post(this.baseUrl + 'api/open/user', body, { headers: headerContent })
+     .map(res => res.json());
+}
 getAllUsers() {
     let headerContent = new Headers();
     let options = new RequestOptions({ headers: headerContent });
-    var url = this.baseUrl + 'api/users';
+    var url = this.baseUrl + 'api/admin/users';
     return this.http.get(url,[{ headers: headerContent },{ withCredentials: true }])
       .map(res => res.json());
   }
@@ -44,8 +55,16 @@ getAllUsers() {
   changePass(body){
     let headerContent = new Headers();
     headerContent.append("Content-Type", "application/json");
-    return this.http.post(this.baseUrl + 'api/changePass', body, { headers: headerContent })
+    return this.http.post(this.baseUrl + 'api/user/changePass', body, { headers: headerContent })
       .map(res => res.json());
+  }
+
+  login(email,password){
+    let headerContent = new Headers();
+    headerContent.append("Authorization", "Basic " + btoa(email + ":" + password)); 
+    headerContent.append("Content-Type", "application/x-www-form-urlencoded");
+    return this.http.post(this.baseUrl + 'api/user/login', null, { headers: headerContent })
+         .map(res => res.json());
   }
 
   changeRole(userId,role) {

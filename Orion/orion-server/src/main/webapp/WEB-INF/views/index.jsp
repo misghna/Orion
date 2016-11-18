@@ -22,7 +22,5 @@
   <body>
     
     <app-root>Loading...</app-root>
-  <script type="text/javascript" src="dist/inline.js"></script>
-  <script type="text/javascript" src="dist/styles.bundle.js"></script>
-  <script type="text/javascript" src="dist/main.bundle.js"></script></body>
+  <script type="text/javascript" src="inline.js"></script><script type="text/javascript" src="styles.da553d2de234d9654a00.bundle.js"></script><script type="text/javascript" src="main.e6126039d88b95383afa.bundle.js"></script></body>
 </html>

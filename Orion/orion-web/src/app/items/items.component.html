@@ -1,0 +1,109 @@
+ <app-header (loadItem)="loadItemsTable()" 
+    [loaderHidden]="hideLoader"></app-header>
+
+<!--Filter by name:<input class="form-control" [(ngModel)]="filterQuery"/>-->
+<button class="btn btn-default pull-right" style="margin-right:10px">
+  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New Item</button>
+<table class="table table-striped" [mfData]="data" #mf="mfDataTable" [mfRowsOnPage]="10" >
+    <thead>
+    <tr>
+        <th style="width: 5%">
+            <mfDefaultSorter by="product">Id</mfDefaultSorter>
+        </th>
+        <th style="width: 35%">
+            <mfDefaultSorter by="product">Product</mfDefaultSorter>
+        </th>
+        <th style="width: 10%">
+            <mfDefaultSorter by="hsCode">HSCode</mfDefaultSorter>
+        </th>
+        <th style="width: 10%">
+            <mfDefaultSorter by="financialService">Financial Service</mfDefaultSorter>
+        </th>
+        <th style="width: 7%">
+            <mfDefaultSorter by="consumerTax">Consumer Tax</mfDefaultSorter>
+        </th>
+        <th style="width: 7%">
+            <mfDefaultSorter by="stampTax">Stamp Tax</mfDefaultSorter>
+        </th>
+        <th style="width: 7%">
+            <mfDefaultSorter by="stampTax">Frees</mfDefaultSorter>
+        </th>
+        <th style="width: 7%">
+            <mfDefaultSorter by="stampTax">Others</mfDefaultSorter>
+        </th>
+        <th style="width: 5%">
+            <mfDefaultSorter by="stampTax">Action</mfDefaultSorter>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of mf.data; let i = index">    
+        <td class="text-left" >{{i+1}}</td>    
+        <td class="text-left" >{{item.product}}</td>
+        <td class="text-left">{{item.hsCode}}</td>
+        <td class="text-center">{{item.financialServices}}</td>
+        <td class="text-center">{{item.consumerTax}}</td>
+        <td class="text-center">{{item.stampTax}}</td>
+        <td class="text-center">{{item.fees}}</td>
+        <td class="text-center">{{item.others}}</td>
+        <td class="text-center" >
+            <div class="dropdown" style="border: 0">
+            <button id= {{item.id}} class="btn btn-default dropdown-toggle" 
+                [class.disabled]="loggeditemId == item.id ? true : false"
+                style="border:0px solid transparent !important" type="button" id="dropdownMenu1"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <span class="caret"></span>
+            </button>
+            <ul id={{item.header}} #dropDownBox class="dropdown-menu dropdown-menu-right" 
+                (click)="transferDetail(dropDownBox.id)" aria-labelledby="dropdownMenu1">
+                <li><a #activateitem (click)="activateitem(activateitem.parentElement.parentElement.id,activateitem.text)">{{item.status == 'Active' ? 'Deactivate' : 'Activate'}}</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a #changerole (click)="changeRole(changerole.parentElement.parentElement.id,changerole.text)">Change to role to {{item.role == 'item' ? 'Admin' : 'item'}}</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a #deleteitem data-toggle="modal" data-target="#itemModal"
+                 (click)="storeitemId(deleteitem.parentElement.parentElement.id)">Delete</a></li>
+            </ul>
+            </div>
+        </td>
+      </tr>
+    </tbody>
+    
+    <tfoot>
+      <tr>
+        <td class="text-left" >+</td>    
+        <td class="text-left"><textarea class="form-control " rows="1" style="min-width: 100%;resize: none;border: none" placeholder="Product Name"></textarea></td> 
+        <td class="text-left"><textarea class="form-control " rows="1" style="min-width: 100%;resize: none;border: none" placeholder="HS Code"></textarea></td> 
+        <td class="text-left"><textarea class="form-control " rows="1" style="min-width: 100%;resize: none;border: none" placeholder="Financial Service"></textarea></td> 
+        <td class="text-left"><textarea class="form-control " rows="1" style="min-width: 100%;resize: none;border: none" placeholder="Customer Tax"></textarea></td> 
+        <td class="text-left"><textarea class="form-control " rows="1" style="min-width: 100%;resize: none;border: none" placeholder="Stamp Tax"></textarea></td> 
+        <td class="text-left"><textarea class="form-control " rows="1" style="min-width: 100%;resize: none;border: none" placeholder="Fees"></textarea></td> 
+        <td class="text-left"><textarea class="form-control " rows="1" style="min-width: 100%;resize: none;border: none" placeholder="Others"></textarea></td> 
+
+        <td class="text-left" ><button class="btn btn-success">Add</button></td> 
+      </tr>
+    <tr>
+        <td colspan="4">
+            <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25]"></mfBootstrapPaginator>
+        </td>
+    </tr>
+    </tfoot>
+</table>
+
+  <!-- Modal -->
+  <div class="modal fade" id="itemModal" role="dialog">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">item</h4>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete item '{{detail}}'?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" (click) = "deleteitem()" class="btn btn-danger" data-dismiss="modal">Yes</button>
+          <button type="button" (click) = "clearitemId()" class="btn btn-default" data-dismiss="modal">No</button>
+        </div>
+      </div>
+    </div>
+  </div>

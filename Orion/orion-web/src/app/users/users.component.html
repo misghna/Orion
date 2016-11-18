@@ -1,19 +1,20 @@
- <app-header (loadUser)="loadUserTable()" [loaderHidden]="hideLoader"></app-header>
+ <app-header (loadUser)="loadUserTable()" 
+    [loaderHidden]="hideLoader"></app-header>
 
 
 <table class="table table-striped" [mfData]="data" #mf="mfDataTable" [mfRowsOnPage]="5" >
     <thead>
     <tr>
-        <th style="width: 30%">
+        <th style="width: 35%">
             <mfDefaultSorter by="name">Full Name</mfDefaultSorter>
         </th>
         <th style="width: 30%">
             <mfDefaultSorter by="email">Email</mfDefaultSorter>
         </th>
-        <th style="width: 20%">
+        <th style="width: 15%">
             <mfDefaultSorter by="age">Role</mfDefaultSorter>
         </th>
-        <th style="width: 20%">
+        <th style="width: 15%">
             <mfDefaultSorter by="city">status</mfDefaultSorter>
         </th>
         <th style="width: 5%">

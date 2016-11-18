@@ -11,7 +11,8 @@ import { HomeComponent }  from './home/home.component';
 import { AuthGuard } from './service/auth.guard';
 import { UtilService } from './service/util.service';
 import { UserService } from './service/user.service';
-import {LoadingIndicator} from './service/loading-indicator';
+import { MiscService } from './service/misc.service';
+import {AppSettings} from './service/app.settings';
 import { RegisterComponent } from './register/register.component';
 import { AdminComponent } from './admin/admin.component';
 import { HeaderComponent } from './header/header.component';
@@ -22,6 +23,7 @@ import { HttpInterceptor } from "./service/httpInterceptor";
 import { Router } from '@angular/router';
 import { PassRenewComponent } from './passrenew/passrenew.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
+import { ItemsComponent } from './items/items.component';
 
 @NgModule({
   imports: [HttpModule, DataTableModule,
@@ -37,20 +39,21 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
                 AdminComponent,
                 HeaderComponent,
                 UsersComponent,
-                LoadingIndicator,
                 PassRenewComponent,
-                ChangePasswordComponent
+                ChangePasswordComponent,
+                ItemsComponent
                  ],
-  providers:[AuthGuard,UtilService,UserService,
+  providers:[AuthGuard,UtilService,UserService,AppSettings,MiscService,
         {
           provide: Http,
           useFactory: (backend: XHRBackend, defaultOptions: RequestOptions, utilService:UtilService) => {
             return new HttpInterceptor(backend, defaultOptions,utilService);
             },
             deps: [ XHRBackend, RequestOptions,UtilService]
+        },{
+          provide : 'ApiEndpoint',  useValue : ('http://localhost:8080/')
         }
   ],
-
 
   bootstrap:    [ AppComponent]
 })

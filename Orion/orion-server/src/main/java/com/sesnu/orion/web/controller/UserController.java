@@ -35,12 +35,12 @@ public class UserController {
 	@Autowired Util util;
 	
 
-	@RequestMapping(value = "/api/users", method = RequestMethod.GET)
+	@RequestMapping(value = "/api/admin/users", method = RequestMethod.GET)
 	public @ResponseBody JSONArray users(ModelMap model,HttpServletRequest request,HttpServletResponse response) {	
 		return filterUsers(userDao.list());
 	}
 	
-	@RequestMapping(value = "/api/user", method = RequestMethod.POST)
+	@RequestMapping(value = "/api/open/user", method = RequestMethod.POST)
 	public @ResponseBody Boolean addUser(HttpServletResponse response,@RequestBody User user)
 			throws Exception {
 		
@@ -51,7 +51,7 @@ public class UserController {
 		}
 		
 		user.setPassphrase(Util.encodePassword(user.getPassphrase()));
-		user.setStatus("Not Active");
+		user.setStatus("Inactive");
 		user.setRole("User");
 		userDao.saveOrUpdate(user);
 		StringBuilder msg = new StringBuilder();
@@ -70,7 +70,7 @@ public class UserController {
 		return userDao.getUserByEmail(user.getEmail()).getId()>0l;
 	}
 	
-	@RequestMapping(value = "/api/user/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/api/user/user/{id}", method = RequestMethod.GET)
 	public @ResponseBody User getUserById(@PathVariable("id") long id) {				
 		return userDao.get(id);
 	}
@@ -189,7 +189,7 @@ public class UserController {
 		
 	}
 	
-	@RequestMapping(value = "/api/changePass", method = RequestMethod.POST)
+	@RequestMapping(value = "/api/user/changePass", method = RequestMethod.POST)
 	public @ResponseBody String changePass(@RequestBody JSONObject body,
 			HttpServletRequest request,HttpServletResponse response)
 			throws Exception {

@@ -1,6 +1,4 @@
 import { Component, OnInit,Output,EventEmitter } from '@angular/core';
-import {AgGridNg2} from 'ag-grid-ng2/main';
-import {GridOptions} from 'ag-grid/main';
 import { UserService } from '../service/user.service';
 
 

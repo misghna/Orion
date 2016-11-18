@@ -1,15 +1,14 @@
-package com.sesnu.orion.servlet3;
+package com.sesnu.orion.config.servlet;
 
 import javax.servlet.Filter;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
-import javax.servlet.ServletRegistration.Dynamic;
 
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.request.RequestContextListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
-import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 import com.sesnu.orion.config.CorsFilter;
@@ -29,17 +28,26 @@ public class SpringWebAppInitializer extends AbstractAnnotationConfigDispatcherS
         servletContext.addListener(new SessionListener());
         
         servletContext.addListener(new RequestContextListener());
+        DispatcherServlet dispatcherServlet = new DispatcherServlet(appContext);
+   //     dispatcherServlet.setThrowExceptionIfNoHandlerFound(true);
         
         ServletRegistration.Dynamic dispatcher = servletContext.addServlet(
-                "SpringDispatcher", new DispatcherServlet(appContext));
+                "SpringDispatcher",dispatcherServlet );
+        
+     //   dispatcher.setInitParameter("throwExceptionIfNoHandlerFound", "true");
+
         dispatcher.setInitParameter("dispatchOptionsRequest", "true");
         dispatcher.setLoadOnStartup(1);
         dispatcher.addMapping("/");
         
 	}
 
-
-
+	@Override
+    protected DispatcherServlet createDispatcherServlet(WebApplicationContext servletAppContext) {
+        DispatcherServlet ds = new DispatcherServlet(servletAppContext);
+        ds.setThrowExceptionIfNoHandlerFound(true);
+        return ds;
+    }
 	
 	@Override
 	  protected Filter[] getServletFilters() {

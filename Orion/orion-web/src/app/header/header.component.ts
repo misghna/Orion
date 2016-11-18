@@ -11,6 +11,8 @@ export class HeaderComponent implements OnInit {
   @Input() loaderHidden = true;
 
   @Output() loadUser = new EventEmitter();
+  @Output() loadItem = new EventEmitter();
+
   regUser = true;
   constructor(private http:Http, private userService:UserService) {
     this.loaderHidden = true;
@@ -22,10 +24,15 @@ export class HeaderComponent implements OnInit {
         this.regUser = false;
       }
       this.loadUserTable();
+      this.loadItemsTable();
+  }
+
+ loadItemsTable(){
+      this.loadUser.emit({"load":"user"});
   }
 
  loadUserTable(){
-      this.loadUser.emit({"load":"user"});
+      this.loadItem.emit({"load":"item"});
   }
 
     logout() {

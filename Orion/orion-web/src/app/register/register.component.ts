@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Http,Headers } from '@angular/http';
+import { UserService } from '../service/user.service';
 
 @Component({
   selector: 'app-register',
@@ -10,7 +11,8 @@ export class RegisterComponent implements OnInit {
   formHeight = 480;
   registerMsg = "";
   loaderHidden = true;
-  constructor(public http: Http) {
+
+  constructor(public http: Http,private userService:UserService) {
     this.loaderHidden = true;
    }
 
@@ -37,16 +39,12 @@ export class RegisterComponent implements OnInit {
     }
 
     let body = JSON.stringify({"fullname":fullname,"email":email,"passphrase":password});
-    let headerContent = new Headers();
-    headerContent.append("Content-Type", "application/json");
     this.loaderHidden = false;
-    this.http.post('http://localhost:8080/api/user', body, { headers: headerContent })
+    this.userService.signup(body)
       .subscribe(
         response => {
           this.loaderHidden = true;
-          if(response.status==200){
-            this.registerMsg = "your request is pendding approval, you will get email once approved!";
-          }     
+            this.registerMsg = "your request is pendding approval, you will get email once approved!";  
         },
         error => {
           this.loaderHidden = true;

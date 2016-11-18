@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.http.HttpStatus;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.stereotype.Controller;
@@ -41,16 +42,15 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 	
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-	//	registry.addResourceHandler("/resources/prod/assets/**").addResourceLocations("/assets/");
-		registry.addResourceHandler("/dist/**").addResourceLocations("/resources/dist/");
+		registry.addResourceHandler("/*").addResourceLocations("/resources/");
 		registry.addResourceHandler("/images/**").addResourceLocations("/resources/images/");
-	//	registry.addResourceHandler("/*").addResourceLocations("/resources/");
 	}
 	
 	@Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
         configurer.enable();
     }
+	
 	
 	@Bean
 	public InternalResourceViewResolver viewResolver() {
@@ -81,6 +81,12 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
     	properties.put("hibernate.show_sql", "true");
     	properties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
     	properties.put("hibernate.temp.use_jdbc_metadata_defaults","false");
+    	properties.put("hibernate.c3p0.min_size",5);
+    	properties.put("hibernate.c3p0.max_size",10);
+    	properties.put("hibernate.c3p0.timeout",300);
+    	properties.put("hibernate.c3p0.max_statements",50);
+    	properties.put("hibernate.c3p0.idle_test_period",3000);
+    //	properties.put("hibernate.connection.pool_size",10);
     	return properties;
     }
     

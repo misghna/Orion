@@ -1,5 +1,5 @@
 <div id="loaderWrapper" class="hidden" [class.hidden]="loaderHidden">
-    <img id="loader" src="http://localhost:8080/images/Loading.gif" alt="Loading..." >
+    <img id="loader" src="images/Loading.gif" alt="Loading..." >
 </div>
 <hr style="margin:0px;padding:5px;background-color:#33C4FF"/>
 <nav class="navbar navbar-default" >
@@ -37,7 +37,7 @@
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a routerLink="/admin/users" routerLinkActive="active" >Users</a></li>
-            <li><a href="#">Tax Rates</a></li>
+            <li><a routerLink="/items" routerLinkActive="active" >Items/Fees</a></li>
           </ul>
         </li>
       </ul>
@@ -48,7 +48,7 @@
 			<div class="input-group">
 			      <input type="text" class="form-control" placeholder="Search for...">
 			      <span class="input-group-btn">
-			        <button class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span>&nbsp;</button>
+			        <button class="btn btn-default" type="button"><span style="font-size: 20px;" class="glyphicon glyphicon-search"></span></button>
 			      </span>
 			</div><!-- /input-group -->
 	      </form>
