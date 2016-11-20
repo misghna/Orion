@@ -19,6 +19,9 @@ font-family:    Garamond;
 font-size:      1.3em;
 }*/
 
+body{
+    background-image: url("http://localhost:8080/grid.gif");
+}
 .belt{
    min-height: 3px;
    max-height: 3px;

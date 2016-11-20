@@ -24,6 +24,7 @@ import { Router } from '@angular/router';
 import { PassRenewComponent } from './passrenew/passrenew.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { ItemsComponent } from './items/items.component';
+import { FilterNamePipe } from './pipes/pipe.filterName';
 
 @NgModule({
   imports: [HttpModule, DataTableModule,
@@ -41,7 +42,7 @@ import { ItemsComponent } from './items/items.component';
                 UsersComponent,
                 PassRenewComponent,
                 ChangePasswordComponent,
-                ItemsComponent
+                ItemsComponent,FilterNamePipe
                  ],
   providers:[AuthGuard,UtilService,UserService,AppSettings,MiscService,
         {

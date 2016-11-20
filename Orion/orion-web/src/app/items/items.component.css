@@ -1,0 +1,16 @@
+.txt-flat {
+    overflow:hidden;
+    min-width: 100%;
+    resize: none;
+    border: none;
+    outline: none;
+
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+
+.inputFormTr{
+    border:2pt solid #09a586;
+}
+/*.alert-auto {display:inline-block;}*/

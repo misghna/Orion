@@ -82,4 +82,31 @@ public class ItemDAOImpl implements ItemDAO {
 	public void saveOrUpdate(Item item) {
 		sessionFactory.getCurrentSession().saveOrUpdate(item);		
 	}
+
+	@Override
+	public boolean isExists(String productName, long hsCode) {
+		String hql = "from Item where hscode= :hscode or lower(product)= :product";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setParameter("hscode",hsCode);
+		query.setParameter("product",productName.toLowerCase());
+			
+		List<Item> itemList = (List<Item>) query.list();
+		
+		if (itemList != null && !itemList.isEmpty()) {
+			System.out.println("===========> " +itemList.get(0).getId() + "  " +   itemList.size());
+			return itemList.size()>0;
+		}
+		return false;
+	}
+
+	@Override
+	public List<Item> searchItem(String searchStr) {
+		String hql = "from Item where lower(product) like :searchStr";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setParameter("searchStr","%" + searchStr.toLowerCase() + "%");
+		
+		List<Item> itemList = (List<Item>) query.list();
+
+		return itemList;
+	}
 }

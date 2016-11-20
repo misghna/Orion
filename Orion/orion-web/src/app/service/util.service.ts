@@ -14,7 +14,6 @@ constructor(public router: Router) {
 
     getBaseUrl(){
       if(isDevMode()){
-        console.log("running in devmode");
         return 'http://localhost:8080/';     
       }else{
         return '';

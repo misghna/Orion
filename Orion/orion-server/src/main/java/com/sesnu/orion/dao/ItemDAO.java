@@ -12,6 +12,8 @@ public interface ItemDAO {
 	
 	public List<Item> getItemByProductName(String productName);
 	
+	public List<Item> searchItem(String searchStr);
+	
 	public Item getItemByProductHsCode(long hsCode);
 	
 	public Item get(long id);
@@ -20,4 +22,5 @@ public interface ItemDAO {
 	
 	public void delete(long id);
 	
+	public boolean isExists(String productName, long hsCode);
 }

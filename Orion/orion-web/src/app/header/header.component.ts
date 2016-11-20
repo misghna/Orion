@@ -12,6 +12,7 @@ export class HeaderComponent implements OnInit {
 
   @Output() loadUser = new EventEmitter();
   @Output() loadItem = new EventEmitter();
+  @Output() activateSearch = new EventEmitter();
 
   regUser = true;
   constructor(private http:Http, private userService:UserService) {
@@ -38,6 +39,10 @@ export class HeaderComponent implements OnInit {
     logout() {
        localStorage.setItem('accessDetail', "{}");
         this.userService.logoutUsers();
+   }
+
+   search(searchTxt){
+     this.activateSearch.emit({"searchTxt":searchTxt});
    }
 
 

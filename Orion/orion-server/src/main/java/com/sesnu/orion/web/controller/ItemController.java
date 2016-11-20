@@ -45,19 +45,53 @@ public class ItemController {
 	
 	
 	@RequestMapping(value = "/api/user/item", method = RequestMethod.POST)
-	public @ResponseBody Item addItem(HttpServletResponse response,@RequestBody Item item)
+	public @ResponseBody List<Item> addItem(HttpServletResponse response,@RequestBody Item item)
 			throws Exception {
+		System.out.println("***************" + item.getProduct() + item.getHsCode());
+		if(itemDao.isExists(item.getProduct(), item.getHsCode())){
+			response.sendError(400);
+			return null;
+		}
 		itemDao.saveOrUpdate(item);
-		return item;
+		return itemDao.list();
 
 	}
 	
+	@RequestMapping(value = "/api/user/item/search", method = RequestMethod.POST)
+	public @ResponseBody List<Item> searchItem(HttpServletResponse response,@RequestBody String searchText)
+			throws Exception {
+		if(searchText.isEmpty()){
+			return itemDao.list();
+		}
+		return itemDao.searchItem(searchText);
+
+	}
+	
+	@RequestMapping(value = "/api/user/item", method = RequestMethod.PUT)
+	public @ResponseBody List<Item> updateItem(HttpServletResponse response,@RequestBody Item item)
+			throws Exception {
+		if(itemDao.get(item.getId())==null){
+			response.sendError(400);
+			return null;
+		}
+		itemDao.saveOrUpdate(item);
+		return itemDao.list();
+
+	}
 	
 	@RequestMapping(value = "/api/user/item/{id}", method = RequestMethod.GET)
 	public @ResponseBody Item getItemById(@PathVariable("id") long id) {				
 		return itemDao.get(id);
 	}
 	
-	
+	@RequestMapping(value = "/api/user/item/{id}", method = RequestMethod.DELETE)
+	public @ResponseBody List<Item> deleteItem(@PathVariable("id") long id,HttpServletResponse response) throws Exception {
+		if(itemDao.get(id)!=null){
+			itemDao.delete(id);
+			return itemDao.list();
+		}
+		response.sendError(400);
+		return null;
+	}
 	
 }
