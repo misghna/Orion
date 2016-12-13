@@ -1,8 +1,6 @@
-<div id="loaderWrapper" class="hidden" [class.hidden]="loaderHidden">
-    <img id="loader" src="images/Loading.gif" alt="Loading..." >
-</div>
+
 <hr style="margin:0px;padding:2px;background-color:#09a586"/>
-<nav class="navbar navbar-default" >
+<nav class="navbar navbar-default" [class.hidden]="navHidden">
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
@@ -13,7 +11,7 @@
         <span class="icon-bar"></span>
       </button>
       <a class="navbar-brand" href="#">   
-        <img id="loader" style="width:100px;height:40px;margin-top:-10px" src="http://localhost:8080/images/anseba_icon.png" alt="ERIANGO" >
+        <img id="loader" style="width:100px;height:40px;margin-top:-10px" src="images/anseba_icon.png" alt="ERIANGO" >
       		<!--<span class="text-primary stuff" style="font-family:Garamond;font-size:1.3em;font-style: italic; "> ERIANGO</span>-->
           </a>
     </div>
@@ -22,38 +20,70 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
         <li class="active"><a href="#">Home <span class="sr-only">(current)</span></a></li>
-        <li><a href="#">Notifications</a></li>
+       
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Import <span class="caret"></span></a>
+          <ul class="dropdown-menu">           
+            <li><a routerLink="/import/orders" routerLinkActive="active" >Orders</a></li> 
+            <li><a href="#">Payments</a></li>
+            <li><a href="#">Shipments</a></li>
+            <li><a href="#">Budget</a></li>
+          </ul>
+        </li>
+
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Finance <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="#">Budget</a></li>
+            <li><a href="#">Payment</a></li>
+          </ul>
+        </li>
+
+        <li><a href="#">Clearing</a></li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Report <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="#">Action</a></li>
-            <li><a href="#">Another action</a></li>
-            <li><a href="#">Something else here</a></li>
+            <li><a href="#">Report 1</a></li>
+            <li><a href="#">Another Report</a></li>
+            <li><a href="#">Something else Report</a></li>
             <li role="separator" class="divider"></li>
             <li><a href="#">Separated link</a></li>
             <li role="separator" class="divider"></li>
-            <li><a href="#">One more separated link</a></li>
+            <li><a href="#">One more Report</a></li>
           </ul>
         </li>
+
         <li class="dropdown" [class.hidden]="regUser">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tools<span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a routerLink="/admin/users" routerLinkActive="active" >Users</a></li>
-            <li><a routerLink="/items" routerLinkActive="active" >Items/Fees</a></li>
+            <li *ngFor="let option of optionsObj;" [class.divider]="option.value=='divider'" role="option.value=='divider'? 'separator' : ''">
+              <a id="{{option?.value}}" #me (click)="triggerOption(me.id)">{{option?.name}}</a>
+            </li>
+          </ul>
+        </li>
+
+        <li class="dropdown" [class.hidden]="regUser">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Settings <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a routerLink="/setting/salesPlan" routerLinkActive="active" (click)="activePageName='Items'" >Sales Plan</a></li>
+            <li><a routerLink="/setting/users" routerLinkActive="active" (click)="activePageName='Users'" >Users</a></li>
+            <li><a routerLink="/setting/items" routerLinkActive="active" (click)="activePageName='Items'" >Items/Fees</a></li>
           </ul>
         </li>
       </ul>
       
+      
+
       <ul class="nav navbar-nav navbar-right">
       <li>
 		 <form class="navbar-form navbar-nav">
 			<div class="input-group">
-			      <input type="text" class="form-control" #searchTxt placeholder="Search for...">
-			      <span class="input-group-btn">
+			      <input type="text" class="form-control" #searchTxt (keyup)="search(searchTxt.value)" placeholder="Search for...">
+			      <!--<span class="input-group-btn">
 			        <button class="btn btn-default" type="button" (click)="search(searchTxt.value)">
                 <span style="font-size: 20px;" class="glyphicon glyphicon-search"></span>
               </button>
-			      </span>
+			      </span>-->
 			</div><!-- /input-group -->
 	      </form>
 	      </li>
@@ -72,4 +102,26 @@
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid   routerLink="/login" routerLinkActive="active" -->
 </nav>
+
+  <!-- Modal -->
+  <div #myModal class="modal fade" id="itemModal" role="dialog">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">{{title}}</h4>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete '{{modalMsg}}'?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" (click) = "deleteItem()" class="btn btn-danger" data-dismiss="modal">Yes</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+ <button #myModalBtn data-toggle="modal" data-target="#itemModal" hidden>kjknk</button>
+
 

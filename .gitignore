@@ -6,3 +6,4 @@ dist/
 .classpath
 target/
 bin/
+resources/

@@ -1,6 +1,6 @@
 import { Injectable,Inject,isDevMode } from '@angular/core';
 import { Http,Headers,RequestOptions } from '@angular/http';
-import { UtilService } from './util.service';
+import { UtilService } from '../service/util.service';
 
 import 'rxjs/add/operator/map';
 
@@ -21,6 +21,7 @@ signup(body){
     return this.http.post(this.baseUrl + 'api/open/user', body, { headers: headerContent })
      .map(res => res.json());
 }
+
 getAllUsers() {
     let headerContent = new Headers();
     let options = new RequestOptions({ headers: headerContent });
@@ -49,6 +50,13 @@ getAllUsers() {
     let headerContent = new Headers();
     headerContent.append("Content-Type", "application/json");
     return this.http.post(this.baseUrl + 'api/open/changeForgotenPass', body, { headers: headerContent })
+      .map(res => res.json());
+  }
+
+  update(body){
+    let headerContent = new Headers();
+    headerContent.append("Content-Type", "application/json");
+    return this.http.put(this.baseUrl + 'api/admin/user', body, { headers: headerContent })
       .map(res => res.json());
   }
 

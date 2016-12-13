@@ -33,7 +33,6 @@ public class UserController {
 	@Autowired
 	UserDAO userDao;
 	@Autowired Util util;
-	
 
 	@RequestMapping(value = "/api/admin/users", method = RequestMethod.GET)
 	public @ResponseBody JSONArray users(ModelMap model,HttpServletRequest request,HttpServletResponse response) {	
@@ -52,18 +51,21 @@ public class UserController {
 		
 		user.setPassphrase(Util.encodePassword(user.getPassphrase()));
 		user.setStatus("Inactive");
+		user.setApprover(false);
 		user.setRole("User");
 		userDao.saveOrUpdate(user);
 		StringBuilder msg = new StringBuilder();
-		msg.append("Hello  AdminNameHere,\n\n ");
+		msg.append("Hello  AdminNameHere, \n\n ");
 		msg.append(user.getFullname() + " is requesting access to Eriango App, if you decide to grant access to ");
-		msg.append(user.getFullname() +" please login and activate the account in ...admin/users page ");
-		msg.append("\n\n Do not replay to this email, this is an automated message.");
-		msg.append("\n\n Thank you!!");
+		msg.append(user.getFullname() +" please login and activate the account");
+		
+		String emailPostFix = "\n\n Do not replay to this email, this is an automated message. \n\n Thank you!!";
 		List<User> users = userDao.list();
 		for (User user2 : users) {
 			if(user2.getRole().equals("Admin")){
-				util.sendMail("Account Activation Request", user2.getEmail() ,msg.toString().replace("AdminNameHere", user2.getFullname()));
+				util.sendText(msg.toString().replace("AdminNameHere", user2.getFullname()),user2.getPhone());
+				util.sendMail("Account Activation Request", user2.getEmail() ,
+						msg.toString().replace("AdminNameHere", user2.getFullname()) + emailPostFix);
 			}
 		}
 			
@@ -86,8 +88,8 @@ public class UserController {
 			msg.append("Hello  "+user.getFullname()+",\n\n ");
 			msg.append("Your access request to eriango webapp is approved!");
 			msg.append("\n\n To access your account please go to the webapp and login");
-			msg.append("\n\n Do not replay to this email, this is an automated message.");
-			msg.append("\n\n Thank you!!");
+			String emailPostFix = ("\n\n Do not replay to this email, this is an automated message.\n\n Thank you!!");
+			util.sendText(msg.toString(), user.getPhone());
 			util.sendMail("Account Activated", user.getEmail() ,msg.toString());	
 		}
 		return filterUsers(userDao.list());
@@ -103,11 +105,17 @@ public class UserController {
 		return filterUsers(userDao.list());
 	}
 	
+	@RequestMapping(value = "/api/admin/user", method = RequestMethod.PUT)
+	public @ResponseBody List<User> updateUser(HttpServletRequest request,@RequestBody User user)
+			throws Exception {
+		userDao.saveOrUpdate(user);
+		return filterUsers(userDao.list());
+	}
+	
 	@RequestMapping(value = "/api/admin/deleteUser/{id}", method = RequestMethod.DELETE)
 	public @ResponseBody JSONArray deleteUser(@PathVariable("id") long id)
 			throws Exception {
 		userDao.delete(id);
-		System.out.println(id);
 		return filterUsers(userDao.list());
 	}
 
@@ -117,24 +125,26 @@ public class UserController {
 			HttpServletRequest request,HttpServletResponse response)
 			throws Exception {
 		String email = body.get("email").toString();
-		System.out.println("email " + email);
 		User user = userDao.getUserByEmail(email);
 		if(user==null){
 			response.sendError(404,"user with the given Email-Id doesnt exist");
 			return null;
 		}
 		
-		String generatedCode = util.generateString();
+		String generatedCode = util.generateString(7);
 		request.getServletContext().setAttribute(email, util.getTime().toString().concat("-").concat(generatedCode));
 		StringBuilder msg = new StringBuilder();
 
 		msg.append("Hello  "+user.getFullname()+",\n\n ");
 		msg.append("please use the following code to recover your password");
-		msg.append("\n\n verification code = " + generatedCode);
-		msg.append("\n\n if you didnt initiate this request plz inform admin");
+		msg.append("\n\n" + generatedCode);
+
+		util.sendText(msg.toString(), user.getPhone());
+	
+		msg.append("\n\n if you didnt initiate this request plz inform admin immidately");
 		msg.append("\n\n Do not replay to this email, this is an automated message.");
 		msg.append("\n\n Thank you!!");
-		util.sendMail("Password recovery code", email ,msg.toString());
+		//util.sendMail("Password recovery code", email ,msg.toString());
 		response.setStatus(200);
 		return "{\"response\" : \"please check your email for verification code!\"}";
 	}
@@ -219,6 +229,7 @@ public class UserController {
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	private JSONArray filterUsers(List<User> userList){
 		JSONArray users = new JSONArray();
 		for (User user : userList) {
@@ -228,6 +239,9 @@ public class UserController {
 			jo.put("role",user.getRole() );
 			jo.put("status", user.getStatus());
 			jo.put("email", user.getEmail());
+			jo.put("phone", user.getPhone());
+			jo.put("department", user.getDepartment());
+			jo.put("approver", user.getApprover());
 			jo.put("header", user.getFullname() + "-" + user.getId());
 			users.add(jo);
 		}

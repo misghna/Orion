@@ -6,21 +6,85 @@ html, body {
     margin: 0;
 }
 
+.editFormMargin{
+    margin-top:5px;
+    border-color: transparent;
+}
 #loaderWrapper {
     margin-top: 0px;
     min-width:100%;
     min-height: 100%; 
-    background-color:#74767a;
+    /*background-color:#74767a;*/
     position: fixed;
     z-index: 214748364;
-    opacity: 0.20;
+    /*opacity: 0.25;*/
 }
 #loader{
     display: block;
     margin-left:auto;
     margin-right:auto;
+    margin-top:300px;
     vertical-align: middle;
-    height: 100%;
-    width:100%;
+    height: 200px;
+    width: 200px;
+    /*opacity: 0.95;*/
 }
 
+#rangeSelector{
+    vertical-align: middle;
+    display: block;
+    margin-left:auto;
+    margin-right:auto;
+    margin-top: 0px;
+    min-height: 20px; 
+    background-color:white;
+    /*position: fixed;*/
+    z-index: 214748365;
+}
+.myPannel{
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 0px;
+    /* Firefox */
+    min-height: -moz-calc(100% - 100px);
+    /* WebKit */
+    min-height: -webkit-calc(100% - 100px);
+    /* Opera */
+    min-height: -o-calc(100% - 100px);
+    /* Standard */
+    min-height: calc(100% - 100px);
+}
+
+
+textarea[readonly] {
+    background-color: #fff !important;
+}
+
+.tableFont{
+    font-size: 13px;
+}
+
+.txt-flat {
+    overflow:hidden;
+    min-width: 100%;
+    resize: none;
+    border: none;
+    outline: none;
+
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.inputFormTr{
+    border:2pt solid #09a586;
+}
+
+#footerImg{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}

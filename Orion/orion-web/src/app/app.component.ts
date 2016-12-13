@@ -1,7 +1,10 @@
-import { Component,Input,ElementRef } from '@angular/core';
+import { Component,Input,ElementRef,ViewChild,AfterViewInit,Renderer} from '@angular/core';
 import { Router } from '@angular/router';
 import { Http,Headers } from '@angular/http';
 import { UtilService } from './service/util.service';
+import {Observable} from 'rxjs/Observable';
+
+declare var $: any;
 
 @Component({
   selector: 'app-root',
@@ -10,15 +13,21 @@ import { UtilService } from './service/util.service';
 })
 
 export class AppComponent {
-  isNavBarHidden = true;
 
-  // constructor(public utilService:UtilService,private elementRef: ElementRef) {   
-  //   this.utilService.isNavBarHidden=this.isNavBarHidden;
-  // //  console.log(myGlobals.sep);
-  //      console.log(elementRef.nativeElement)
 
-  //    //  this.utilService.isNavBarHidden.s
-  // }
+
+  loaderHidden2 =true;
+  subscription;
+
+  constructor(public utilService:UtilService,private rd: Renderer) {   
+
+     this.subscription = utilService.currentLoaderState$.subscribe(
+      mission => {        
+        this.loaderHidden2 = ! mission;
+    });
+
+  }
+
 
 
 }

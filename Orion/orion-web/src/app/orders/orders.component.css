@@ -1,0 +1,36 @@
+.txt-flat {
+    overflow:hidden;
+    min-width: 100%;
+    resize: none;
+    border: none;
+    outline: none;
+
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.inputFormTr{
+    border:2pt solid #09a586;
+}
+
+.middletext {
+    text-align: justify;
+    white-space: pre-line;
+    -moz-text-align-last: center;
+    text-align-last: center;
+}
+
+.tbl-header{
+    font-weight:normal;
+    /*color:#0a56a8;*/
+    color:green;
+}
+
+#rangeSelector{
+    width:350px;
+}
+/*.alert-auto {display:inline-block;}*/

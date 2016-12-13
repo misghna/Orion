@@ -1,31 +1,28 @@
- <app-header (loadUser)="loadUserTable()" 
-    [loaderHidden]="hideLoader"></app-header>
+ <!--<app-header 
+    [optionsObj]="optionsList">
+    </app-header>-->
 
 
-<table class="table table-striped" [mfData]="data" #mf="mfDataTable" [mfRowsOnPage]="5" >
+<table class="table table-striped tableFont" [mfData]="data" #mf="mfDataTable" [mfRowsOnPage]="5" >
     <thead>
-    <tr>
-        <th style="width: 35%">
-            <mfDefaultSorter by="name">Full Name</mfDefaultSorter>
-        </th>
-        <th style="width: 30%">
-            <mfDefaultSorter by="email">Email</mfDefaultSorter>
-        </th>
-        <th style="width: 15%">
-            <mfDefaultSorter by="age">Role</mfDefaultSorter>
-        </th>
-        <th style="width: 15%">
-            <mfDefaultSorter by="city">status</mfDefaultSorter>
-        </th>
-        <th style="width: 5%">
-            <mfDefaultSorter by="name">Action</mfDefaultSorter>
+    <tr >
+        <th *ngFor="let header of headerNames">
+            <mfDefaultSorter by="name">{{header.cap}}</mfDefaultSorter>
         </th>
     </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let user of mf.data">        
+      <tr *ngFor="let user of allUsers; let i = index">  
+        <td class="text-left" >{{i+1}}</td>      
         <td class="text-left" >{{user.fullname}}</td>
         <td class="text-left">{{user.email}}</td>
+        <td class="text-left">{{user.phone}}</td>
+        <td class="text-left">{{user.department}}</td>
+        <!--<td class="text-left">{{user.approver}}</td>-->
+        <td  *ngIf="user.approver==true">
+            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+        </td>
+        <td  *ngIf="user.approver==false"></td>
         <td class="text-left">{{user.role}}</td>
         <td class="text-left">{{user.status}}</td>
         <td class="text-center" >
@@ -38,20 +35,76 @@
             </button>
             <ul id={{user.header}} #dropDownBox class="dropdown-menu dropdown-menu-right" 
                 (click)="transferDetail(dropDownBox.id)" aria-labelledby="dropdownMenu1">
-                <li><a #activateuser (click)="activateUser(activateuser.parentElement.parentElement.id,activateuser.text)">{{user.status == 'Active' ? 'Deactivate' : 'Activate'}}</a></li>
-                <li role="separator" class="divider"></li>
-                <li><a #changerole (click)="changeRole(changerole.parentElement.parentElement.id,changerole.text)">Change to role to {{user.role == 'User' ? 'Admin' : 'User'}}</a></li>
-                <li role="separator" class="divider"></li>
+                <li><a (click)="edit(deleteuser.parentElement.parentElement.id)">Edit</a></li>
+                 <li role="separator" class="divider"></li>
                 <li><a #deleteuser data-toggle="modal" data-target="#userModal"
                  (click)="storeUserId(deleteuser.parentElement.parentElement.id)">Delete</a></li>
+
             </ul>
             </div>
         </td>
       </tr>
     </tbody>
     <tfoot>
+      <tr *ngIf = "userData != null " [class.hidden]="hideEditForm" class="inputFormTr">
+        <td class="text-center" ><span class="glyphicon glyphicon-plus" aria-hidden="true" style="margin-top:5px"></span></td>
+        <td><textarea #unit class="form-control txt-flat" rows="2"  readonly [(ngModel)]="userData.fullname" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <td><textarea #unit class="form-control txt-flat middletext" rows="2"  readonly [(ngModel)]="userData.email" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <td><textarea #unit class="form-control txt-flat middletext" rows="2"  readonly [(ngModel)]="userData.phone" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <!--<td><textarea #unit class="form-control txt-flat middletext" rows="2"  readonly [(ngModel)]="userData.department" [ngModelOptions]="{standalone: true}"></textarea></td> -->
+        
+        <!--<td><textarea #unit class="form-control txt-flat middletext" rows="2"  readonly [(ngModel)]="userData.approver" [ngModelOptions]="{standalone: true}"></textarea></td> -->
+        <!--<td><textarea #unit class="form-control txt-flat middletext" rows="2"  placeholder="Role" required [(ngModel)]="userData.role" [ngModelOptions]="{standalone: true}"></textarea></td> -->
+        <td>
+            <div class="btn-group ">
+            <button type="button" class="btn btn-default dropdown-toggle editFormMargin" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{userData.department}} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a (click)="userData.department = 'Manager'">Manager</a></li>
+                <li><a (click)="userData.department = 'Import'">Import</a></li>
+                <li><a (click)="userData.department = 'Clearing'">Clearing</a></li>
+            </ul>
+            </div>
+        </td>
+        <td>
+            <div class="btn-group ">
+            <button type="button" class="btn btn-default dropdown-toggle editFormMargin" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{userData.approver==true? 'Yes':'No'}} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a (click)="userData.approver=true">Yes</a></li>
+                <li><a (click)="userData.approver=false">No</a></li>
+            </ul>
+            </div>
+        </td>
+        <td>
+            <div class="btn-group  ">
+            <button type="button" class="btn btn-default dropdown-toggle editFormMargin" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{userData.role}} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a (click)="userData.role = 'Admin'">Admin</a></li>
+                <li><a (click)="userData.role = 'User'">User</a></li>
+            </ul>
+            </div>
+        </td>
+        <td>
+            <div class="btn-group ">
+            <button type="button" class="btn btn-default dropdown-toggle editFormMargin" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{userData.status}} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a (click)="userData.status = 'Active'">Activate</a></li>
+                <li><a (click)="userData.status = 'Inactive'">Deactivate</a></li>
+            </ul>
+            </div>
+        </td>
+        <!--<td><textarea #itemOrigin class="form-control txt-flat middletext" rows="2"  placeholder="Status" required [(ngModel)]="userData.status" [ngModelOptions]="{standalone: true}"></textarea></td>-->
+        <td class="text-left" ><input type="button" class="btn btn-success" (click)= "update()" value="Update"/></td>
+      </tr>  
     <tr>
-        <td colspan="4">
+        <td colspan="9">
             <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25]"></mfBootstrapPaginator>
         </td>
     </tr>

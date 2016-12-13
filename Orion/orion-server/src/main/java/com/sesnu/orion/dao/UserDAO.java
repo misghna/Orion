@@ -16,4 +16,6 @@ public interface UserDAO {
 	public void saveOrUpdate(User user);
 	
 	public void delete(long id);
+	
+	public List<User> getApprovers();
 }

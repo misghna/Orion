@@ -1,7 +1,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>OrionWeb</title>
+    <title>Anseba General Trading</title>
     <base href="/">
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -22,5 +22,5 @@
   <body>
     
     <app-root>Loading...</app-root>
-  <script type="text/javascript" src="inline.js"></script><script type="text/javascript" src="styles.da553d2de234d9654a00.bundle.js"></script><script type="text/javascript" src="main.e6126039d88b95383afa.bundle.js"></script></body>
+  <script type="text/javascript" src="inline.js"></script><script type="text/javascript" src="styles.51e5481722c85a82490f.bundle.js"></script><script type="text/javascript" src="main.d7c32f7dea0e88f225aa.bundle.js"></script></body>
 </html>

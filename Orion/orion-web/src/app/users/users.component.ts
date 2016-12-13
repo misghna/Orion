@@ -1,5 +1,5 @@
 import { Component, OnInit,Output,EventEmitter } from '@angular/core';
-import { UserService } from '../service/user.service';
+import { UserService } from '../users/users.service';
 
 
 @Component({
@@ -8,66 +8,71 @@ import { UserService } from '../service/user.service';
   styleUrls: ['./users.component.css']
 })
 export class UsersComponent implements OnInit {
-  private data;
+  private allUsers;
   detail;
   loggedUserId;
   userIdDelete;
-  hideLoader;
+  pageName;optionsList;
+  hideEditForm;
+  userData;headerNames;
 
     constructor(private userService: UserService) {
-        this.hideLoader=true;
+        this.hideEditForm = true;
+       // this.optionsList = [{'name':'Add New Item','value':'addNew'},{'name':'Create New Revision','value':'createNewRevision'}];
+       this.headerNames = [{'value':'name',"cap":"No"},{'value':'name',"cap":'Full Name'},
+                           {'value':'email',"cap":'Email'},{'value': 'phone', 'cap' : 'Phone'},
+                           {'value': 'department', 'cap' : 'Department'},
+                           {'value':'approver','cap': 'Approver'},
+                           {'value':'role','cap': 'Role'},
+                           {'value':'status','cap': 'Status'},
+                           {'value':'action','cap': 'Action'}];
+
+        this.pageName="Users";
         this.loggedUserId= this.activeUserId();
     }
 
 
   ngOnInit() {
-      
-  }
-
-  activateUser(userHeader,value){
-    var userId : string[] = userHeader.split("-")[1];
-    var toStatus;
-    if(value=='Activate'){
-      toStatus='Active';
-    }else{
-      toStatus="Inactive"
-    }
-    this.hideLoader=false;
-     this.userService.changeStatus(userId,toStatus)
+    this.userService.getAllUsers()
     .subscribe(
         response => {
-           this.hideLoader=true;
-           this.data = response;     
+            this.allUsers = response;     
         },
         error => {
-          this.hideLoader=true;
           console.error(error);
           return {};
         }
       );
   }
 
-  changeRole(userHeader,value){
-    var userId : string[] = userHeader.split("-")[1];
-    var role;
-    if(value.indexOf('Admin') >= 0){
-      role='Admin';
-    }else{
-      role="User"
-    }
-    this.hideLoader=false;
-     this.userService.changeRole(userId,role)
+
+  edit(header){ 
+      var userId : string[] = header.split("-")[1];
+      this.userData = this.getUser(userId)[0];
+      this.hideEditForm = false;
+  }
+
+  update(){
+    console.log(this.userData);
+    this.userService.update(this.userData)
     .subscribe(
         response => {
-            this.hideLoader=true;
-            this.data = response;     
+           this.hideEditForm=true;
+           this.allUsers = response;     
         },
         error => {
-          this.hideLoader=true;
+          console.error(error);
           return {};
         }
       );
   }
+  getUser(userId){
+        return this.allUsers.filter(user => {
+          if(user.id== userId) return user;
+      });
+  }
+
+
 
   transferDetail(userHeader){
     var userH : string[] = userHeader.split("-");
@@ -90,28 +95,12 @@ export class UsersComponent implements OnInit {
 
 
   deleteUser(){
-    this.hideLoader=false;
      this.userService.deleteUser(this.userIdDelete)
     .subscribe(
         response => {
-            this.hideLoader=true;
-            this.data = response;     
+            this.allUsers = response;     
         },
         error => {
-          this.hideLoader=true;
-          return {};
-        }
-      );
-  }
-
-  loadUserTable(){
-    this.userService.getAllUsers()
-    .subscribe(
-        response => {
-            this.data = response;     
-        },
-        error => {
-          console.error(error);
           return {};
         }
       );

@@ -12,18 +12,20 @@ import javax.persistence.Table;
 @Table(name = "USERS")
 public class User {
 	
+	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="user_seq")
+	@SequenceGenerator(name="user_seq",sequenceName="user_seq",allocationSize=20)
 	private long id;
 	private String email;
+	private String phone;
 	private String passphrase;
 	private String role;
 	private String fullname;
 	private String status;
+	private String department;
+	private boolean approver;
 	
 	
-	@Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="user_seq")
-	@SequenceGenerator(name="user_seq",sequenceName="user_seq",allocationSize=20)
-	@Column(name = "id")
 	public long getId() {
 		return id;
 	}
@@ -72,6 +74,30 @@ public class User {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(String department) {
+		this.department = department;
+	}
+
+	public boolean getApprover() {
+		return approver;
+	}
+
+	public void setApprover(boolean approver) {
+		this.approver = approver;
 	}
 
 

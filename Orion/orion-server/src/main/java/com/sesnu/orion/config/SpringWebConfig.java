@@ -16,6 +16,8 @@ import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -28,7 +30,7 @@ import com.sesnu.orion.web.utility.ConfigFile;
 import com.sesnu.orion.web.utility.Util;
 
 
- 
+
 @EnableWebMvc
 @Configuration
 @ComponentScan(basePackages="com.sesnu.orion", useDefaultFilters = false, 
@@ -51,6 +53,12 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
         configurer.enable();
     }
 	
+	@Bean
+	public MultipartResolver multipartResolver() {
+	    CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
+	    multipartResolver.setMaxUploadSize(1000000);
+	    return multipartResolver;
+	}
 	
 	@Bean
 	public InternalResourceViewResolver viewResolver() {

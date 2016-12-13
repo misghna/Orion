@@ -1,6 +1,11 @@
-import { Component, OnInit,Output,Input,EventEmitter } from '@angular/core';
+import { Component,Input,OnInit,Output,ElementRef,ViewChild,AfterViewInit,Renderer,EventEmitter} from '@angular/core';
+
 import { Http,Headers } from '@angular/http';
-import { UserService } from '../service/user.service';
+import { UserService } from '../users/users.service';
+import { UtilService } from '../service/util.service';
+import {Observable} from 'rxjs/Observable';
+
+declare var $: any;
 
 @Component({
   selector: 'app-header',
@@ -8,15 +13,43 @@ import { UserService } from '../service/user.service';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-  @Input() loaderHidden = true;
+  navHidden;
+  @Input() optionsObj = "";
 
-  @Output() loadUser = new EventEmitter();
-  @Output() loadItem = new EventEmitter();
   @Output() activateSearch = new EventEmitter();
+  @Output() activateOptions = new EventEmitter();
+
+   @ViewChild('myModalBtn') modalInput:ElementRef;
+   @Output() deleteEmtter = new EventEmitter();
 
   regUser = true;
-  constructor(private http:Http, private userService:UserService) {
-    this.loaderHidden = true;
+  modalEl;modalMsg;subscription;
+  delTask;title;
+
+  constructor(private http:Http, private userService:UserService, 
+              private utilService:UtilService,private rd: Renderer,private el: ElementRef) {
+    this.navHidden = false;
+    this.subscription = utilService.currentHeaderState$.subscribe(
+      state => {   
+        this.navHidden = !state;
+    });
+
+    this.subscription = utilService.currentModalState$.subscribe(
+      delInfo => {   
+        this.title = delInfo['title'];
+        this.modalMsg = delInfo['msg'];
+        this.delTask = delInfo['task'];
+        let event = new MouseEvent('click', {bubbles: true});
+        this.rd.invokeElementMethod(
+          this.modalInput.nativeElement, 'dispatchEvent', [event]);
+    });
+
+
+       $(this.el.nativeElement).on('click','.dropdown-menu li',function(){
+          console.log($(this).index());
+          $(this).parent().parent().parent().find(".active").removeClass("active");
+          $(this).parent().parent().addClass("active");      
+        });
    }
 
   ngOnInit() {
@@ -24,19 +57,10 @@ export class HeaderComponent implements OnInit {
       if(access!=null && access['role'] =='Admin'){
         this.regUser = false;
       }
-      this.loadUserTable();
-      this.loadItemsTable();
   }
 
- loadItemsTable(){
-      this.loadUser.emit({"load":"user"});
-  }
 
- loadUserTable(){
-      this.loadItem.emit({"load":"item"});
-  }
-
-    logout() {
+  logout(){
        localStorage.setItem('accessDetail', "{}");
         this.userService.logoutUsers();
    }
@@ -44,6 +68,15 @@ export class HeaderComponent implements OnInit {
    search(searchTxt){
      this.activateSearch.emit({"searchTxt":searchTxt});
    }
+
+   triggerOption(optionName){
+     this.activateOptions.emit({"optionName":optionName});
+   }
+
+   deleteItem(){
+     this.deleteEmtter.emit({"delTask":this.delTask});
+   }
+
 
 
 }

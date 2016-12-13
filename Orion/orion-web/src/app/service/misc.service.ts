@@ -15,23 +15,55 @@ export class MiscService {
   }
 
 
-  getAllItems() {
-    let headerContent = new Headers();
-    let options = new RequestOptions({ headers: headerContent });
-    var url = this.baseUrl + 'api/user/items';
-    return this.http.get(url,[{ headers: headerContent },{ withCredentials: true }])
+  getAllItems(rev) {
+    var url = this.baseUrl + 'api/user/items/' + rev;
+    return this.http.get(url,[{ withCredentials: true }])
       .map(res => res.json());
   }
 
+  getRevisions() {
+    var url = this.baseUrl + 'api/user/item/revisions';
+    return this.http.get(url,[{ withCredentials: true }])
+      .map(res => res.json());
+  }
+
+
+  createNewRevision(rev){
+        var body ={"rev":rev};
+        var url = this.baseUrl + 'api/user/item/revisions';
+        let headerContent = new Headers();      
+        headerContent.append("Content-Type", "application/json");
+        return this.http.post(url, body, { headers: headerContent })
+                .map(res => res.json());
+      }
+    
     getItem(id) {
-    let headerContent = new Headers();
-    let options = new RequestOptions({ headers: headerContent });
-    var url = this.baseUrl + 'api/user/item/' + id;
-    return this.http.get(url,[{ headers: headerContent },{ withCredentials: true }])
-      .map(res => res.json());
+        let headerContent = new Headers();
+        let options = new RequestOptions({ headers: headerContent });
+        var url = this.baseUrl + 'api/user/item/' + id;
+        return this.http.get(url,[{ headers: headerContent },{ withCredentials: true }])
+          .map(res => res.json());
+      }
+
+  getItemNameList(){
+        var url = this.baseUrl + 'api/user/item/names';
+        return this.http.get(url,[{ withCredentials: true }])
+          .map(res => res.json());
   }
 
-    searchItem(searchTxt) {
+  getItemNameBrandList(){
+        var url = this.baseUrl + 'api/user/item/nameBrand';
+        return this.http.get(url,[{ withCredentials: true }])
+          .map(res => res.json());
+  }
+
+  getItemBrandList(){
+        var url = this.baseUrl + 'api/user/item/brands';
+        return this.http.get(url,[{ withCredentials: true }])
+          .map(res => res.json());
+  }
+
+  searchItem(searchTxt) {
     let headerContent = new Headers();
     var body = {"searchTxt":searchTxt};
     headerContent.append("Content-Type", "application/json");
@@ -43,19 +75,25 @@ export class MiscService {
   addItem(body){
     let headerContent = new Headers();
     headerContent.append("Content-Type", "application/json");
-    return this.http.post(this.baseUrl + 'api/user/item', body, { headers: headerContent })
+    return this.http.post(this.baseUrl + 'api/admin/item', body, { headers: headerContent })
             .map(res => res.json());
   }
 
   updateItem(body){
     let headerContent = new Headers();
     headerContent.append("Content-Type", "application/json");
-    return this.http.put(this.baseUrl + 'api/user/item', body, { headers: headerContent })
+    return this.http.put(this.baseUrl + 'api/admin/item', body, { headers: headerContent })
             .map(res => res.json());
   }
 
   deleteItem(itemId) {
-    return this.http.delete(this.baseUrl + 'api/user/item/' + itemId)
+    return this.http.delete(this.baseUrl + 'api/admin/item/' + itemId)
       .map(res => res.json());
   }
+
+  deleteItemByRev(rev) {
+    return this.http.delete(this.baseUrl + 'api/admin/item/revision/' + rev)
+      .map(res => res.json());
+  }
+
 }

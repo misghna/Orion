@@ -6,6 +6,11 @@ import { UsersComponent } from './users/users.component';
 import { RegisterComponent } from './register/register.component';
 import { PassRenewComponent } from './passrenew/passrenew.component';
 import { ItemsComponent } from './items/items.component';
+import { SalesPlanComponent } from './sales-plan/sales-plan.component';
+import { OrdersComponent } from './orders/orders.component';
+import { BidComponent } from './bid/bid.component';
+import { FileUploadComponent } from './file-upload/file-upload.component';
+
 import { AuthGuard } from './service/auth.guard';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 
@@ -15,10 +20,14 @@ export const routes: Routes = [
   { path: '',   component: HomeComponent, canActivate: [AuthGuard] },
   { path: 'login',  component: LoginComponent },
   { path: 'logout',  component: LoginComponent },
-  { path: 'admin/users',  component: UsersComponent },
-  { path: 'items',  component: ItemsComponent },
-  { path: 'register',  component: RegisterComponent },
-  { path: 'changePassowrd',  component: ChangePasswordComponent },
-  { path: 'passrenew',  component: PassRenewComponent },
+  { path: 'setting/users',  component: UsersComponent },
+  { path: 'setting/salesPlan',  component: SalesPlanComponent },
+  { path: 'import/orders',  component: OrdersComponent },
+  { path: 'import/bid/:id',  component: BidComponent },
+  { path: 'setting/items',  component: ItemsComponent },
+   { path: 'fileUpload',  component: FileUploadComponent },
+  { path: 'other/register',  component: RegisterComponent },
+  { path: 'other/changePassowrd',  component: ChangePasswordComponent },
+  { path: 'other/passrenew',  component: PassRenewComponent },
   { path: '**',     component: LoginComponent },
 ];

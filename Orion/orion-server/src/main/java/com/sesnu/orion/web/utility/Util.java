@@ -3,7 +3,16 @@ package com.sesnu.orion.web.utility;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.TimeZone;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -13,25 +22,38 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.encrypt.Encryptors;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
-import org.springframework.security.crypto.keygen.KeyGenerators;
 import org.springframework.stereotype.Component;
+
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.services.sns.AmazonSNSClient;
+import com.amazonaws.services.sns.model.MessageAttributeValue;
+import com.amazonaws.services.sns.model.PublishRequest;
+import com.amazonaws.services.sns.model.PublishResult;
 
 
 @Component
 public class Util {
 	
+	@Autowired
+	SnsConfiguration cnsConf; 
+	
+	static List<String> monthName= Arrays.asList(new String[]{"ALL","JAN", "FEB", "MAR", "APR", "MAY", "JUN","JUL", "AUG", "SEP", "OCT", "NOV", "DEC"});
+
 	static SecureRandom random = new SecureRandom();	
 
-	  public static String generateString() {
-	    return new BigInteger(130, random).toString(32);
+	  public static String generateString(int len) {
+	    String generated = new BigInteger(130, random).toString(32);
+	    return generated.substring(0, len).toUpperCase();
 	  }
 	
 	
 	public static Long getTime(){
 		return System.currentTimeMillis();
 	}
+	
 	public static boolean passwordMatch(String real, String supplied){
 		try {
 			return encodePassword(supplied).equals(real);
@@ -94,6 +116,31 @@ public class Util {
 		}
 	}
 	
+	public void sendText(String txt,String phoneNo) {
+        String message = "[Anseba web] \n" + txt;
+        String phoneNumber = phoneNo;
+        System.out.println("sending sms to " +  phoneNo);
+        Map<String, MessageAttributeValue> smsAttributes = 
+                new HashMap<String, MessageAttributeValue>();
+        smsAttributes.put("AWS.SNS.SMS.SenderID", new MessageAttributeValue()
+                .withStringValue("AnsebaWeb") //The sender ID shown on the device.
+                .withDataType("String"));
+        smsAttributes.put("AWS.SNS.SMS.MaxPrice", new MessageAttributeValue()
+                .withStringValue("0.50") //Sets the max price to 1cent USD.
+                .withDataType("Number"));
+        sendSMSMessage(message, phoneNumber, smsAttributes);
+	}
+
+	
+	private void sendSMSMessage(String message, 
+			String phoneNumber, Map<String, MessageAttributeValue> smsAttributes) {
+	        PublishResult result = cnsConf.amazonSNS().publish(new PublishRequest()
+	                        .withMessage(message)
+	                        .withPhoneNumber(phoneNumber)
+	                        .withMessageAttributes(smsAttributes));
+	        System.out.println("hello" + result); // Prints the message ID.
+	}
+	
 	public String encrypText(String clearText){
 		/* Encrypt the message. */
         TextEncryptor encryptor = Encryptors.text("myAnsebaSalt2016", "73621314587861349519");      
@@ -109,5 +156,37 @@ public class Util {
         return  decryptedText;
 	}
 	
+	
+	public static Date parseDate(String dateStr){
+		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+	//	formatter.setTimeZone(TimeZone.getTimeZone("Gulf Time Zone"));
+	    try {	
+	        Date date = formatter.parse(dateStr);
+	        return date;	
+	    } catch (ParseException e) {
+	        return null;
+	    }
+	}
+	
+	public static String parseDate(Date date){
+		DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+		String reportDate = df.format(date);
+		return reportDate;
+	}
+	
+	public static String parseDate(Date date,String separator){
+		DateFormat df = new SimpleDateFormat("dd" + separator + "MM" + separator + "yyyy");
+		String reportDate = df.format(date);
+		return reportDate;
+	}
+	
+	
+	public static int getMonth (String month){
+		return monthName.indexOf(month);
+	}
+	 
+	public static String parseError(String errMsg){
+		return "*$Start$* " + errMsg + " *$End$*";
+	}
 }
 

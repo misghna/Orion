@@ -1,4 +1,4 @@
-package com.sesnu.orion.dao;
+package com.sesnu.orion.dao.impl;
 
 import java.util.List;
 
@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sesnu.orion.dao.UserDAO;
 import com.sesnu.orion.web.model.User;
 @SuppressWarnings("unchecked")
 @Transactional
@@ -31,6 +32,19 @@ public class UserDAOImpl implements UserDAO {
 				.list();
 	}
 
+	@Override
+	@Transactional
+	public List<User> getApprovers() {
+		String hql = "from User where approver=true";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		
+		List<?> list = query.list();
+		
+		if (list != null && !list.isEmpty()) {
+			return (List<User>) list;
+		}		
+		return null;
+	}
 	
 	@Override
 	@Transactional

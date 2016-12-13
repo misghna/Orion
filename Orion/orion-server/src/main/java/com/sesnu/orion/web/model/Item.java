@@ -1,5 +1,8 @@
 package com.sesnu.orion.web.model;
 
+
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,8 +21,11 @@ public class Item {
 	@Column(name = "id")
 	private long id;
 	
-	@Column(name = "product")
-	private String product;
+	@Column(name = "name")
+	private String name;
+	
+	@Column(name = "brand")
+	private String brand;
 	
 	@Column(name = "hscode")
 	private long hsCode;
@@ -39,6 +45,11 @@ public class Item {
 	@Column(name = "others")
 	private double others;
 	
+	@Column(name = "updated_on")
+	private String updatedOn;
+	
+	@Column(name = "revision")
+	private Date revision;
 	
 
 	public long getId() {
@@ -97,18 +108,40 @@ public class Item {
 		this.others = others;
 	}
 
-	public String getProduct() {
-		return product;
+	public String getName() {
+		return name;
 	}
 
-	public void setProduct(String product) {
-		this.product = product;
+	public void setName(String name) {
+		this.name = name;
 	}
-
 
 	
+	public String getUpdatedOn() {
+		return updatedOn;
+	}
 
+	public void setUpdatedOn(String updatedOn) {
+		this.updatedOn = updatedOn;
+	}
+	
+	
 
+	public String getBrand() {
+		return brand;
+	}
+
+	public void setBrand(String brand) {
+		this.brand = brand;
+	}
+
+	public Date getRevision() {
+		return revision;
+	}
+
+	public void setRevision(Date revision) {
+		this.revision = revision;
+	}
 
 	
 }

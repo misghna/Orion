@@ -1,3 +1,7 @@
+body{
+    background-image: url("http://localhost:8080/images/gridGreen.png") !important;
+    background-color: #cccccc;
+}
 #login
 {
     background-color: #fff;

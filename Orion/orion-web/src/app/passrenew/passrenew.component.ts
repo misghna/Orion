@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../service/user.service';
+import { UserService } from '../users/users.service';
+import { UtilService } from '../service/util.service';
 
 @Component({
   selector: 'app-passrenew',
@@ -18,7 +19,8 @@ export class PassRenewComponent implements OnInit {
   
 
 
-  constructor(private userService : UserService) { 
+  constructor(private userService : UserService, private util :UtilService) { 
+    this.util.setHeaderState(false);  
     this.changePassMsg ="check your email for verification code!";
     this.newPassForm=true;
     this.reqCodeForm=false;

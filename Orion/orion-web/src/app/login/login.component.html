@@ -8,12 +8,12 @@
     <span class="text-danger">{{loginMsg}}</span>
     <fieldset id="actions">
         <input type="submit" id="submit" value="Log in">
-        <a [routerLink]="['/passrenew']">Forgot your password?</a>
-        <a [routerLink]="['/register']">Register</a>
+        <a [routerLink]="['/other/passrenew']">Forgot your password?</a>
+        <a [routerLink]="['/other/register']">Register</a>
     </fieldset>
 </form>
 
-<div id="loaderWrapper" class="hidden" [class.hidden]="loaderHidden">
-    <img id="loader" src="images/Loading.gif" alt="Loading..." >
+<div id="footerImg">
+    <img src="images/footer.jpg"/>
 </div>
 

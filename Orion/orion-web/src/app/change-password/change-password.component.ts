@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Http,Headers } from '@angular/http';
-import { UserService } from '../service/user.service';
+import { UserService } from '../users/users.service';
 
 @Component({
   selector: 'app-change-password',

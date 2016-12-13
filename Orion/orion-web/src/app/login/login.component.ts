@@ -1,21 +1,28 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Http,Headers } from '@angular/http';
-import { UserService } from '../service/user.service';
+import { UserService } from '../users/users.service';
+import { UtilService } from '../service/util.service';
 
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
+  host: {
+    "[style.background-image]":"bodyBackgroundImage()" 
+  }
 })
 export class LoginComponent {
   loaderHidden:boolean = true;
   loginMsg ="";
-  constructor(public router: Router, public http: Http, private userService : UserService) {
-    
+  constructor(public router: Router, public http: Http, private userService : UserService, private util :UtilService) {
+     this.util.setHeaderState(false);  
   }
 
+bodyBackgroundImage() {
+    return 'url("http://localhost:8080/images/gridGreen.png")';
+  }
   
 
   login(event, email, password) {
@@ -33,7 +40,8 @@ export class LoginComponent {
           this.loaderHidden=true;
             localStorage.setItem('accessDetail', JSON.stringify(response));
             localStorage.setItem('sid',"JSESSIONID=" + response['sId']);
-            this.router.navigate(['']);                 
+            this.router.navigate(['']);
+            this.util.setHeaderState(true);           
         },
         error => {
           this.loaderHidden=true;

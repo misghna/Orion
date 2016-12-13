@@ -1,3 +1,13 @@
+   <app-header 
+      (activateSearch)="search($event)"
+      (activateOptions)="option($event)"
+      [optionsObj]="optionsList"
+      (deleteEmtter)="delete($event)"
+    ></app-header>
 
+<div id="loaderWrapper" class="hidden" [class.hidden]="loaderHidden2">
+    <img id="loader"  src="images/pleaseWait.gif" alt="Loading..." >
+</div>
+  
   <router-outlet ></router-outlet>
 `

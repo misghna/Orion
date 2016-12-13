@@ -37,7 +37,7 @@ public class WelcomeController {
 	UserDAO userDao;
 	
 	
-	@RequestMapping(value = {"/","/admin/users","register","changePassowrd","passrenew"},
+	@RequestMapping(value = {"/","/setting/**","/import/**","/other/**"},
 			method = RequestMethod.GET)
 	public String allPageRequests(HttpServletRequest request,ModelMap model) {
 		
@@ -86,7 +86,6 @@ public class WelcomeController {
 				jo.put("id", user.getId());
 				jo.put("email", user.getEmail());
 			}
-			System.out.println(jo);
 			return jo;
 		}		
 			response.sendError(401);
@@ -102,17 +101,5 @@ public class WelcomeController {
 
     } 
     
-//	@RequestMapping(value = {"/**"}, method = RequestMethod.GET)
-//	public String notFound(HttpServletRequest request,ModelMap model) {
-//
-//		List<User> listUsers = userDao.list();
-//
-//		System.out.println("size ....."  + listUsers.size());
-//		if(request.getSession().getAttribute("user")==null){
-//			return "redirect:/login";
-//		}
-//		
-//		return "index";
-//	}
-	
+
 }

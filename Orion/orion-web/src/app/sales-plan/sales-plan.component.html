@@ -1,0 +1,196 @@
+ <!--<app-header 
+    (activateSearch)="search($event)"
+    (activateOptions)="option($event)"
+    [optionsObj]="optionsList"
+    (deleteEmtter)="delete($event)"
+    ></app-header>-->
+
+<div class="alert alert-auto" alert-dismissible
+    [ngClass]="{
+      'hidden' : alertHidden,
+      'alert-danger' :  alertType == 'Error',
+      'alert-success' : alertType == 'Info'
+    }"
+  >
+<a  class="close" data-dismiss="alert" aria-label="close">&times;</a>
+  <strong>{{alertType}}!</strong> {{itemMsg}}
+</div>
+
+  <!--<div class="panel panel-default myPannel">
+    <div class="panel-body">-->
+
+<div id="wrapper" style="text-align: center"> 
+  <div class="dropdown pull-center">
+    <button class="btn btn-default dropdown-toggle" style="border:none" type="button" id="dropdownMenu2" 
+    data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" (click)="toggleRangeSelector()">
+      Sales Plan For : {{returnedRange}}
+      <span class="caret"></span>
+    </button>
+  </div>
+</div>
+
+<div id="rangeSelector" [class.hidden]="rangeSelectorHidden"><br>
+    <table>
+      <tr>
+      <td>
+        <div class="dropdown">
+        <button class="btn btn-default dropdown-toggle" type="button" id="yearBtn" #yearBtn data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="true" style="min-width:150px">
+        Select Year
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" id="yearSelector">
+          <li *ngFor ="let year of years;">
+            <a>{{year}}</a>
+          </li>
+        </ul>
+      </div>
+    </td>
+  
+  <td>
+    <div class="dropdown">
+        <button class="btn btn-default dropdown-toggle" type="button" id="monthBtn" #monthBtn style="min-width:150px"
+        data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" >
+            {{selectedMonth}}
+            <span class="caret"></span>
+          </button>
+          <ul id="monthSelector" #monthSelector class="dropdown-menu " aria-labelledby="dropdownMenu2" >
+            <li><a >JAN</a></li>
+            <li><a >FEB</a></li>
+            <li><a (click)="selectedMonth = 'MAR'">MAR</a></li>
+            <li><a (click)="selectedMonth = 'APR'">APR</a></li>
+            <li><a (click)="selectedMonth = 'MAY'">MAY</a></li>
+            <li><a (click)="selectedMonth = 'JUN'">JUN</a></li>
+            <li><a (click)="selectedMonth = 'JUL'">JUL</a></li>
+            <li><a (click)="selectedMonth = 'AUG'">AUG</a></li>
+            <li><a (click)="selectedMonth = 'SEP'">SEP</a></li>
+            <li><a (click)="selectedMonth = 'OCT'">OCT</a></li>
+            <li><a (click)="selectedMonth = 'NOV'">NOV</a></li>
+            <li><a (click)="selectedMonth = 'DEC'">DEC</a></li>
+          </ul>
+      </div>
+    </td>
+
+  <td>
+     <button #bntOption1 class="btn btn-default" (click)="execute(yearBtn.value,monthBtn.value,bntOption1.value)" value ="{{bntOption}}" >{{bntOption}}</button>
+  </td>
+  </tr>
+</table>
+</div>
+  
+<form (submit)="addUpdateSP($event)">
+
+<table class="table table-striped tableFont" [mfData]="data" #mf="mfDataTable" [mfRowsOnPage]="20" >
+    <thead>
+    <tr>
+        <th class="text-center"
+            [ngClass]="{
+            'text-center' : tableHeader.j=='c' || tableHeader.j=='x',
+            'text-left' : tableHeader.j=='l'
+            }"
+         *ngFor="let tableHeader of headers; let i = index"> 
+            <mfDefaultSorter by="{{tableHeader.value}}"><font class ="tbl-header">{{tableHeader.name}}</font></mfDefaultSorter>
+        </th>
+        <th style="width: 5%;" class ="tbl-header">Action</th>
+    </tr>
+    </thead>
+    <tbody>
+
+      <tr *ngFor="let item of mf.data; let i = index">
+         <td class="text-center" >{{i+2}}</td>    
+         <td class="text-center"
+            [ngClass]="{
+            'text-center' : tableHeader.j=='c',
+            'text-left' : tableHeader.j=='l',
+            'hidden' : tableHeader.j=='x'
+            }"
+         *ngFor="let tableHeader of headers; let i = index"> 
+            {{item[tableHeader.value]}}</td>
+        <td class="text-center" >
+            <div class="dropdown" style="border: 0">
+            <button id= "{{item.id.toString() + '-' + item.name}}" #dropButton class="btn btn-default dropdown-toggle"
+                (click)="activeProductHeader = dropButton.id"
+                 style="border:0px solid transparent !important;background-color:transparent" type="button" id="dropdownMenu2"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <span class="caret"></span>
+            </button>
+            <ul id="{{item.id.toString() + '-' + item.name}}" #dropDownBox class="dropdown-menu dropdown-menu-right" 
+                 aria-labelledby="dropdownMenu2">
+                <li><a #edit_item (click)="editItem(edit_item.parentElement.parentElement.id)">Edit</a></li>
+                 <li role="separator" class="divider"></li>
+                <li><a #deleteitem (click)="triggerDelModal($event)">Delete</a></li>
+            </ul>
+            </div>
+        </td>
+      </tr>
+    </tbody>
+    
+    <tfoot>
+    
+      <tr [class.hidden]="hideAddNewForm" class="inputForm">
+        <td class="text-center" ><span class="glyphicon glyphicon-plus" aria-hidden="true" style="margin-top:5px"></span></td>
+        <td><textarea name="refId" #refId class="form-control txt-flat" readonly rows="2"  placeholder="auto" >{{itemDetail.id}}</textarea></td> 
+          <td>
+          <div class="dropdown">
+            <!--<input class="dropdown-toggle form-control txt-flat" type="text" data-toggle="dropdown"/>-->
+            <textarea id="itemName" #name class="dropdown-toggle form-control txt-flat" data-toggle="dropdown" rows="2"  
+                placeholder="Product Name" required (keyup)="filterName(name.value)" [(ngModel)]="itemDetail.name" [ngModelOptions]="{standalone: true}"></textarea>
+            <ul class="dropdown-menu item-name">
+              <li *ngFor = "let name of productNameList" (click)="updateNameBrand(name)"><a>{{name}}</a></li>
+            </ul>
+          </div>    
+          </td>
+        <td><textarea name="brand" class="form-control txt-flat" rows="2" readonly placeholder="Brand" required [(ngModel)]="itemDetail.brand" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <td><textarea name="baseSize" #size class="form-control txt-flat middletext" rows="2"  placeholder="Base size" required [(ngModel)]="itemDetail.baseSize" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <!--<td><textarea name="baseUnit" #unit class="form-control txt-flat middletext" rows="2"  placeholder="Unit" required [(ngModel)]="itemDetail.baseUnit"></textarea></td> -->
+        <td>
+          <div class="dropdown">
+            <!--<input class="dropdown-toggle form-control txt-flat" type="text" data-toggle="dropdown"/>-->
+            <textarea id="baseUnit" #baseUnit class="dropdown-toggle form-control txt-flat middletext" data-toggle="dropdown" rows="2"  
+                placeholder="Unit" required [(ngModel)]="itemDetail.baseUnit" [ngModelOptions]="{standalone: true}"></textarea>
+            <ul class="dropdown-menu item-name">
+              <li (click)="updateBaseUnit('g')"><a>g</a></li>
+              <li (click)="updateBaseUnit('Kg')"><a>Kg</a></li>
+              <li (click)="updateBaseUnit('pcs')"><a>pcs</a></li>
+              <li (click)="updateBaseUnit('ltr')"><a>ltr</a></li>
+              <li (click)="updateBaseUnit('jar')"><a>jar</a></li>
+            </ul>
+          </div>    
+        </td>
+        <td><textarea name="qtyPerPack" #unit class="form-control txt-flat middletext" rows="2"  placeholder="qty/pck" required [(ngModel)]="itemDetail.qtyPerPack" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <td><textarea name="pckPerCont" #unit class="form-control txt-flat middletext" rows="2"  placeholder="pck/cont" required [(ngModel)]="itemDetail.pckPerCont" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <td><textarea name="contSize" #unit class="form-control txt-flat middletext" rows="2"  placeholder="cont size" required [(ngModel)]="itemDetail.contSize" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <td><textarea name="contQnt" #unit class="form-control txt-flat middletext" rows="2"  placeholder="cont Qty" required [(ngModel)]="itemDetail.contQnt" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <td><textarea name="cif" #cif class="form-control txt-flat middletext" rows="2"  placeholder="cif" required [(ngModel)]="itemDetail.cif" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <td><textarea name="itemOrigin" #itemOrigin class="form-control txt-flat middletext" rows="2"  placeholder="Item Origin" required [(ngModel)]="itemDetail.itemOrigin" [ngModelOptions]="{standalone: true}"></textarea></td>
+        <td><textarea name="destinationPort" #destinationPort class="form-control txt-flat middletext" rows="2"  placeholder="Destination Port" required [(ngModel)]="itemDetail.destinationPort" [ngModelOptions]="{standalone: true}"></textarea></td>
+        <td>
+          <div class="dropdown">
+            <!--<input class="dropdown-toggle form-control txt-flat" type="text" data-toggle="dropdown"/>-->
+            <textarea id="monthNameTxt" #monthName class="dropdown-toggle form-control txt-flat middletext" data-toggle="dropdown" rows="2"  
+                placeholder="Month" required [(ngModel)]="itemDetail.month" [ngModelOptions]="{standalone: true}"></textarea>
+            <ul class="dropdown-menu item-name">
+              <li *ngFor = "let name of monthNames" (click)="updateMonthName(name)"><a>{{name}}</a></li>
+            </ul>
+          </div>    
+          </td>
+        <td><textarea name="year" #year class="form-control txt-flat middletext" rows="2"  placeholder="Year" required [(ngModel)]="itemDetail.year" [ngModelOptions]="{standalone: true}"></textarea></td>     
+        <td><textarea name="updatedOn" #updatedOn class="form-control txt-flat middletext" readonly rows="2"  placeholder="auto">{{todayDate}}</textarea></td> 
+        <td class="text-left" ><input type="submit" class="btn btn-success" value="{{taskType}}" /></td>
+      </tr>  
+        
+    <tr>
+        <td colspan="17" > <font class ="tbl-header">
+            <mfBootstrapPaginator [rowsOnPageSet]="[5,20,25]"></mfBootstrapPaginator></font>
+        </td>
+    </tr>
+    </tfoot>
+
+</table>
+
+</form> 
+<!--</div>
+</div>-->
+
+
+
