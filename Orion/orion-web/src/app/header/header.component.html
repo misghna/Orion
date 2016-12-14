@@ -32,14 +32,15 @@
         </li>
 
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Finance <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a href="#">Budget</a></li>
-            <li><a href="#">Payment</a></li>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Clearing <span class="caret"></span></a>
+          <ul class="dropdown-menu">           
+            <li><a >Port</a></li> 
+            <li><a href="#">Terminal</a></li>
+            <li><a href="#">Transit</a></li>
+            <li><a href="#">Store</a></li>
           </ul>
         </li>
 
-        <li><a href="#">Clearing</a></li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Report <span class="caret"></span></a>
           <ul class="dropdown-menu">
@@ -53,10 +54,10 @@
           </ul>
         </li>
 
-        <li class="dropdown" [class.hidden]="regUser">
+        <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tools<span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li *ngFor="let option of optionsObj;" [class.divider]="option.value=='divider'" role="option.value=='divider'? 'separator' : ''">
+          <ul *ngIf = "toolsList !=null" class="dropdown-menu">
+            <li *ngFor="let option of toolsList;" [class.divider]="option.value=='divider'" role="option.value=='divider'? 'separator' : ''">
               <a id="{{option?.value}}" #me (click)="triggerOption(me.id)">{{option?.name}}</a>
             </li>
           </ul>
@@ -79,11 +80,6 @@
 		 <form class="navbar-form navbar-nav">
 			<div class="input-group">
 			      <input type="text" class="form-control" #searchTxt (keyup)="search(searchTxt.value)" placeholder="Search for...">
-			      <!--<span class="input-group-btn">
-			        <button class="btn btn-default" type="button" (click)="search(searchTxt.value)">
-                <span style="font-size: 20px;" class="glyphicon glyphicon-search"></span>
-              </button>
-			      </span>-->
 			</div><!-- /input-group -->
 	      </form>
 	      </li>

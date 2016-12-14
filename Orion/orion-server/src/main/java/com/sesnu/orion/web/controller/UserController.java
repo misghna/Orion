@@ -49,6 +49,11 @@ public class UserController {
 			return null;
 		}
 		
+		if(user.getPassphrase() ==null){
+			response.sendError(404, "password is empty");
+			return null;
+		}
+		
 		user.setPassphrase(Util.encodePassword(user.getPassphrase()));
 		user.setStatus("Inactive");
 		user.setApprover(false);
@@ -77,38 +82,24 @@ public class UserController {
 		return userDao.get(id);
 	}
 	
-	@RequestMapping(value = "/api/admin/changeStatus", method = RequestMethod.PUT)
-	public @ResponseBody JSONArray changeStatus(HttpServletRequest request,@RequestBody JSONObject userDetail)
+	
+	@RequestMapping(value = "/api/admin/user", method = RequestMethod.PUT)
+	public @ResponseBody List<User> updateUser(HttpServletRequest request,@RequestBody User user)
 			throws Exception {
-		User user = userDao.get(Long.parseLong(userDetail.get("userId").toString()));
-		user.setStatus(userDetail.get("status").toString());
+		User existingUser = userDao.getUserByEmail(user.getEmail());
+		user.setPassphrase(existingUser.getPassphrase());
 		userDao.saveOrUpdate(user);
-		if(user.getStatus().equals("Active")){
+		
+		if(!existingUser.getStatus().equals("Active") && user.getStatus().equals("Active")){
 			StringBuilder msg = new StringBuilder();
 			msg.append("Hello  "+user.getFullname()+",\n\n ");
 			msg.append("Your access request to eriango webapp is approved!");
 			msg.append("\n\n To access your account please go to the webapp and login");
 			String emailPostFix = ("\n\n Do not replay to this email, this is an automated message.\n\n Thank you!!");
 			util.sendText(msg.toString(), user.getPhone());
-			util.sendMail("Account Activated", user.getEmail() ,msg.toString());	
+			util.sendMail("Account Activated", user.getEmail() ,msg.toString() + emailPostFix);	
 		}
-		return filterUsers(userDao.list());
-	}
-	
-	@RequestMapping(value = "/api/admin/changeRole", method = RequestMethod.PUT)
-	public @ResponseBody List<User> changeRole(HttpServletRequest request,@RequestBody JSONObject userDetail)
-			throws Exception {
-		User user = userDao.get(Long.parseLong(userDetail.get("userId").toString()));
-		user.setRole(userDetail.get("role").toString());
-		userDao.saveOrUpdate(user);
-		System.out.println(userDetail.toJSONString());
-		return filterUsers(userDao.list());
-	}
-	
-	@RequestMapping(value = "/api/admin/user", method = RequestMethod.PUT)
-	public @ResponseBody List<User> updateUser(HttpServletRequest request,@RequestBody User user)
-			throws Exception {
-		userDao.saveOrUpdate(user);
+		
 		return filterUsers(userDao.list());
 	}
 	

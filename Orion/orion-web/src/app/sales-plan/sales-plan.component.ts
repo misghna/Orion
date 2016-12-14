@@ -30,10 +30,12 @@ export class SalesPlanComponent implements OnInit {
   productNameList=[]; allPrdList=[];
   headers = [];
   filterQuery = "";
-  bntOption = "Search";
+  bntOption = "Search";subscription;
 
   constructor(private salesService:SalesPlanService, private el: ElementRef,
              private miscService : MiscService,private utilService : UtilService) {
+
+    this.subscription = utilService.currentSearchTxt$.subscribe(txt => {this.search(txt);});
 
     this.optionsList = [{'name':'Add New Item','value':'addNew'},
                         {'name':'Create new copy from selected plan','value':'createNewRevision'},
@@ -50,6 +52,8 @@ export class SalesPlanComponent implements OnInit {
     this.selectedYear = "Select Year";
     this.years = [];
     this.todayDate = this.today();
+
+
    }
 
   ngOnInit() {
@@ -332,7 +336,7 @@ updateBaseUnit(unit){
 
 
     search(searchObj){
-      console.log("searching ..." + searchObj);
+      if(searchObj.searchTxt==null) return this.responseData;
       this.data= this.responseData.filter(item => (
         (item.name.toLowerCase().indexOf(searchObj.searchTxt.toLowerCase()) !== -1) || 
         (item.brand.toLowerCase().indexOf(searchObj.searchTxt) !== -1) || 

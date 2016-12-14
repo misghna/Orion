@@ -1,6 +1,7 @@
 import { Component, OnInit,ElementRef } from '@angular/core';
 import { MiscService } from '../service/misc.service';
 import { FilterNamePipe } from '../pipes/pipe.filterName';
+import {UtilService} from '../service/util.service';
 
 declare var jQuery : any;
 
@@ -27,7 +28,9 @@ export class ItemsComponent implements OnInit {
   headers = [];
   filterQuery = "";
 
-  constructor(private miscService:MiscService,private el: ElementRef) {
+  constructor(private miscService:MiscService,private el: ElementRef,private utilService : UtilService) {
+    utilService.currentSearchTxt$.subscribe(txt => {this.search(txt);});
+
     this.optionsList = [{'name':'Add New Item','value':'addNew'},{'name':'Create New Revision','value':'createNewRevision'},
                                 {'name':'Delete Selected Revision','value':'deleteRevision'}];
     
@@ -217,6 +220,7 @@ export class ItemsComponent implements OnInit {
     }
 
     search(searchObj){
+      if(searchObj.searchTxt==null) return this.responseData;
       this.data= this.responseData.filter(item => (
         (item.name.toLowerCase().indexOf(searchObj.searchTxt.toLowerCase()) !== -1) || 
         (item.hsCode.toString().indexOf(searchObj.searchTxt) !== -1)
@@ -260,7 +264,5 @@ export class ItemsComponent implements OnInit {
     replaceAll(string,old,newStr){
       return string.split('old').join('newStr');
     }
-
-
 
 }

@@ -1,8 +1,7 @@
-
 import { Component, OnInit,ElementRef} from '@angular/core';
 import { MiscService } from '../service/misc.service';
 import { FilterNamePipe } from '../pipes/pipe.filterName';
-import { BidService } from '../bid/bid.service';
+import { PaymentService } from '../payment/payment.service';
 import { UtilService } from '../service/util.service';
 import { OrdersService } from '../orders/orders.service';
 import { Router,ActivatedRoute, Params } from '@angular/router';
@@ -10,11 +9,11 @@ import { Router,ActivatedRoute, Params } from '@angular/router';
 declare var jQuery : any;
 
 @Component({
-  selector: 'app-bid',
-  templateUrl: './bid.component.html',
-  styleUrls: ['./bid.component.css']
+  selector: 'app-payment',
+  templateUrl: './payment.component.html',
+  styleUrls: ['./payment.component.css']
 })
-export class BidComponent implements OnInit {
+export class PaymentComponent implements OnInit {
   data;responseData;itemMsg;
   alertType;alertHidden;alertLabel;
   hideAddNewForm;  hideLoader;
@@ -36,10 +35,10 @@ export class BidComponent implements OnInit {
   selectedDate;activeOrderId;
   activeOrder= {}; filteredSalesPlanList=[];
 
-  constructor(private utilService :UtilService,private bidService:BidService, private el: ElementRef,
+  constructor(private utilService :UtilService,private payService:PaymentService, private el: ElementRef,
               private orderService:OrdersService ,public route: ActivatedRoute) {
 
-    this.optionsList = [{'name':'Add New Bidder','value':'addNew'}];
+    this.optionsList = [{'name':'Add New Payment','value':'addNew'}];
     this.utilService.setToolsContent(this.optionsList);
     
     this.monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN","JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
@@ -62,12 +61,10 @@ export class BidComponent implements OnInit {
    }
 
   ngOnInit() {
-      this.headers = [{'name':'No','value':'id','j':'x'},{'name':'Supplier','value':'supplier','j':'l'},
-                      {'name':'FOB','value':'fob','j':'c'},{'name':'CIF/CNF','value':'cifCnf','j':'c'},
-                      {'name':'Total Bid Amount', 'value':'totalBid','j':'c'}, 
-                      {'name':'Payment Method','value':'paymentMethod','j':'c'},
-                      {'name':'Selected','value':'selected','j':'c'},{'name':'Approval','value':'approval','j':'c'},
-                      {'name':'Updated On','value':'updatedOn','j':'c'}];
+      this.headers = [{'name':'No','value':'id','j':'x'},{'name':'Payment Method','value':'paymentMethod','j':'l'},
+                      {'name':'Bank Name','value':'bankName','j':'c'},{'name':'Transaction Id','value':'transactionId','j':'c'},
+                      {'name':'Payment Amount', 'value':'paymentAmount','j':'c'}, {'name':'Payment Date','value':'paymentDate','j':'c'},
+                      {'name':'Remakr','value':'remark','j':'c'},{'name':'Updated On','value':'updatedOn','j':'c'}];
       
         this.activeOrderId = this.route.snapshot.params['id'];
         this.loadAll(this.activeOrderId);
@@ -162,14 +159,14 @@ updateBaseUnit(unit){
   loadAll(orderId){
 
     var setRev :boolean;
-     this.bidService.getBid(orderId)
+     this.payService.get(orderId)
       .subscribe(
           response => {
               this.setData(response);    
           },
           error => {
             if(error.status==404){
-               this.popAlert("Info","Info","Bid is not yet added for this order!");          
+               this.popAlert("Info","Info","Payment is not yet added for this order!");          
             }else{
                this.popAlert("Error","danger","Something went wrong, please try again later!");          
             }
@@ -195,60 +192,15 @@ updateBaseUnit(unit){
       this.data = response;  
   }
 
-  selectSupplier(event){
-    event.preventDefault();
-      var id = this.activeProductHeader.split('-')[0];
-      this.bidService.selectBidder(id)
-      .subscribe(
-          response => {
-              this.setData(response);  
-              this.popAlert("Info","success","Bidder successfully selected!"); 
-          },
-          error => {
-              this.popAlert("Error","danger",this.utilService.getErrorMsg(error));
-          }
-        );
-  }
-
-  diselectSupplier(event){
-    event.preventDefault();
-      var id = this.activeProductHeader.split('-')[0];
-      this.bidService.diselectSupplier(id)
-      .subscribe(
-          response => {
-              this.setData(response);  
-              this.popAlert("Info","success","Winner successfully diselected!"); 
-          },
-          error => {
-              this.popAlert("Error","danger",this.utilService.getErrorMsg(error));
-          }
-        );
-  }
-  
-  reqApproval(event){
-    event.preventDefault();
-      var id = this.activeProductHeader.split('-')[0];
-      this.bidService.reqApproval(id)
-      .subscribe(
-          response => {
-              this.setData(response);  
-              this.popAlert("Info","success","Approval Request is sent to all Approvers!"); 
-          },
-          error => {
-              this.popAlert("Error","danger",this.utilService.getErrorMsg(error));
-          }
-        );
-  }
-  
 
     addUpdate(event){
       event.preventDefault();
       this.itemDetail['orderRef']=this.activeOrderId;
         if (this.taskType=="Add"){
-            this.bidService.add(this.itemDetail)
+            this.payService.add(this.itemDetail)
             .subscribe(
                 response => {
-                    this.popAlert("Info","success","Bid successfully added!");
+                    this.popAlert("Info","success","Payment successfully added!");
                     this.setData(response);  
                     this.hideAddNewForm = true;  
                 },
@@ -257,7 +209,7 @@ updateBaseUnit(unit){
                 }
               );
         }else if(this.taskType=="Update"){
-          this.updateOrder();
+          this.update();
          }
     }
 
@@ -287,11 +239,11 @@ updateBaseUnit(unit){
     delete(event){
 
       var id = this.activeProductHeader.split('-')[0];
-      this.bidService.deleteById(id)
+      this.payService.deleteById(id)
       .subscribe(
           response => {
               this.setData(response);  
-              this.popAlert("Info","success","Bid successfully deteled!"); 
+              this.popAlert("Info","success","Payment successfully deteled!"); 
           },
           error => {
               this.popAlert("Error","danger","Something went wrong, please try again later!");
@@ -308,8 +260,9 @@ updateBaseUnit(unit){
       this.hideAddNewForm=false;
     }
 
-    updateOrder(){
-            this.bidService.update(this.itemDetail)
+    update(){
+          console.log(this.itemDetail['id']);
+            this.payService.update(this.itemDetail)
             .subscribe(
                 response => {
                     this.hideAddNewForm = true;

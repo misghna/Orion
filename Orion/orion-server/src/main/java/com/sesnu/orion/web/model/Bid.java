@@ -1,8 +1,6 @@
 package com.sesnu.orion.web.model;
 
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -38,15 +36,7 @@ public class Bid {
 	
 	@Column(name="payment_method")
 	private String paymentMethod;
-	
-//	@Column(name="payment_terms")
-//	private String paymentTerms;
-//	
-//	@Column(name = "est_transit_days")
-//	private Integer estTransitDays;
-//	
-//	@Column(name = "latest_ship_date")
-//	private Date latestShipDate;
+
 	
 	@Column(name = "updated_on")
 	private String updatedOn;
@@ -127,29 +117,6 @@ public class Bid {
 		this.paymentMethod = paymentMethod;
 	}
 
-//	public String getPaymentTerms() {
-//		return paymentTerms;
-//	}
-//
-//	public void setPaymentTerms(String paymentTerms) {
-//		this.paymentTerms = paymentTerms;
-//	}
-//
-//	public Integer getEstTransitDays() {
-//		return estTransitDays;
-//	}
-//
-//	public void setEstTransitDays(Integer estTransitDays) {
-//		this.estTransitDays = estTransitDays;
-//	}
-//
-//	public Date getLatestShipDate() {
-//		return latestShipDate;
-//	}
-//
-//	public void setLatestShipDate(Date latestShipDate) {
-//		this.latestShipDate = latestShipDate;
-//	}
 
 	public String getUpdatedOn() {
 		return updatedOn;
@@ -207,11 +174,5 @@ public class Bid {
 		this.remark = remark;
 	}
 
-
-	
-	
-	
-	
-	
 	
 }

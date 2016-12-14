@@ -12,32 +12,32 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "SHIPPING")
-public class Shipping {
+@Table(name = "payment")
+public class Payment {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="ship_seq")
-	@SequenceGenerator(name="ship_seq",sequenceName="ship_seq",allocationSize=20)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="pay_seq")
+	@SequenceGenerator(name="pay_seq",sequenceName="pay_seq",allocationSize=20)
 	@Column(name = "id")
 	private Long id;
 	
 	@Column(name = "order_ref")
 	private long orderRef;
 
-	@Column(name = "bl")
-	private String bl;
+	@Column(name = "payment_method")
+	private String paymentMethod;
 	
-	@Column(name = "ship_agency")
-	private String shipAgency;
+	@Column(name = "bank_name")
+	private String bankName;
 	
-	@Column(name = "item_origin")
-	private String itemOrigin;
+	@Column(name = "transaction_id")
+	private String transactionId;
 	
-	@Column(name = "etd")
-	private Date etd;
+	@Column(name = "payment_date")
+	private Date paymentDate;
 	
-	@Column(name = "eta")
-	private Date eta;
+	@Column(name = "payment_amount")
+	private double paymentAmount;
 	
 	@Column(name = "updated_on")
 	private String updatedOn;
@@ -47,9 +47,9 @@ public class Shipping {
 	
 	@Column(name = "df")
 	private boolean df;
-	
-	
 
+	
+	
 	public Long getId() {
 		return id;
 	}
@@ -66,44 +66,44 @@ public class Shipping {
 		this.orderRef = orderRef;
 	}
 
-	public String getBl() {
-		return bl;
+	public String getPaymentMethod() {
+		return paymentMethod;
 	}
 
-	public void setBl(String bl) {
-		this.bl = bl;
+	public void setPaymentMethod(String paymentMethod) {
+		this.paymentMethod = paymentMethod;
 	}
 
-	public String getShipAgency() {
-		return shipAgency;
+	public String getBankName() {
+		return bankName;
 	}
 
-	public void setShipAgency(String shipAgency) {
-		this.shipAgency = shipAgency;
+	public void setBankName(String bankName) {
+		this.bankName = bankName;
 	}
 
-	public String getItemOrigin() {
-		return itemOrigin;
+	public String getTransactionId() {
+		return transactionId;
 	}
 
-	public void setItemOrigin(String itemOrigin) {
-		this.itemOrigin = itemOrigin;
+	public void setTransactionId(String transactionId) {
+		this.transactionId = transactionId;
 	}
 
-	public Date getEtd() {
-		return etd;
+	public Date getPaymentDate() {
+		return paymentDate;
 	}
 
-	public void setEtd(Date etd) {
-		this.etd = etd;
+	public void setPaymentDate(Date paymentDate) {
+		this.paymentDate = paymentDate;
 	}
 
-	public Date getEta() {
-		return eta;
+	public double getPaymentAmount() {
+		return paymentAmount;
 	}
 
-	public void setEta(Date eta) {
-		this.eta = eta;
+	public void setPaymentAmount(double paymentAmount) {
+		this.paymentAmount = paymentAmount;
 	}
 
 	public String getUpdatedOn() {
@@ -129,6 +129,9 @@ public class Shipping {
 	public void setDf(boolean df) {
 		this.df = df;
 	}
+	
+	
+
 	
 
 

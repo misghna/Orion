@@ -40,8 +40,14 @@ bodyBackgroundImage() {
           this.loaderHidden=true;
             localStorage.setItem('accessDetail', JSON.stringify(response));
             localStorage.setItem('sid',"JSESSIONID=" + response['sId']);
+            this.util.setHeaderState(true); 
+            if(response['role'] =='Admin'){
+               this.util.setAdminState(true);
+            }else{
+               this.util.setAdminState(false);
+            } 
             this.router.navigate(['']);
-            this.util.setHeaderState(true);           
+
         },
         error => {
           this.loaderHidden=true;

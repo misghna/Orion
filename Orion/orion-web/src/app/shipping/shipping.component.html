@@ -12,7 +12,7 @@
 
 <div id="wrapper" style="text-align: center"> 
   <div class="dropdown pull-center">
-    Bid For : {{activeOrder.item + '(' + activeOrder.brand + ') ordered on '}} {{ activeOrder.createdOn | date: 'dd/MM/yyyy'}}
+    Shipping Details For : {{activeOrder.item + '(' + activeOrder.brand + ') ordered on '}} {{ activeOrder.createdOn | date: 'dd/MM/yyyy'}}
   </div>
 </div>
 
@@ -64,7 +64,8 @@
             'text-left' : tableHeader.j=='l'
             }"
          *ngFor="let tableHeader of headers; let i = index"> 
-            <mfDefaultSorter by="{{tableHeader.value}}"><font class ="tbl-header">{{tableHeader.name}}</font></mfDefaultSorter>
+            <mfDefaultSorter by="{{tableHeader.value}}"><font class ="tbl-header">
+              {{tableHeader.name}}</font></mfDefaultSorter>
         </th>
         <th style="width: 5%;" class ="tbl-header">Action</th>
     </tr>
@@ -80,12 +81,12 @@
             'hidden' : tableHeader.j=='x'
             }"
          *ngFor="let tableHeader of headers; let i = index">
-         <div *ngIf = "tableHeader.value != 'selected'"> 
-            {{item[tableHeader.value]}}
-          </div>
-          <div *ngIf = "tableHeader.value == 'selected' && item.selected== true" > 
-            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-          </div>
+              <div *ngIf = "tableHeader.value != 'eta' && tableHeader.value != 'etd' "> 
+                {{item[tableHeader.value]}}
+              </div>
+              <div *ngIf = "tableHeader.value == 'eta' || tableHeader.value == 'etd'"> 
+                {{item[tableHeader.value] | date: 'dd/MM/yyyy'}}
+              </div>
             </td>
         <td class="text-center" >
             <div class="dropdown" style="border: 0">
@@ -100,10 +101,6 @@
                 <li><a #edit_item (click)="editItem(edit_item.parentElement.parentElement.id)">Edit</a></li>
                  <li role="separator" class="divider"></li>
                 <li><a #deleteitem (click)="triggerDelModal($event)">Delete</a></li>
-                <li *ngIf = "item.selected == true"><a (click)="diselectSupplier($event)"> Diselect Winner</a></li>
-                <li *ngIf = "item.selected == false"><a (click)="selectSupplier($event)"> Select Winner</a></li>
-                <li><a (click)="reqApproval($event)">Request Approval</a></li>
-                <li><a (click)="approve($event)">Approve</a></li>
             </ul>
             </div>
         </td>
@@ -114,12 +111,13 @@
       
       <tr [class.hidden]="hideAddNewForm" class="inputFormTr">
         <td class="text-center" ><span class="glyphicon glyphicon-plus" aria-hidden="true" style="margin-top:5px"></span></td>
-        <td><textarea #unit class="form-control txt-flat" rows="2"  placeholder="Supplier" required [(ngModel)]="itemDetail.supplier" [ngModelOptions]="{standalone: true}"></textarea></td> 
-        <td><textarea #unit class="form-control txt-flat middletext" rows="2"  placeholder="FOB" required [(ngModel)]="itemDetail.fob" [ngModelOptions]="{standalone: true}"></textarea></td> 
-        <td><textarea #unit class="form-control txt-flat middletext" rows="2"  placeholder="CIF" required [(ngModel)]="itemDetail.cifCnf" [ngModelOptions]="{standalone: true}"></textarea></td> 
-        <td><textarea #unit class="form-control txt-flat middletext" rows="2"  placeholder="Total Bid Amount" required [(ngModel)]="itemDetail.totalBid" [ngModelOptions]="{standalone: true}"></textarea></td> 
-        <td><textarea #itemOrigin class="form-control txt-flat middletext" rows="2"  placeholder="Payment Method" required [(ngModel)]="itemDetail.paymentMethod" [ngModelOptions]="{standalone: true}"></textarea></td>
-        <td><textarea #destinationPort class="form-control txt-flat middletext" rows="2" readonly placeholder="Status" [(ngModel)]="itemDetail.status" [ngModelOptions]="{standalone: true}"></textarea></td>
+        <td><textarea #unit class="form-control txt-flat" rows="2"  placeholder="BL" required [(ngModel)]="itemDetail.bl" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <td><textarea #unit class="form-control txt-flat middletext" rows="2"  placeholder="Item Origin" required [(ngModel)]="itemDetail.itemOrigin" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <td><textarea #unit class="form-control txt-flat middletext" rows="2"  placeholder="Agency" required [(ngModel)]="itemDetail.shipAgency" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <td><input type="date" class="form-control txt-flat middletext"  [(ngModel)]="itemDetail.etd" [ngModelOptions]="{standalone: true}"/></td>
+        <td><input type="date" class="form-control txt-flat middletext"  [(ngModel)]="itemDetail.eta" [ngModelOptions]="{standalone: true}"/></td>
+
+        <td><textarea #destinationPort class="form-control txt-flat middletext" rows="2"  placeholder="Remark" [(ngModel)]="itemDetail.remark" [ngModelOptions]="{standalone: true}"></textarea></td>
         <td><textarea #updatedOn class="form-control txt-flat middletext" readonly rows="2"  placeholder="auto">{{todayDate}}</textarea></td> 
         <td class="text-left" ><input type="submit" class="btn btn-success" value="{{taskType}}"/></td>
       </tr>      

@@ -15,7 +15,6 @@ declare var $: any;
 export class AppComponent {
 
 
-
   loaderHidden2 =true;
   subscription;
 

@@ -1,5 +1,7 @@
 import { Component, OnInit,Output,EventEmitter } from '@angular/core';
 import { UserService } from '../users/users.service';
+import { UtilService } from '../service/util.service';
+
 
 
 @Component({
@@ -14,10 +16,12 @@ export class UsersComponent implements OnInit {
   userIdDelete;
   pageName;optionsList;
   hideEditForm;
-  userData;headerNames;
+  userData;headerNames;allUsersResponse;
 
-    constructor(private userService: UserService) {
+    constructor(private userService: UserService,private utilService: UtilService) {
         this.hideEditForm = true;
+       utilService.currentSearchTxt$.subscribe(txt => {this.search(txt);});
+
        // this.optionsList = [{'name':'Add New Item','value':'addNew'},{'name':'Create New Revision','value':'createNewRevision'}];
        this.headerNames = [{'value':'name',"cap":"No"},{'value':'name',"cap":'Full Name'},
                            {'value':'email',"cap":'Email'},{'value': 'phone', 'cap' : 'Phone'},
@@ -36,7 +40,10 @@ export class UsersComponent implements OnInit {
     this.userService.getAllUsers()
     .subscribe(
         response => {
+          
+            this.allUsersResponse = response;
             this.allUsers = response;     
+            console.log(this.allUsers);
         },
         error => {
           console.error(error);
@@ -45,6 +52,15 @@ export class UsersComponent implements OnInit {
       );
   }
 
+
+   search(searchObj){
+     if(searchObj.searchTxt==null) return this.allUsersResponse;
+      this.allUsers= this.allUsersResponse.filter(user => (
+        (user.fullname.toLowerCase().indexOf(searchObj.searchTxt.toLowerCase()) !== -1) || 
+        (user.department.toString().indexOf(searchObj.searchTxt) !== -1)||
+        (user.phone.toString().indexOf(searchObj.searchTxt) !== -1)
+        ));
+    }
 
   edit(header){ 
       var userId : string[] = header.split("-")[1];

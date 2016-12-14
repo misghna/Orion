@@ -53,8 +53,8 @@ public class Order {
 	@Column(name = "latest_eta")
 	private Date latestETA;
 	
-	@Column(name = "item_origin")
-	private String itemOrigin;
+	@Column(name = "importer")
+	private String importer;
 	
 	@Column(name = "destination_port")
 	private String destinationPort;
@@ -154,15 +154,6 @@ public class Order {
 	}
 
 
-
-	public String getItemOrigin() {
-		return itemOrigin;
-	}
-
-	public void setItemOrigin(String itemOrigin) {
-		this.itemOrigin = itemOrigin;
-	}
-
 	public String getDestinationPort() {
 		return destinationPort;
 	}
@@ -210,6 +201,14 @@ public class Order {
 
 	public void setInvNo(String invNo) {
 		this.invNo = invNo;
+	}
+
+	public String getImporter() {
+		return importer;
+	}
+
+	public void setImporter(String importer) {
+		this.importer = importer;
 	}
 
 

@@ -31,7 +31,11 @@ import { OrdersComponent } from './orders/orders.component';
 import { OrdersService } from './orders/orders.service';
 import { FileUploadComponent } from './file-upload/file-upload.component';
 import { BidService } from './bid/bid.service';
+import { ShippingService } from './shipping/shipping.service';
+import { PaymentService } from './payment/payment.service';
 import { BidComponent } from './bid/bid.component';
+import { PaymentComponent } from './payment/payment.component';
+import { ShippingComponent } from './shipping/shipping.component';
 
 
 @NgModule({
@@ -50,9 +54,11 @@ import { BidComponent } from './bid/bid.component';
                 UsersComponent,
                 PassRenewComponent,
                 ChangePasswordComponent,
-                ItemsComponent,FilterNamePipe, SalesPlanComponent, OrdersComponent, FileUploadComponent,BidComponent
+                ItemsComponent,FilterNamePipe, SalesPlanComponent, OrdersComponent, FileUploadComponent,
+                BidComponent, PaymentComponent, ShippingComponent
                  ],
-  providers:[AuthGuard,UtilService,UserService,AppSettings,MiscService,SalesPlanService,OrdersService,BidService,
+  providers:[AuthGuard,UtilService,UserService,AppSettings,MiscService,SalesPlanService,OrdersService,
+            BidService,PaymentService,ShippingService,
         {
           provide: Http,
           useFactory: (backend: XHRBackend, defaultOptions: RequestOptions, utilService:UtilService) => {

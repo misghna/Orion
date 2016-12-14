@@ -114,7 +114,9 @@
                  <li role="separator" class="divider"></li>
                 <li><a #deleteitem (click)="triggerDelModal($event)">Delete</a></li>
                 <li><a >Request Approval</a></li>
-                <li><a (click)="openBid($event,item.id)">Open Bid Table</a></li>
+                <li><a (click)="drillDown('bid',item.id)">Bids</a></li>
+                <li><a (click)="drillDown('payment',item.id)">Payments</a></li>
+                <li><a (click)="drillDown('shipping',item.id)">Shipping</a></li>
             </ul>
             </div>
         </td>
@@ -200,7 +202,6 @@
         <td><textarea name="contQnt" #unit class="form-control txt-flat middletext" rows="2"  placeholder="Cont Qty" required [(ngModel)]="itemDetail.contQnt" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td><textarea name="itemOrigin" #itemOrigin class="form-control txt-flat middletext" rows="2"  placeholder="Item Origin" required [(ngModel)]="itemDetail.itemOrigin" [ngModelOptions]="{standalone: true}"></textarea></td>
         <td><textarea name="destinationPort" #destinationPort class="form-control txt-flat middletext" rows="2"  placeholder="Destination Port" required [(ngModel)]="itemDetail.destinationPort" [ngModelOptions]="{standalone: true}"></textarea></td>
-        <!--<td><textarea name="latestEta" #cif class="form-control txt-flat middletext" rows="2"  placeholder="Latest ETA" required [(ngModel)]="itemDetail.latestEta"></textarea></td> -->
         <td><input type="date" class="form-control txt-flat middletext"  [(ngModel)]="itemDetail.latestETA" [ngModelOptions]="{standalone: true}"/></td>
         <td><textarea name="createdby" #updatedOn class="form-control txt-flat middletext" readonly rows="2"  placeholder="auto">{{activeUserName}}</textarea></td> 
         <td><textarea name="updatedOn" #updatedOn class="form-control txt-flat middletext" readonly rows="2"  placeholder="auto">{{todayDate}}</textarea></td> 
@@ -216,25 +217,4 @@
 
 </form>
 
-
-<!--</div>
-</div>-->
-  <!-- Modal -->
-  <!--<div class="modal fade" id="itemModal" role="dialog">
-    <div class="modal-dialog modal-sm">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">item</h4>
-        </div>
-        <div class="modal-body">
-          <p>Are you sure you want to delete '{{activeProductHeader | filterName}}'?</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" (click) = "deleteItem()" class="btn btn-danger" data-dismiss="modal">Yes</button>
-          <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-        </div>
-      </div>
-    </div>
-  </div>-->
 

@@ -32,11 +32,12 @@ export class OrdersComponent implements OnInit {
   headers = [];
   filterQuery = "";
   bntOption = "Search";
-  selectedDate;
+  selectedDate;subscription;
   salesPlanList= []; filteredSalesPlanList=[];
 
   constructor(private utilService :UtilService,private orderService:OrdersService, private el: ElementRef,
               private miscService:MiscService, private salesService:SalesPlanService,public router: Router) {
+    this.subscription = utilService.currentSearchTxt$.subscribe(txt => {this.search(txt);});
 
     this.optionsList = [{'name':'Add New Order','value':'addNew'}];
     
@@ -54,14 +55,13 @@ export class OrdersComponent implements OnInit {
    }
 
   ngOnInit() {
-      this.headers = [{'name':'No','value':'id','j':'x'},{'name':'Budget Ref','value':'budgetRef','j':'l'},
+      this.headers = [{'name':'No','value':'id','j':'x'},{'name':'Budget Ref Id','value':'budgetRef','j':'l'},
                       {'name':'Product','value':'item','j':'c'},{'name':'Brand','value':'brand','j':'l'},
                       {'name':'Base Size', 'value':'baseSize','j':'c'}, {'name':'Base Unit','value':'baseUnit','j':'c'},
                       {'name':'Qty/pck','value':'qtyPerPack','j':'c'},{'name':'pck/cont','value': 'pckPerCont','j':'c'},
                       {'name':'Cont Size','value':'contSize','j':'c'},{'name':'Cont Qnt','value': 'contQnt','j':'c'},
-                      {'name':'Item Origin','value':'itemOrigin','j':'c'},{'name':'Dest Port','value':'destinationPort','j':'c'},
-                      {'name':'Latest ETA','value':'latestETA','j':'c'},{'name':'OrderedBy','value':'orderedBy','j':'c'}, 
-                      {'name':'Updated On','value':'updatedOn','j':'l'}];
+                      {'name':'Dest Port','value':'destinationPort','j':'c'},{'name':'Latest ETA','value':'latestETA','j':'c'},
+                      {'name':'OrderedBy','value':'orderedBy','j':'c'}, {'name':'Updated On','value':'updatedOn','j':'l'}];
       
         this.loadAll(2000,'latest');
         this.getItemNameBrandList();
@@ -149,26 +149,9 @@ updateBaseUnit(unit){
   execute(task){
     if(task =="Search"){
       this.loadAll(this.selectedYear,this.selectedMonth);
-    }else if("Create"){
-      this.createNewRevision(this.selectedYear,this.selectedMonth);
     }
   }
 
-  createNewRevision(year,month){
-    var source = this.returnedRange.split(' ');
-    var body = {"sourceYear":source[1], "sourceMonth" : source[0] , "newYear" : year, "newMonth":month };
-
-    // this.orderService.duplicatePlan(body)
-    //     .subscribe(
-    //         response => {
-    //             this.setData(response);  
-    //             this.popAlert("Info","success","Plan successfully duplicated!"); 
-    //         },
-    //         error => {
-    //             this.popAlert("Error","danger","Something went wrong, please try again later!");
-    //         }
-    //       );
-  }
 
   loadAll(year,month){
     if(!this.contains(this.monthNames,month) && month!='latest'){
@@ -325,8 +308,8 @@ updateBaseUnit(unit){
           this.itemMsg= msg;
     }
 
-    openBid(event,refId){
-      this.router.navigate(['/bid/' + refId]);
+    drillDown(type,refId){
+      this.router.navigate(['/import/' + type +  '/' + refId]);
     }
 
     delete(event){
@@ -410,11 +393,10 @@ updateBaseUnit(unit){
 
 
     search(searchObj){
-      this.data= this.responseData.filter(item => (
-        (item.name.toLowerCase().indexOf(searchObj.searchTxt.toLowerCase()) !== -1) || 
-        (item.brand.toLowerCase().indexOf(searchObj.searchTxt) !== -1) || 
-        (item.itemOrigin.toLowerCase().indexOf(searchObj.searchTxt) !== -1) || 
-        (item.destinationPort.toLowerCase().indexOf(searchObj.searchTxt) !== -1)
+      this.data= this.responseData.filter(order => (
+        (order.item.toLowerCase().indexOf(searchObj.searchTxt.toLowerCase()) !== -1) || 
+        (order.brand.toLowerCase().indexOf(searchObj.searchTxt) !== -1) || 
+        (order.destinationPort.toLowerCase().indexOf(searchObj.searchTxt) !== -1)
         ));
     }
 

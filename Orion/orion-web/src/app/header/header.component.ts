@@ -14,24 +14,37 @@ declare var $: any;
 })
 export class HeaderComponent implements OnInit {
   navHidden;
-  @Input() optionsObj = "";
+  // @Input() optionsObj = "";
 
   @Output() activateSearch = new EventEmitter();
-  @Output() activateOptions = new EventEmitter();
+  //@Output() activateOptions = new EventEmitter();
 
    @ViewChild('myModalBtn') modalInput:ElementRef;
    @Output() deleteEmtter = new EventEmitter();
 
   regUser = true;
   modalEl;modalMsg;subscription;
-  delTask;title;
+  delTask;title;toolsList;
 
   constructor(private http:Http, private userService:UserService, 
               private utilService:UtilService,private rd: Renderer,private el: ElementRef) {
     this.navHidden = false;
+
     this.subscription = utilService.currentHeaderState$.subscribe(
       state => {   
         this.navHidden = !state;
+    });
+
+    this.subscription = utilService.currentAdminState$.subscribe(
+      state => {  
+        console.log("is admin " + state); 
+        this.regUser = !state;
+    });
+
+    this.subscription = utilService.currentToolsCont$.subscribe(
+      tools => {  
+        console.log("tools " + tools); 
+        this.toolsList = tools;
     });
 
     this.subscription = utilService.currentModalState$.subscribe(
@@ -65,18 +78,21 @@ export class HeaderComponent implements OnInit {
         this.userService.logoutUsers();
    }
 
-   search(searchTxt){
-     this.activateSearch.emit({"searchTxt":searchTxt});
-   }
+  //  search(searchTxt){
+  //    this.activateSearch.emit({"searchTxt":searchTxt});
+  //  }
 
-   triggerOption(optionName){
-     this.activateOptions.emit({"optionName":optionName});
-   }
+  search(searchTxt){
+    this.utilService.setSearchTxt({"searchTxt":searchTxt});
+  }
 
    deleteItem(){
      this.deleteEmtter.emit({"delTask":this.delTask});
    }
 
+  triggerOption(optionName){
+    this.utilService.setCurrentToolsOption({"optionName":optionName});
+  }
 
 
 }

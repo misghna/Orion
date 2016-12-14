@@ -9,6 +9,8 @@ import { ItemsComponent } from './items/items.component';
 import { SalesPlanComponent } from './sales-plan/sales-plan.component';
 import { OrdersComponent } from './orders/orders.component';
 import { BidComponent } from './bid/bid.component';
+import { PaymentComponent } from './payment/payment.component';
+import { ShippingComponent } from './shipping/shipping.component';
 import { FileUploadComponent } from './file-upload/file-upload.component';
 
 import { AuthGuard } from './service/auth.guard';
@@ -23,6 +25,8 @@ export const routes: Routes = [
   { path: 'setting/users',  component: UsersComponent },
   { path: 'setting/salesPlan',  component: SalesPlanComponent },
   { path: 'import/orders',  component: OrdersComponent },
+  { path: 'import/payment/:id',  component: PaymentComponent },
+  { path: 'import/shipping/:id',  component: ShippingComponent },
   { path: 'import/bid/:id',  component: BidComponent },
   { path: 'setting/items',  component: ItemsComponent },
    { path: 'fileUpload',  component: FileUploadComponent },
