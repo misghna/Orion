@@ -22,5 +22,5 @@
   <body>
     
     <app-root>Loading...</app-root>
-  <script type="text/javascript" src="inline.js"></script><script type="text/javascript" src="styles.51e5481722c85a82490f.bundle.js"></script><script type="text/javascript" src="main.7200efc8acc1d8cab97d.bundle.js"></script></body>
+  <script type="text/javascript" src="inline.js"></script><script type="text/javascript" src="styles.51e5481722c85a82490f.bundle.js"></script><script type="text/javascript" src="main.ada5b6081f547ae46800.bundle.js"></script></body>
 </html>

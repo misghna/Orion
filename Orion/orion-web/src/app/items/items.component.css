@@ -17,13 +17,6 @@
     border:2pt solid #09a586;
 }
 
-.middletext {
-    text-align: justify;
-    white-space: pre-line;
-    -moz-text-align-last: center;
-    text-align-last: center;
-}
-
 .tbl-header{
     font-weight:normal;
     /*color:#0a56a8;*/

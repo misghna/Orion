@@ -36,6 +36,8 @@ import { PaymentService } from './payment/payment.service';
 import { BidComponent } from './bid/bid.component';
 import { PaymentComponent } from './payment/payment.component';
 import { ShippingComponent } from './shipping/shipping.component';
+import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-upload/ng2-file-upload';
+import { DocumentComponent } from './document/document.component';
 
 
 @NgModule({
@@ -55,7 +57,8 @@ import { ShippingComponent } from './shipping/shipping.component';
                 PassRenewComponent,
                 ChangePasswordComponent,
                 ItemsComponent,FilterNamePipe, SalesPlanComponent, OrdersComponent, FileUploadComponent,
-                BidComponent, PaymentComponent, ShippingComponent
+                BidComponent, PaymentComponent, ShippingComponent,
+                FileSelectDirective, FileDropDirective, DocumentComponent
                  ],
   providers:[AuthGuard,UtilService,UserService,AppSettings,MiscService,SalesPlanService,OrdersService,
             BidService,PaymentService,ShippingService,

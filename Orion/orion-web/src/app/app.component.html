@@ -1,11 +1,10 @@
    <app-header 
       (deleteEmtter)="delete($event)"
     ></app-header>
-
-<div id="loaderWrapper" class="hidden" [class.hidden]="loaderHidden2">
+   
+<div id="loaderWrapper" class="hidden" [class.hidden]="loaderHidden">
     <img id="loader"  src="images/pleaseWait.gif" alt="Loading..." >
 </div>
   
   <router-outlet ></router-outlet>
 `
- <!--(activateOptions)="toolsTrigger($event)"-->

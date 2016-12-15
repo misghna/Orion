@@ -37,7 +37,7 @@ public class WelcomeController {
 	UserDAO userDao;
 	
 	
-	@RequestMapping(value = {"/","/setting/**","/import/**","/other/**"},
+	@RequestMapping(value = {"/","/setting/**","/import/**","/other/**","/document/**"},
 			method = RequestMethod.GET)
 	public String allPageRequests(HttpServletRequest request,ModelMap model) {
 		

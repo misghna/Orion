@@ -1,10 +1,106 @@
-<!--<form action="demo_form.asp">
-  Select images: <input type="file" name="img" multiple>
-  <input type="submit">
-</form>-->
+<style>
+    .my-drop-zone { border: dotted 3px lightgray; }
+    .nv-file-over { border: dotted 3px red; } /* Default class applied to drop zones on over */
+    .another-file-over-class { border: dotted 3px green; }
 
-<form method="POST" action="uploadFile" enctype="multipart/form-data">	
-  	File to upload: <input type="file" name="file">
-		Name: <input type="text" name="name">
-		<input type="submit" value="Upload"> Press here to upload the file!
-</form>	
+    html, body { height: 100%; }
+</style>
+
+<div >
+
+<div class="alert alert-auto" alert-dismissible
+    [ngClass]="{
+      'hidden' : alertWin?.alertHidden,
+      'alert-danger' :  alertWin.type == 'Error',
+      'alert-success' : alertWin.type == 'Info'
+    }"
+  >
+<a  class="close" data-dismiss="alert" aria-label="close">&times;</a>
+  <strong>{{alertWin.type}}!</strong> {{alertWin.msg}}
+</div>
+
+<input type="file" id="fileSelector" style="display:none" ng2FileSelect [uploader]="uploader" multiple /><br/>
+
+
+            <table width="100%" class="table tableFont" *ngIf="uploader.queue.length > 0">
+                <thead>
+                <tr class="tbl-header">
+                    <th >No</th>
+                    <th >File</th>
+                    <th >Type</th>
+                    <th >Description</th>
+                    <th >Status</th>
+                    <th colspan=3 class="middletext">Actions</th>
+                    <th width="1%" class="middletext"> 
+                        <button class="btn btn-default" style="border:none"><span (click) = "uploader.clearQueue()" class="glyphicon glyphicon-remove pulllright" aria-hidden="true"></span></button>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let item of uploader.queue; let i = index">
+                    <td>{{ i+1 }}</td>
+                    <td>{{ item?.file?.name }}</td>
+                    <td>
+                        <div class="btn-group">
+                        <button type="button" style ="border:none" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{fData[i].type}} <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li *ngFor = "let type of docTypes">
+                                <a (click)="changeType(i,type)">{{type}}</a>
+                            </li>
+                        </ul>
+                        </div>
+                    </td>
+                    <td><input class="txt-flat" type="text" [(ngModel)] = "fData[i].remark" /></td>
+                    <td class="text-center">
+                        <span *ngIf="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
+                        <span *ngIf="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
+                        <span *ngIf="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
+                    </td>
+                    <td nowrap>
+                        <button type="button" class="btn btn-success btn-xs"
+                                (click)="uploadOneFile(item)" [disabled]="item.isReady || item.isUploading || item.isSuccess">
+                            <span class="glyphicon glyphicon-upload"></span> Upload
+                        </button>
+                     </td><td>
+                        <button type="button" class="btn btn-warning btn-xs"
+                                (click)="item.cancel()" [disabled]="!item.isUploading">
+                            <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+                        </button>
+                        </td><td>
+                        <button type="button" class="btn btn-danger btn-xs"
+                                (click)="item.remove()">
+                            <span class="glyphicon glyphicon-trash"></span> Remove
+                        </button>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td colspan=5>
+                        <div class="progress" style="">
+                            <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': uploader.progress + '%' }"></div>
+                        </div>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-success btn-xs"
+                        (click)="uploadAllFiles($event)" [disabled]="!uploader.getNotUploadedItems().length">
+                            <span class="glyphicon glyphicon-upload"></span> Upload all
+                        </button>
+                     </td><td>
+                        <button type="button" class="btn btn-warning btn-xs"
+                                (click)="uploader.cancelAll()" [disabled]="!uploader.isUploading">
+                            <span class="glyphicon glyphicon-ban-circle"></span> Cancel all
+                        </button>
+                     </td><td>
+                        <button type="button" class="btn btn-danger btn-xs"
+                                (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length">
+                            <span class="glyphicon glyphicon-trash"></span> Remove all
+                        </button>
+                    </td>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
+
+</div>

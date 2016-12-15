@@ -12,6 +12,7 @@ import { BidComponent } from './bid/bid.component';
 import { PaymentComponent } from './payment/payment.component';
 import { ShippingComponent } from './shipping/shipping.component';
 import { FileUploadComponent } from './file-upload/file-upload.component';
+import { DocumentComponent } from './document/document.component';
 
 import { AuthGuard } from './service/auth.guard';
 import { ChangePasswordComponent } from './change-password/change-password.component';
@@ -29,7 +30,8 @@ export const routes: Routes = [
   { path: 'import/shipping/:id',  component: ShippingComponent },
   { path: 'import/bid/:id',  component: BidComponent },
   { path: 'setting/items',  component: ItemsComponent },
-   { path: 'fileUpload',  component: FileUploadComponent },
+  { path: 'fileUpload',  component: FileUploadComponent },
+  { path: 'document/:id',  component: DocumentComponent },
   { path: 'other/register',  component: RegisterComponent },
   { path: 'other/changePassowrd',  component: ChangePasswordComponent },
   { path: 'other/passrenew',  component: PassRenewComponent },

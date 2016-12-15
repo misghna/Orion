@@ -17,24 +17,15 @@ export class HttpInterceptor extends Http {
 
     }
     
-    request(url: string | Request, options?: RequestOptionsArgs): Observable<Response> {
-        if(this.state==false){
-            this.util.setLoaderState(true);
-            this.state=true;
-        }
+    request(url: string | Request, options?: RequestOptionsArgs): Observable<Response> {        
+        this.util.setLoaderState(true);
+        this.state=true;
         this.sent = this.sent + 1 ;
         return this.intercept(super.request(url, options));
     }
 
     get(url: string, options?: RequestOptionsArgs): Observable<Response> {
         return this.intercept(super.get(url, options));
-        // return super.get(url, options)
-        // .catch(this.onCatch)
-        // .do((res: Response) => {
-        //     this.onResponse(res);
-        // }, (error: any) => {
-        //     this.onError(error);
-        // });
     }
 
 
@@ -112,14 +103,6 @@ export class HttpInterceptor extends Http {
             this.util.setLoaderState(false);
         }
     }
-
-    // private updateLoader():void{
-    //     this.total = this.total + 1;
-    //     if(this.total >= this.sent * 2){
-    //         this.util.setLoaderState(false);
-    //     }
-    //     console.log('sent ' + this.sent + " total" +  this.total)
-    // }
 
     private onSubscribeError(error: any): void {
         this.total = this.total + 1;

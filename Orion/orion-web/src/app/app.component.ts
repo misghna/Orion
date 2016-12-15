@@ -15,14 +15,16 @@ declare var $: any;
 export class AppComponent {
 
 
-  loaderHidden2 =true;
-  subscription;
+  loaderHidden;
 
   constructor(public utilService:UtilService,private rd: Renderer) {   
-
-     this.subscription = utilService.currentLoaderState$.subscribe(
-      mission => {        
-        this.loaderHidden2 = ! mission;
+    this.loaderHidden =true;
+     utilService.currentLoaderState$.subscribe(
+      loadState => {
+        console.log(loadState);
+        if(this.loaderHidden == loadState)  {
+          this.loaderHidden = !loadState;
+        }
     });
 
   }

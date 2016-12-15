@@ -30,8 +30,7 @@ public class ItemController {
 	
 
 	@RequestMapping(value = "/api/user/items/{rev}", method = RequestMethod.GET)
-	public @ResponseBody List<Item> items(@PathVariable("rev") String rev) throws InterruptedException {
-		Thread.sleep(2000);
+	public @ResponseBody List<Item> items(@PathVariable("rev") String rev) {
 		return itemDao.list(rev);
 	}
 	
