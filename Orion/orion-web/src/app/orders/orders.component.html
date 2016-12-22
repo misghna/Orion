@@ -5,6 +5,7 @@
     [optionsObj]="optionsList"
     ></app-header>-->
 
+
 <div class="alert alert-auto" alert-dismissible
     [ngClass]="{
       'hidden' : alertHidden,
@@ -85,7 +86,7 @@
     <tbody>
 
       <tr *ngFor="let item of mf.data; let i = index">
-         <td class="text-center" >{{i+1}}</td>    
+         <td class="text-center" >{{i+1 + mf.rowsOnPage*(mf.activePage -1)}}</td>      
          <td class="text-center"
             [ngClass]="{
             'text-center' : tableHeader.j=='c',
@@ -113,10 +114,10 @@
                 <li><a #edit_item (click)="editItem(edit_item.parentElement.parentElement.id)">Edit</a></li>
                  <li role="separator" class="divider"></li>
                 <li><a #deleteitem (click)="triggerDelModal($event)">Delete</a></li>
-                <li><a >Request Approval</a></li>
                 <li><a (click)="drillDown('bid',item.id)">Bids</a></li>
                 <li><a (click)="drillDown('payment',item.id)">Payments</a></li>
                 <li><a (click)="drillDown('shipping',item.id)">Shipping</a></li>
+                <li><a routerLink="{{'/document/orderRef-'+item.id}}" routerLinkActive="active" >Document</a></li>
             </ul>
             </div>
         </td>
@@ -180,7 +181,7 @@
         <td><textarea name="brand" class="form-control txt-flat" rows="2" readonly placeholder="Brand" required 
         [(ngModel)]="itemDetail.brand" [ngModelOptions]="{standalone: true}"></textarea></td> 
    
-       <td><textarea name="baseSize" #size class="form-control txt-flat middletext" rows="2"  placeholder="Base Size" required 
+       <td><textarea name="baseSize" #size class="form-control txt-flat middletext" rows="2"  digitsonly placeholder="Base Size" required 
         [(ngModel)]="itemDetail.baseSize" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td>
           <div class="dropdown">
@@ -196,13 +197,24 @@
             </ul>
           </div>    
         </td>
-        <td><textarea name="qtyPerPack" #unit class="form-control txt-flat middletext" rows="2"  placeholder="Qty/Pck" required [(ngModel)]="itemDetail.qtyPerPack" [ngModelOptions]="{standalone: true}"></textarea></td> 
-        <td><textarea name="pckPerCont" #unit class="form-control txt-flat middletext" rows="2"  placeholder="pck/cont" required [(ngModel)]="itemDetail.pckPerCont" [ngModelOptions]="{standalone: true}"></textarea></td> 
-        <td><textarea name="contSize" #unit class="form-control txt-flat middletext" rows="2"  placeholder="Cont Size" required [(ngModel)]="itemDetail.contSize" [ngModelOptions]="{standalone: true}"></textarea></td> 
-        <td><textarea name="contQnt" #unit class="form-control txt-flat middletext" rows="2"  placeholder="Cont Qty" required [(ngModel)]="itemDetail.contQnt" [ngModelOptions]="{standalone: true}"></textarea></td> 
-        <td><textarea name="itemOrigin" #itemOrigin class="form-control txt-flat middletext" rows="2"  placeholder="Item Origin" required [(ngModel)]="itemDetail.itemOrigin" [ngModelOptions]="{standalone: true}"></textarea></td>
+        <td><textarea name="qtyPerPack" #unit class="form-control txt-flat middletext" rows="2" numberonly placeholder="Qty/Pck" required [(ngModel)]="itemDetail.qtyPerPack" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <td><textarea name="pckPerCont" #unit class="form-control txt-flat middletext" rows="2" numberonly placeholder="pck/cont" required [(ngModel)]="itemDetail.pckPerCont" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <td>
+            <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle editFormMargin noBorder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{itemDetail.contSize}} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a (click)="itemDetail.contSize=20">20</a></li>
+                <li><a (click)="itemDetail.contSize=40">40</a></li>
+            </ul>
+            </div>
+        </td>
+        <td><textarea name="contQnt" #unit class="form-control txt-flat middletext" rows="2"  numberonly placeholder="Cont Qty" required [(ngModel)]="itemDetail.contQnt" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <td><textarea name="importer" class="form-control txt-flat middletext" rows="2"  placeholder="Importer" required [(ngModel)]="itemDetail.importer" [ngModelOptions]="{standalone: true}"></textarea></td>
         <td><textarea name="destinationPort" #destinationPort class="form-control txt-flat middletext" rows="2"  placeholder="Destination Port" required [(ngModel)]="itemDetail.destinationPort" [ngModelOptions]="{standalone: true}"></textarea></td>
         <td><input type="date" class="form-control txt-flat middletext"  [(ngModel)]="itemDetail.latestETA" [ngModelOptions]="{standalone: true}"/></td>
+        <td><textarea name="itemOrigin" #itemOrigin class="form-control txt-flat middletext" rows="2"  placeholder="Inv No." required [(ngModel)]="itemDetail.invNo" [ngModelOptions]="{standalone: true}"></textarea></td>
         <td><textarea name="createdby" #updatedOn class="form-control txt-flat middletext" readonly rows="2"  placeholder="auto">{{activeUserName}}</textarea></td> 
         <td><textarea name="updatedOn" #updatedOn class="form-control txt-flat middletext" readonly rows="2"  placeholder="auto">{{todayDate}}</textarea></td> 
         <td class="text-left" ><input type="submit" class="btn btn-success" value="{{taskType}}"/></td>

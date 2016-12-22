@@ -1,6 +1,7 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html>
   <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <title>Anseba General Trading</title>
     <base href="/">
 
@@ -21,6 +22,6 @@
   </head>
   <body>
     
-    <app-root>Loading...</app-root>
-  <script type="text/javascript" src="inline.js"></script><script type="text/javascript" src="styles.51e5481722c85a82490f.bundle.js"></script><script type="text/javascript" src="main.ada5b6081f547ae46800.bundle.js"></script></body>
+    <app-root></app-root>
+  <script type="text/javascript" src="inline.js"></script><script type="text/javascript" src="styles.574ffab380bc9d1d16ef.bundle.js"></script><script type="text/javascript" src="main.d75e72e694a6c1411557.bundle.js"></script></body>
 </html>

@@ -15,8 +15,8 @@ export class PaymentService {
   }
 
 
-  get(orderRefId) {
-    var url = this.baseUrl + 'api/user/pay/' + orderRefId;
+  get(id) {
+    var url = this.baseUrl + 'api/user/pay/' + id;
     return this.http.get(url,[{ withCredentials: true }])
       .map(res => res.json());
   }

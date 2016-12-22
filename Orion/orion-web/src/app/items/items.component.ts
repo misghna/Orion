@@ -21,7 +21,7 @@ export class ItemsComponent implements OnInit {
   activeProductHeader;
   pageName;
   optionsList;
-  revision;
+  revision;mf;
   revisionLong;rangeSelectorHidden=true;
   bntOption="Open";revisions;
 
@@ -33,6 +33,18 @@ export class ItemsComponent implements OnInit {
 
     this.optionsList = [{'name':'Add New Item','value':'addNew'},{'name':'Create New Revision','value':'createNewRevision'},
                                 {'name':'Delete Selected Revision','value':'deleteRevision'}];
+    this.utilService.setToolsContent(this.optionsList);
+
+    // tools listener
+    utilService.currentToolsOptCont$.subscribe(
+      opt => {  
+        this.option(opt);
+    });
+
+    utilService.currentdelItem$.subscribe(
+      opt => { 
+        this.delete();
+    });
     
     this.pageName;
     this.hideLoader=true;
@@ -42,9 +54,11 @@ export class ItemsComponent implements OnInit {
 
   ngOnInit() {
       this.headers = [{'name':'Id','value':'id','j':'x'}, {'name':'Product','value':'name','j':'l'},{'name':'Brand','value':'brand','j':'l'},
+                      {'name':'Food','value':'food','j':'l'},
                      {'name':'HSCode', 'value':'hsCode','j':'c'}, {'name':'Financial Service','value':'financialServices','j':'c'},
                       {'name':'Consumer Tax','value':'consumerTax','j':'c'},{'name':'Stamp tax','value': 'stampTax','j':'c'},
-                      {'name':'Fees','value':'fees','j':'c'}, {'name':'Others','value':'others','j':'c'}, {'name':'Updated On','value':'updatedOn','j':'l'}];
+                      {'name':'Fees','value':'fees','j':'c'}, {'name':'Others','value':'others','j':'c'},{'name':'Total','value':'total','j':'c'},
+                       {'name':'Updated On','value':'updatedOn','j':'l'}];
       
         this.getAllRevisions();
         this.loadAll("latest");
@@ -53,6 +67,7 @@ export class ItemsComponent implements OnInit {
           jQuery('#revBtn').html('Items Revision : ' + jQuery(this).text().trim());
           jQuery('#revBtn').attr('value',jQuery(this).text().trim());           
         });
+        
 
   }
 
@@ -96,26 +111,26 @@ export class ItemsComponent implements OnInit {
   }
 
   setData(response){
+      if(response.length>0 && response[0]['revision']!=null){
       this.revisionLong = response[0]['revision'];
       this.revision = this.parseDate(response[0]['revision']);
+      }
       this.responseData=response;
       this.data = response;  
   }
 
 
-    addItem(event,name,brand,hsCode,financialServices,consumerTax,stampTax,fees,others){
+    addItem(event){
       event.preventDefault();
       
-      var body = {"name":name,"brand":brand,"hsCode":hsCode,"financialServices":financialServices,
-                  "consumerTax":consumerTax,"stampTax":stampTax,"fees":fees,"others":others}
-      
       if(this.taskType == "Update"){
-            body["id"] = this.activeItemId;
-            this.miscService.updateItem(body)
+            this.itemDetail["id"] = this.activeItemId;
+            this.miscService.updateItem(this.itemDetail)
             .subscribe(
                 response => {
                     this.popAlert("Info","success","Item successfully updated!");
-                    this.setData(response);     
+                     this.hideAddNewForm = true; 
+                    this.setData(response);                       
                 },
                 error => {      
                     this.popAlert("Error","danger","Something went wrong, please try again later!");
@@ -123,13 +138,14 @@ export class ItemsComponent implements OnInit {
               );
 
         }else{
+            this.itemDetail['revision'] = this.revisionLong;
             this.taskType = "Add";
-            this.miscService.addItem(body)
+            this.miscService.addItem(this.itemDetail)
             .subscribe(
                 response => {
                     this.popAlert("Info","success","Item successfully added!");
-                    this.setData(response);  
                     this.hideAddNewForm = true;  
+                    this.setData(response);                      
                 },
                 error => {
                   if(error.status==400){
@@ -177,7 +193,12 @@ export class ItemsComponent implements OnInit {
           this.itemMsg= msg;
     }
 
-    deleteItem(){
+  triggerDelModal(id){
+      var modalInfo = {"title" : "Item", "msg" : id.split('-')[1],"task" :"myTask"};
+      this.utilService.showModalState(modalInfo);
+  }
+
+    delete(){
       var countDash = (this.activeProductHeader.match(/-/g) || []).length;
       if(countDash==2){ // for the whole revision
         this.miscService.deleteItemByRev(this.activeProductHeader)
@@ -193,7 +214,7 @@ export class ItemsComponent implements OnInit {
         return;
      
      }else{ // for single item
-        var id = this.activeProductHeader.split('-')[0];
+        var id = this.activeProductHeader.split('*')[0];
         this.miscService.deleteItem(id)
         .subscribe(
             response => {
@@ -212,10 +233,7 @@ export class ItemsComponent implements OnInit {
       var id = idd.split('-')[0];
       this.activeItemId = id;
       this.taskType = "Update";
-      var temp = this.responseData.filter(item => item.id==id)[0];
-      temp['updatedOn'] = this.today();
-      this.itemDetail = temp;
-      console.log(this.itemDetail);
+      this.itemDetail  = this.responseData.filter(item => item.id==id)[0];
       this.hideAddNewForm=false;
     }
 
@@ -244,6 +262,7 @@ export class ItemsComponent implements OnInit {
 
 
     option(options){
+      console.log("triggered" + options);
       var selected = options.optionName;
       switch(true){
         case (selected == 'addNew') :
@@ -254,6 +273,8 @@ export class ItemsComponent implements OnInit {
           break;
         case (selected == 'deleteRevision') :
            this.activeProductHeader = this.revision;
+            var modalInfo = {"title" : "Items", "msg" : "Revision " + this.activeProductHeader,"task" :"myTask"};
+            this.utilService.showModalState(modalInfo);
            jQuery('#itemModal').modal('show');
           break;
         default:
@@ -264,5 +285,31 @@ export class ItemsComponent implements OnInit {
     replaceAll(string,old,newStr){
       return string.split('old').join('newStr');
     }
+
+
+    validateDigits(event: any) {
+      var existing = event.target.value;
+      if(existing.indexOf('.')>-1 && event.charCode ==46){
+        event.preventDefault();
+      }
+      const pattern = /^[0-9.]+$/;
+      let inputChar = String.fromCharCode(event.charCode);
+      if (!pattern.test(inputChar)) {
+        event.preventDefault();
+      }
+
+    }
+
+
+    validateNumber(event: any) {
+
+      const pattern = /^[0-9]+$/;
+      let inputChar = String.fromCharCode(event.charCode);
+      if (!pattern.test(inputChar)) {
+        event.preventDefault();
+    }
+  }
+
+    
 
 }

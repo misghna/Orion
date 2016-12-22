@@ -72,7 +72,7 @@
     <tbody>
 
       <tr *ngFor="let item of mf.data; let i = index">
-         <td class="text-center" >{{i+1}}</td>    
+         <td class="text-center" >{{i+1 + mf.rowsOnPage*(mf.activePage -1)}}</td>     
          <td class="text-center"
             [ngClass]="{
             'text-center' : tableHeader.j=='c',
@@ -115,9 +115,9 @@
       <tr [class.hidden]="hideAddNewForm" class="inputFormTr">
         <td class="text-center" ><span class="glyphicon glyphicon-plus" aria-hidden="true" style="margin-top:5px"></span></td>
         <td><textarea #unit class="form-control txt-flat" rows="2"  placeholder="Supplier" required [(ngModel)]="itemDetail.supplier" [ngModelOptions]="{standalone: true}"></textarea></td> 
-        <td><textarea #unit class="form-control txt-flat middletext" rows="2"  placeholder="FOB" required [(ngModel)]="itemDetail.fob" [ngModelOptions]="{standalone: true}"></textarea></td> 
-        <td><textarea #unit class="form-control txt-flat middletext" rows="2"  placeholder="CIF" required [(ngModel)]="itemDetail.cifCnf" [ngModelOptions]="{standalone: true}"></textarea></td> 
-        <td><textarea #unit class="form-control txt-flat middletext" rows="2"  placeholder="Total Bid Amount" required [(ngModel)]="itemDetail.totalBid" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <td><textarea #unit class="form-control txt-flat middletext" rows="2"  digitsonly placeholder="FOB" required [(ngModel)]="itemDetail.fob" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <td><textarea #unit class="form-control txt-flat middletext" rows="2" digitsonly placeholder="CIF" required [(ngModel)]="itemDetail.cifCnf" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <td><textarea #unit class="form-control txt-flat middletext" rows="2" digitsonly placeholder="Total Bid Amount" required [(ngModel)]="itemDetail.totalBid" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td><textarea #itemOrigin class="form-control txt-flat middletext" rows="2"  placeholder="Payment Method" required [(ngModel)]="itemDetail.paymentMethod" [ngModelOptions]="{standalone: true}"></textarea></td>
         <td><textarea #destinationPort class="form-control txt-flat middletext" rows="2" readonly placeholder="Status" [(ngModel)]="itemDetail.status" [ngModelOptions]="{standalone: true}"></textarea></td>
         <td><textarea #updatedOn class="form-control txt-flat middletext" readonly rows="2"  placeholder="auto">{{todayDate}}</textarea></td> 

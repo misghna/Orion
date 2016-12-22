@@ -23,6 +23,9 @@ public class Order {
 	@Column(name = "id")
 	private Long id;
 	
+	@Column(name = "item_id")
+	private Long itemId;
+	
 	@Column(name = "item")
 	private String item;
 	
@@ -209,6 +212,14 @@ public class Order {
 
 	public void setImporter(String importer) {
 		this.importer = importer;
+	}
+
+	public Long getItemId() {
+		return itemId;
+	}
+
+	public void setItemId(Long itemId) {
+		this.itemId = itemId;
 	}
 
 

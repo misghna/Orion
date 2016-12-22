@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -26,35 +27,43 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 
 import com.sesnu.orion.dao.UserDAO;
 import com.sesnu.orion.web.model.User;
+import com.sesnu.orion.web.utility.Util;
 
 
 @CrossOrigin(origins = "http://localhost:4200")
 @Controller
-public class WelcomeController {
+public class MainController {
 
 	
 	@Autowired
 	UserDAO userDao;
 	
 	
-	@RequestMapping(value = {"/","/setting/**","/import/**","/other/**","/document/**"},
+	@RequestMapping(value = {"/open/health"},
+			method = RequestMethod.GET)
+	public  @ResponseBody String health (HttpServletRequest request,ModelMap model) {
+		
+		return "healthy";
+	}
+	
+	@RequestMapping(value = {"/","/setting/**","/import/**","/other/**","/document/**","/open/**"},
 			method = RequestMethod.GET)
 	public String allPageRequests(HttpServletRequest request,ModelMap model) {
 		
-		if(request.getSession().getAttribute("user")==null){
-			return "redirect:/login";
-		}
-		
 		return "index";
 	}
 
-	@RequestMapping(value = {"/login"},
-			method = RequestMethod.GET)
+	@RequestMapping(value = {"/login"},method = RequestMethod.GET)
 	public String login(HttpServletRequest request,ModelMap model) {
-		
-		return "index";
+		return "login";
 	}
 
+	@RequestMapping(value = "/Access_Denied", method = RequestMethod.GET)
+	public String accessDeniedPage(ModelMap model) {
+		model.addAttribute("user", getPrincipal());
+		return "accessDenied";
+	}
+	
 	@RequestMapping(value="/logout", method = RequestMethod.GET)
 	public String logoutPage (HttpServletRequest request, HttpServletResponse response) {
 	    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -85,6 +94,7 @@ public class WelcomeController {
 				jo.put("sId", session.getId());
 				jo.put("id", user.getId());
 				jo.put("email", user.getEmail());
+				jo.put("buildTime", Util.getBuildTime(request.getServletContext()));
 			}
 			return jo;
 		}		
@@ -101,5 +111,17 @@ public class WelcomeController {
 
     } 
     
+    
+	private String getPrincipal(){
+		String userName = null;
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+		if (principal instanceof UserDetails) {
+			userName = ((UserDetails)principal).getUsername();
+		} else {
+			userName = principal.toString();
+		}
+		return userName;
+	}
 
 }

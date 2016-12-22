@@ -13,6 +13,7 @@ import com.sesnu.orion.dao.OrderDAO;
 import com.sesnu.orion.dao.PaymentDAO;
 import com.sesnu.orion.web.model.Bid;
 import com.sesnu.orion.web.model.Order;
+import com.sesnu.orion.web.model.PayView;
 import com.sesnu.orion.web.model.Payment;
 @SuppressWarnings("unchecked")
 @Transactional
@@ -27,13 +28,19 @@ public class PaymentDAOImpl implements PaymentDAO {
 
 
 	@Override
-	public List<Payment> list(long orderRefId) {
-		String hql = "from Payment where orderRef = :orderRefId";
+	public List<PayView> listByOrderRef(long orderRefId) {
+		String hql = "from PayView where orderRef = :orderRefId";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql)
 		.setLong("orderRefId",orderRefId);
-		return (List<Payment>) query.list();
+		return (List<PayView>) query.list();
 	}
 
+	@Override
+	public List<PayView> listAll() {
+		String hql = "from PayView";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		return (List<PayView>) query.list();
+	}
 
 	@Override
 	public void saveOrUpdate(Payment pay) {

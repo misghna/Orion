@@ -1,6 +1,122 @@
-  <!--<app-header   
-    (deleteEmtter)="delete($event)"
-  ></app-header>-->
+<div id="mySidenav" class="sidenav">
+  
+  <div class="list-group mySidenav2" >
+    <a href="#" class="list-group-item disabled">
+     Select Column
+     <a class="closebtn"  id="sideMenuClose">&times;</a> 
+    </a>
+    <a *ngFor="let colName of allHeaders" class="list-group-item fields">
+       <label ><input style="margin-left : -20px; margin-right:10px" type="checkbox" [(ngModel)]="colName.selected">{{colName.name}}</label>
+    </a>
+   <a class="list-group-item likeabutton" (click)="applyColSelection($event)">
+      <span style="margin-left:20px" > Apply</span>
+    </a>
+  </div>
+  </div>
 
-  <h3>Home page to be done, for live stat</h3>
 
+
+<div id="main">
+  <table style="width: 100%; padding-bottom:20px;">
+    <tr>
+        <td>
+          <div class="meterBox">
+             <div class="meterNumber"><span class = "meterTestSpan"> 8</span></div>
+             <div class="txtOrders"><span class = "meterTestSpan"> Orders</span></div>
+              <div class="meterText"><span class = "meterTestSpan"> New </span></div>
+          </div>
+      </td>
+       <td>
+          <div class="meterBox">
+             <div class="meterNumber"><span class = "meterTestSpan"> 4</span></div>
+              <div class="txtOrders"><span class = "meterTestSpan"> Orders</span></div>
+             <div class="meterText"><span class = "meterTestSpan">In Transit</span></div>
+          </div>
+      </td>
+       <td>
+          <div class="meterBox">
+             <div class="meterNumber"><span class = "meterTestSpan"> 12</span></div>
+             <div class="txtOrders"><span class = "meterTestSpan"> Orders</span></div>
+             <div class="meterText"><span class = "meterTestSpan">In Port</span></div>
+          </div>
+      </td>
+      <td>
+          <div class="meterBox">
+             <div class="meterNumber"><span class = "meterTestSpan"> 7</span></div>
+             <div class="txtOrders"><span class = "meterTestSpan"> Orders</span></div>
+             <div class="meterText"><span class = "meterTestSpan">In Terminal</span></div>
+          </div>
+      </td>
+
+    </tr>
+
+  </table>
+ <hr> 
+<table  class="table table-striped tableFont" [mfData]="data" #mf="mfDataTable" [mfRowsOnPage]="20" >
+    <thead>
+    <tr>
+        <th >Id</th>
+        <th class="text-center"
+            [ngClass]="{
+            'text-center' : tableHeader.j=='c' || tableHeader.j=='x',
+            'text-left' : tableHeader.j=='l'
+            }"
+         *ngFor="let tableHeader of selectedHeaders; let i = index"> 
+            <mfDefaultSorter by="{{tableHeader.value}}"><font class ="tbl-header">{{tableHeader.name}}</font></mfDefaultSorter>
+        </th>
+        <th style="width: 5%;" class ="tbl-header">Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of mf.data; let i = index">
+         <td >{{i+1 + mf.rowsOnPage*(mf.activePage -1)}}</td>    
+         <td class="text-center"
+            [ngClass]="{
+            'text-center' : tableHeader.j=='c',
+            'text-left' : tableHeader.j=='l',
+            'hidden' : tableHeader.j=='x'
+            }"
+         *ngFor="let tableHeader of selectedHeaders; let i = index"> 
+             <div>{{item[tableHeader.value]}}</div>
+             <!--<div *ngIf="tableHeader.value == 'total' ">{{item['financialServices'] + item['consumerTax'] + item['stampTax'] + item['fees'] + item['others']}}</div>-->
+             <!--<div *ngIf="tableHeader.value=='food' && item.food == true"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></div>-->
+             <!--<div *ngIf="tableHeader.value=='food' && item.food == false"></div>-->
+          </td>
+       
+        <td class="text-center" >
+            <div class="dropdown" style="border: 0">
+            <button id= "{{item.id.toString() + '*' + item.name}}" #dropButton class="btn btn-default dropdown-toggle"
+                (click)="activeProductHeader = dropButton.id"
+                 style="border:0px solid transparent !important;background-color:transparent" type="button" id="dropdownMenu1"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <span class="caret"></span>
+            </button>
+            <ul id="{{item.id.toString() + '-' + item.name}}" #dropDownBox class="dropdown-menu dropdown-menu-right" 
+                 aria-labelledby="dropdownMenu1">
+                <li><a >Open Order</a></li>
+                 <li role="separator" class="divider"></li>
+                <li><a>Open Shipping</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a>Open Payment</a></li>
+                 <li role="separator" class="divider"></li>
+                <li><a>Open Bid</a></li>
+
+            </ul>
+            </div>
+        </td>
+      </tr>
+    </tbody>
+    <tfoot> 
+    <tr>
+        <td [attr.colspan]="selectedHeaders.length + 2">
+            <mfBootstrapPaginator [rowsOnPageSet]="[10,20,40]"></mfBootstrapPaginator>
+        </td>
+    </tr>
+    </tfoot>
+</table>
+
+
+
+
+
+</div>

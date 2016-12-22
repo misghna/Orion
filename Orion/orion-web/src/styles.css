@@ -101,3 +101,8 @@ textarea[readonly] {
     /*color:#0a56a8;*/
     color:green;
 }
+
+.noBorder{
+    border: none;
+    background: none;
+}

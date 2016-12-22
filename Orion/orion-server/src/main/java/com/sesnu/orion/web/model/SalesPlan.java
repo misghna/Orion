@@ -43,9 +43,6 @@ public class SalesPlan {
 	@Column(name = "cif")
 	private double cif;
 	
-	@Column(name = "item_origin")
-	private String itemOrigin;
-	
 	@Column(name = "destination_port")
 	private String destinationPort;
 	
@@ -73,7 +70,6 @@ public class SalesPlan {
 		this.contSize = sv.getContSize();
 		this.contQnt = sv.getContQnt();
 		this.cif=sv.getCif();
-		this.itemOrigin=sv.getItemOrigin();
 		this.destinationPort=sv.getDestinationPort();
 		this.month = sv.getMonth();
 		this.year=sv.getYear();
@@ -153,13 +149,6 @@ public class SalesPlan {
 		this.cif = cif;
 	}
 
-	public String getItemOrigin() {
-		return itemOrigin;
-	}
-
-	public void setItemOrigin(String itemOrigin) {
-		this.itemOrigin = itemOrigin;
-	}
 
 	public String getDestinationPort() {
 		return destinationPort;

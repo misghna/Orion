@@ -26,6 +26,7 @@ import com.sesnu.orion.dao.OrderDAO;
 import com.sesnu.orion.web.model.Bid;
 import com.sesnu.orion.web.model.Item;
 import com.sesnu.orion.web.model.Order;
+import com.sesnu.orion.web.model.OrderView;
 import com.sesnu.orion.web.model.User;
 import com.sesnu.orion.web.model.Order;
 import com.sesnu.orion.web.model.Order;
@@ -171,7 +172,7 @@ public class BidController {
 		// send request to approvers
 		List<User> users = userDao.getApprovers();
 		StringBuilder msg = new StringBuilder();
-		Order order = orderDao.get(bid.getOrderRef());
+		OrderView order = orderDao.get(bid.getOrderRef());
 		List<String> auth = new ArrayList<String>();
 		for (User user : users) {
 			msg.append("Hello  "+user.getFullname()+",\n\n ");

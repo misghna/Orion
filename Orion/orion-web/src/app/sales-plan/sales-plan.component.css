@@ -37,4 +37,9 @@
 #rangeSelector{
     width:350px;
 }
+
+.noBorder{
+    border: none;
+    background: none;
+}
 /*.alert-auto {display:inline-block;}*/

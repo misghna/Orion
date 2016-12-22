@@ -36,7 +36,7 @@
         <div class="dropdown">
         <button class="btn btn-default dropdown-toggle" type="button" id="yearBtn" #yearBtn data-toggle="dropdown"
         aria-haspopup="true" aria-expanded="true" style="min-width:150px">
-        Select Year
+        {{selectedYear}}
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" id="yearSelector">
@@ -55,24 +55,13 @@
             <span class="caret"></span>
           </button>
           <ul id="monthSelector" #monthSelector class="dropdown-menu " aria-labelledby="dropdownMenu2" >
-            <li><a >JAN</a></li>
-            <li><a >FEB</a></li>
-            <li><a (click)="selectedMonth = 'MAR'">MAR</a></li>
-            <li><a (click)="selectedMonth = 'APR'">APR</a></li>
-            <li><a (click)="selectedMonth = 'MAY'">MAY</a></li>
-            <li><a (click)="selectedMonth = 'JUN'">JUN</a></li>
-            <li><a (click)="selectedMonth = 'JUL'">JUL</a></li>
-            <li><a (click)="selectedMonth = 'AUG'">AUG</a></li>
-            <li><a (click)="selectedMonth = 'SEP'">SEP</a></li>
-            <li><a (click)="selectedMonth = 'OCT'">OCT</a></li>
-            <li><a (click)="selectedMonth = 'NOV'">NOV</a></li>
-            <li><a (click)="selectedMonth = 'DEC'">DEC</a></li>
+            <li *ngFor ="let month of monthNames" (click)="selectedMonth = month"><a >{{month}}</a></li>
           </ul>
       </div>
     </td>
 
   <td>
-     <button #bntOption1 class="btn btn-default" (click)="execute(yearBtn.value,monthBtn.value,bntOption1.value)" value ="{{bntOption}}" >{{bntOption}}</button>
+     <button #bntOption1 class="btn btn-default" (click)="execute(bntOption1.value)" value ="{{bntOption}}" >{{bntOption}}</button>
   </td>
   </tr>
 </table>
@@ -97,7 +86,7 @@
     <tbody>
 
       <tr *ngFor="let item of mf.data; let i = index">
-         <td class="text-center" >{{i+2}}</td>    
+         <td class="text-center" >{{i+1 + mf.rowsOnPage*(mf.activePage -1)}}</td>     
          <td class="text-center"
             [ngClass]="{
             'text-center' : tableHeader.j=='c',
@@ -141,28 +130,39 @@
           </div>    
           </td>
         <td><textarea name="brand" class="form-control txt-flat" rows="2" readonly placeholder="Brand" required [(ngModel)]="itemDetail.brand" [ngModelOptions]="{standalone: true}"></textarea></td> 
-        <td><textarea name="baseSize" #size class="form-control txt-flat middletext" rows="2"  placeholder="Base size" required [(ngModel)]="itemDetail.baseSize" [ngModelOptions]="{standalone: true}"></textarea></td> 
-        <!--<td><textarea name="baseUnit" #unit class="form-control txt-flat middletext" rows="2"  placeholder="Unit" required [(ngModel)]="itemDetail.baseUnit"></textarea></td> -->
+        <td><textarea name="baseSize" #size class="form-control txt-flat middletext" rows="2" digitsonly placeholder="Base size" required [(ngModel)]="itemDetail.baseSize" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td>
-          <div class="dropdown">
-            <!--<input class="dropdown-toggle form-control txt-flat" type="text" data-toggle="dropdown"/>-->
-            <textarea id="baseUnit" #baseUnit class="dropdown-toggle form-control txt-flat middletext" data-toggle="dropdown" rows="2"  
-                placeholder="Unit" required [(ngModel)]="itemDetail.baseUnit" [ngModelOptions]="{standalone: true}"></textarea>
-            <ul class="dropdown-menu item-name">
-              <li (click)="updateBaseUnit('g')"><a>g</a></li>
-              <li (click)="updateBaseUnit('Kg')"><a>Kg</a></li>
-              <li (click)="updateBaseUnit('pcs')"><a>pcs</a></li>
-              <li (click)="updateBaseUnit('ltr')"><a>ltr</a></li>
-              <li (click)="updateBaseUnit('jar')"><a>jar</a></li>
+            <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle editFormMargin noBorder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{itemDetail.baseUnit}} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a (click)="itemDetail.baseUnit='g'">gram</a></li>
+                <li><a (click)="itemDetail.baseUnit='kg'">Kg</a></li>
+                <li><a (click)="itemDetail.baseUnit='pcs'">pcs</a></li>
+                <li><a (click)="itemDetail.baseUnit='ltr'">ltr</a></li>
+                <li><a (click)="itemDetail.baseUnit='galon'">galon</a></li>
+                <li><a (click)="itemDetail.baseUnit='Bag'">Bag</a></li>
             </ul>
-          </div>    
+            </div>
         </td>
-        <td><textarea name="qtyPerPack" #unit class="form-control txt-flat middletext" rows="2"  placeholder="qty/pck" required [(ngModel)]="itemDetail.qtyPerPack" [ngModelOptions]="{standalone: true}"></textarea></td> 
-        <td><textarea name="pckPerCont" #unit class="form-control txt-flat middletext" rows="2"  placeholder="pck/cont" required [(ngModel)]="itemDetail.pckPerCont" [ngModelOptions]="{standalone: true}"></textarea></td> 
-        <td><textarea name="contSize" #unit class="form-control txt-flat middletext" rows="2"  placeholder="cont size" required [(ngModel)]="itemDetail.contSize" [ngModelOptions]="{standalone: true}"></textarea></td> 
-        <td><textarea name="contQnt" #unit class="form-control txt-flat middletext" rows="2"  placeholder="cont Qty" required [(ngModel)]="itemDetail.contQnt" [ngModelOptions]="{standalone: true}"></textarea></td> 
-        <td><textarea name="cif" #cif class="form-control txt-flat middletext" rows="2"  placeholder="cif" required [(ngModel)]="itemDetail.cif" [ngModelOptions]="{standalone: true}"></textarea></td> 
-        <td><textarea name="itemOrigin" #itemOrigin class="form-control txt-flat middletext" rows="2"  placeholder="Item Origin" required [(ngModel)]="itemDetail.itemOrigin" [ngModelOptions]="{standalone: true}"></textarea></td>
+        <td><textarea name="qtyPerPack" #unit class="form-control txt-flat middletext" rows="2"  numberonly placeholder="qty/pck" required [(ngModel)]="itemDetail.qtyPerPack" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <td><textarea name="pckPerCont" #unit class="form-control txt-flat middletext" rows="2"  numberonly placeholder="pck/cont" required [(ngModel)]="itemDetail.pckPerCont" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <!--<td><textarea name="contSize" #unit class="form-control txt-flat middletext" rows="2"  placeholder="cont size" required [(ngModel)]="itemDetail.contSize" [ngModelOptions]="{standalone: true}"></textarea></td> -->
+        <td>
+            <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle editFormMargin noBorder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{itemDetail.contSize}} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a (click)="itemDetail.contSize=20">20</a></li>
+                <li><a (click)="itemDetail.contSize=40">40</a></li>
+            </ul>
+            </div>
+        </td>
+        
+        <td><textarea name="contQnt" #unit class="form-control txt-flat middletext" rows="2" numberonly placeholder="cont Qty" required [(ngModel)]="itemDetail.contQnt" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <td><textarea name="cif" #cif class="form-control txt-flat middletext" rows="2"  digitsonly placeholder="cif" required [(ngModel)]="itemDetail.cif" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td><textarea name="destinationPort" #destinationPort class="form-control txt-flat middletext" rows="2"  placeholder="Destination Port" required [(ngModel)]="itemDetail.destinationPort" [ngModelOptions]="{standalone: true}"></textarea></td>
         <td>
           <div class="dropdown">
@@ -174,7 +174,7 @@
             </ul>
           </div>    
           </td>
-        <td><textarea name="year" #year class="form-control txt-flat middletext" rows="2"  placeholder="Year" required [(ngModel)]="itemDetail.year" [ngModelOptions]="{standalone: true}"></textarea></td>     
+        <td><textarea name="year" #year class="form-control txt-flat middletext" numberonly rows="2"  placeholder="Year" required [(ngModel)]="itemDetail.year" [ngModelOptions]="{standalone: true}"></textarea></td>     
         <td><textarea name="updatedOn" #updatedOn class="form-control txt-flat middletext" readonly rows="2"  placeholder="auto">{{todayDate}}</textarea></td> 
         <td class="text-left" ><input type="submit" class="btn btn-success" value="{{taskType}}" /></td>
       </tr>  

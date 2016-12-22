@@ -12,7 +12,7 @@
 
 <div id="wrapper" style="text-align: center"> 
   <div class="dropdown pull-center">
-    Shipping Details For : {{activeOrder.item + '(' + activeOrder.brand + ') ordered on '}} {{ activeOrder.createdOn | date: 'dd/MM/yyyy'}}
+    Shipping Details
   </div>
 </div>
 
@@ -73,7 +73,7 @@
     <tbody>
 
       <tr *ngFor="let item of mf.data; let i = index">
-         <td class="text-center" >{{i+1}}</td>    
+         <td class="text-center" >{{i+1 + mf.rowsOnPage*(mf.activePage -1)}}</td>     
          <td class="text-center"
             [ngClass]="{
             'text-center' : tableHeader.j=='c',
@@ -111,12 +111,13 @@
       
       <tr [class.hidden]="hideAddNewForm" class="inputFormTr">
         <td class="text-center" ><span class="glyphicon glyphicon-plus" aria-hidden="true" style="margin-top:5px"></span></td>
+        <td><textarea #unit class="form-control txt-flat" rows="2"  readonly placeholder="Inv No" required [(ngModel)]="itemDetail.invNo" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <td><textarea #unit class="form-control txt-flat" rows="2" readonly placeholder="Cont Qnt" required [(ngModel)]="itemDetail.contQnt" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td><textarea #unit class="form-control txt-flat" rows="2"  placeholder="BL" required [(ngModel)]="itemDetail.bl" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td><textarea #unit class="form-control txt-flat middletext" rows="2"  placeholder="Item Origin" required [(ngModel)]="itemDetail.itemOrigin" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td><textarea #unit class="form-control txt-flat middletext" rows="2"  placeholder="Agency" required [(ngModel)]="itemDetail.shipAgency" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td><input type="date" class="form-control txt-flat middletext"  [(ngModel)]="itemDetail.etd" [ngModelOptions]="{standalone: true}"/></td>
         <td><input type="date" class="form-control txt-flat middletext"  [(ngModel)]="itemDetail.eta" [ngModelOptions]="{standalone: true}"/></td>
-
         <td><textarea #destinationPort class="form-control txt-flat middletext" rows="2"  placeholder="Remark" [(ngModel)]="itemDetail.remark" [ngModelOptions]="{standalone: true}"></textarea></td>
         <td><textarea #updatedOn class="form-control txt-flat middletext" readonly rows="2"  placeholder="auto">{{todayDate}}</textarea></td> 
         <td class="text-left" ><input type="submit" class="btn btn-success" value="{{taskType}}"/></td>

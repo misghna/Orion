@@ -67,7 +67,6 @@ export class UsersComponent implements OnInit {
   }
 
   update(){
-    console.log(this.userData);
     this.userService.update(this.userData)
     .subscribe(
         response => {

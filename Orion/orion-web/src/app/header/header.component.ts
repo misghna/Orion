@@ -16,20 +16,20 @@ export class HeaderComponent implements OnInit {
   navHidden;
   // @Input() optionsObj = "";
 
-  @Output() activateSearch = new EventEmitter();
+  // @Output() activateSearch = new EventEmitter();
   //@Output() activateOptions = new EventEmitter();
 
    @ViewChild('myModalBtn') modalInput:ElementRef;
-   @Output() deleteEmtter = new EventEmitter();
+  //  @Output() deleteEmtter = new EventEmitter();
 
   regUser = true;
   modalEl;modalMsg;subscription;
-  delTask;title;toolsList;
+  delTask;title;toolsList;buildNo;
 
   constructor(private http:Http, private userService:UserService, 
               private utilService:UtilService,private rd: Renderer,private el: ElementRef) {
     this.navHidden = false;
-
+    this.regUser = true;
     this.subscription = utilService.currentHeaderState$.subscribe(
       state => {   
         this.navHidden = !state;
@@ -37,13 +37,11 @@ export class HeaderComponent implements OnInit {
 
     this.subscription = utilService.currentAdminState$.subscribe(
       state => {  
-        console.log("is admin " + state); 
         this.regUser = !state;
     });
 
     this.subscription = utilService.currentToolsCont$.subscribe(
       tools => {  
-        console.log("tools " + tools); 
         this.toolsList = tools;
     });
 
@@ -59,16 +57,17 @@ export class HeaderComponent implements OnInit {
 
 
        $(this.el.nativeElement).on('click','.dropdown-menu li',function(){
-          console.log($(this).index());
-          $(this).parent().parent().parent().find(".active").removeClass("active");
-          $(this).parent().parent().addClass("active");      
+          if($(this).parent().parent().html().indexOf('Tools')==-1){
+            $(this).parent().parent().parent().find(".active").removeClass("active");
+            $(this).parent().parent().addClass("active"); 
+          }     
         });
    }
 
   ngOnInit() {
       var access = JSON.parse(localStorage.getItem('accessDetail'));
-      if(access!=null && access['role'] =='Admin'){
-        this.regUser = false;
+      if(access!=null && access['buildTime']!=null && access['buildTime']!=''){
+       this.buildNo = access['buildTime'].replace("d-Time","t@").replace(/\-/g,'/')
       }
   }
 
@@ -78,16 +77,13 @@ export class HeaderComponent implements OnInit {
         this.userService.logoutUsers();
    }
 
-  //  search(searchTxt){
-  //    this.activateSearch.emit({"searchTxt":searchTxt});
-  //  }
 
   search(searchTxt){
     this.utilService.setSearchTxt({"searchTxt":searchTxt});
   }
 
    deleteItem(){
-     this.deleteEmtter.emit({"delTask":this.delTask});
+     this.utilService.deleteItem({"delTask":this.delTask});
    }
 
   triggerOption(optionName){

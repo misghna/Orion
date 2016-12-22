@@ -1,15 +1,18 @@
 package com.sesnu.orion.web.controller;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.Map;
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import org.apache.http.HttpRequest;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +20,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.sesnu.orion.dao.DocumentDAO;
+import com.sesnu.orion.web.model.DocView;
+import com.sesnu.orion.web.model.Document;
+import com.sesnu.orion.web.model.TCPResponse;
+import com.sesnu.orion.web.utility.Util;
 
 /**
  * Handles requests for the application file upload requests
@@ -29,99 +38,46 @@ public class FileUploadController {
 			.getLogger(FileUploadController.class);
 
 
-	@RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
-	public @ResponseBody
-	String uploadFileHandler(HttpServletRequest req,@RequestParam("file") MultipartFile file,
-			@RequestParam("data") String data,@RequestParam("orderRef") long orderRef
-			) {
-		
-		
-		System.out.println("trying to upload....");
-		
-		System.out.println(data);
-		System.out.println(orderRef);
+	@Autowired private Util util;
+	@Autowired private DocumentDAO docDao;
+	
+	@RequestMapping(value = "/api/user/uploadFile", method = RequestMethod.POST)
+	public @ResponseBody List<DocView> uploadFileHandler(HttpServletRequest req,
+			@RequestParam("file") MultipartFile file,
+			@RequestParam("data") String data,@RequestParam("orderRef") long orderRef,
+			HttpServletResponse res
+			) throws ParseException, IOException {
 
-
+		JSONParser parser = new JSONParser();
+		JSONObject dataObj = (JSONObject) parser.parse(data);
+		
 		String fileName =file.getOriginalFilename();
 		if (!file.isEmpty()) {
 			try {
 				fileName = file.getOriginalFilename();
+				fileName = fileName.replace(".", "_").concat("__").concat(Long.toString((System.currentTimeMillis())));
 				byte[] bytes = file.getBytes();
 
-				// Creating the directory to store file
-				String rootPath = System.getProperty("catalina.home");
-				File dir = new File(rootPath + File.separator + "tmpFiles");
-				if (!dir.exists())
-					dir.mkdirs();
+				TCPResponse response = util.writeToS3(bytes,fileName);
+				if(response.getCode()==200){
+					Document doc = new Document(orderRef,fileName,dataObj.get("type").toString(),Util.parseDate(new Date(),"/"),dataObj.get("remark").toString());
+					docDao.saveOrUpdate(doc);
+					return docDao.listByOrderRef(orderRef);
+				}else{
+					res.sendError(response.getCode(), "Error in storage");
+				}
 
-				// Create the file on server
-				File serverFile = new File(dir.getAbsolutePath()
-						+ File.separator + fileName);
-				BufferedOutputStream stream = new BufferedOutputStream(
-						new FileOutputStream(serverFile));
-				stream.write(bytes);
-				stream.close();
-
-				System.out.println("Server File Location="
-						+ serverFile.getAbsolutePath());
-
-				return "You successfully uploaded file=" + fileName;
+				return null;
 			} catch (Exception e) {
-				return "You failed to upload " + fileName + " => " + e.getMessage();
+				res.sendError(400, "Error in storage");
+				return null;
 			}
 		} else {
-			return "You failed to upload " + fileName
-					+ " because the file was empty.";
+				res.sendError(400, "Error in storage");
+				return null;
 		}
 	}
 
-	
-	
-	
-	
-	
-	/**
-	 * Upload multiple file using Spring Controller
-	 */
-//	@RequestMapping(value = "/uploadMultipleFile", method = RequestMethod.POST)
-//	public @ResponseBody
-//	String uploadMultipleFileHandler(@RequestParam("filename") String[] names,
-//			@RequestParam("file") MultipartFile[] files) {
-//
-//		if (files.length != names.length)
-//			return "Mandatory information missing";
-//
-//		String message = "";
-//		for (int i = 0; i < files.length; i++) {
-//			MultipartFile file = files[i];
-//			String name = names[i];
-//			try {
-//				byte[] bytes = file.getBytes();
-//
-//				// Creating the directory to store file
-//				String rootPath = System.getProperty("catalina.home");
-//				File dir = new File(rootPath + File.separator + "tmpFiles");
-//				if (!dir.exists())
-//					dir.mkdirs();
-//
-//				// Create the file on server
-//				File serverFile = new File(dir.getAbsolutePath()
-//						+ File.separator + name);
-//				BufferedOutputStream stream = new BufferedOutputStream(
-//						new FileOutputStream(serverFile));
-//				stream.write(bytes);
-//				stream.close();
-//
-//				System.out.println("Server File Location="
-//						+ serverFile.getAbsolutePath());
-//
-//				message = message + "You successfully uploaded file=" + name + "";
-//			} catch (Exception e) {
-//				return "You failed to upload " + name + " => " + e.getMessage();
-//			}
-//		}
-//		return message;
-//	}
 	
 	
 	

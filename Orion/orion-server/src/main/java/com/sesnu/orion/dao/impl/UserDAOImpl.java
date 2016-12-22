@@ -49,9 +49,9 @@ public class UserDAOImpl implements UserDAO {
 	@Override
 	@Transactional
 	public User getUserByEmail(String email) {
-		String hql = "from User where email= :email";
+		String hql = "from User where lower(email)= :email";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
-		query.setParameter("email", email);
+		query.setParameter("email", email.toLowerCase());
 		
 		List<?> list = query.list();
 		

@@ -27,8 +27,8 @@ public class Payment {
 	@Column(name = "payment_method")
 	private String paymentMethod;
 	
-	@Column(name = "bank_name")
-	private String bankName;
+	@Column(name = "name")
+	private String name;
 	
 	@Column(name = "transaction_id")
 	private String transactionId;
@@ -42,12 +42,17 @@ public class Payment {
 	@Column(name = "updated_on")
 	private String updatedOn;
 	
+	@Column(name = "status")
+	private String status;
+	
 	@Column(name = "remark")
 	private String remark;
 	
 	@Column(name = "df")
 	private boolean df;
 
+	@Column(name = "currency")
+	private String curr;
 	
 	
 	public Long getId() {
@@ -72,14 +77,6 @@ public class Payment {
 
 	public void setPaymentMethod(String paymentMethod) {
 		this.paymentMethod = paymentMethod;
-	}
-
-	public String getBankName() {
-		return bankName;
-	}
-
-	public void setBankName(String bankName) {
-		this.bankName = bankName;
 	}
 
 	public String getTransactionId() {
@@ -128,6 +125,30 @@ public class Payment {
 
 	public void setDf(boolean df) {
 		this.df = df;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getCurr() {
+		return curr;
+	}
+
+	public void setCurr(String curr) {
+		this.curr = curr;
 	}
 	
 	

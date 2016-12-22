@@ -30,6 +30,23 @@ getAllUsers() {
       .map(res => res.json());
   }
 
+getUser() {
+    let headerContent = new Headers();
+    let options = new RequestOptions({ headers: headerContent });
+    var url = this.baseUrl + 'api/user/user';
+    return this.http.get(url,[{ headers: headerContent },{ withCredentials: true }])
+      .map(res => res.json());
+  }
+
+  check() {
+    let headerContent = new Headers();
+    let options = new RequestOptions({ headers: headerContent });
+    var url = this.baseUrl + 'api/check';
+    return this.http.get(url,[{ headers: headerContent },{ withCredentials: true }])
+      .map(res => res.json());
+  }
+  
+
   changeStatus(userId,status) {
     var body = {'userId':userId,"status":status};
     let headerContent = new Headers();
@@ -67,13 +84,13 @@ getAllUsers() {
       .map(res => res.json());
   }
 
-  login(email,password){
-    let headerContent = new Headers();
-    headerContent.append("Authorization", "Basic " + btoa(email + ":" + password)); 
-    headerContent.append("Content-Type", "application/x-www-form-urlencoded");
-    return this.http.post(this.baseUrl + 'api/user/login', null, { headers: headerContent })
-         .map(res => res.json());
-  }
+  // login(email,password){
+  //   let headerContent = new Headers();
+  //   headerContent.append("Authorization", "Basic " + btoa(email + ":" + password)); 
+  //   headerContent.append("Content-Type", "application/x-www-form-urlencoded");
+  //   return this.http.post(this.baseUrl + 'api/user/login', null, { headers: headerContent })
+  //        .map(res => res.json());
+  // }
 
   changeRole(userId,role) {
     var body = {'userId':userId,"role":role};

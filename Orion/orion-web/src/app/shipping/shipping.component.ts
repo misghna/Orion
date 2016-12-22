@@ -24,19 +24,17 @@ export class ShippingComponent implements OnInit {
   activeProductHeader;
   pageName;
   optionsList;constantOptionList;
-  revision;
-  revisionLong;
   rangeSelectorHidden;selectedMonth;selectedYear;years;returnedRange;todayDate;
   monthNames;
   productNameList=[]; allPrdList=[];
   headers = [];
   filterQuery = "";
   bntOption = "Search";
-  selectedDate;activeOrderId;
-  activeOrder= {}; filteredSalesPlanList=[];
+  selectedDate;activeShippingId;
+  activeOrder= {}; filteredSalesPlanList=[]; allOrders;
 
   constructor(private utilService :UtilService,private shipService:ShippingService, private el: ElementRef,
-              private orderService:OrdersService ,public route: ActivatedRoute) {
+              private orderService:OrdersService ,public route: ActivatedRoute,public router:Router) {
 
     this.optionsList = [{'name':'Add Shipping','value':'addNew'}];
     this.utilService.setToolsContent(this.optionsList);
@@ -58,17 +56,36 @@ export class ShippingComponent implements OnInit {
       opt => {  
         this.option(opt);
     });
+
+    router.events.subscribe((val) => {
+      var newRouteParam = this.route.snapshot.params['id'];
+      if(this.activeShippingId != newRouteParam){
+        this.activeShippingId = newRouteParam;
+          this.loadAll(this.activeShippingId);
+          this.setTitle();
+      }       
+    });
+
+   }
+
+   setTitle(){
+          if(this.activeShippingId.indexOf("all")>=0){
+            this.activeOrder = null;        
+          }else{
+            this.getActiveOrder()
+          }
    }
 
   ngOnInit() {
-      this.headers = [{'name':'No','value':'id','j':'x'},{'name':'BL','value':'bl','j':'c'},
+      this.headers = [{'name':'No','value':'id','j':'x'},{'name':'Inv No','value':'invNo','j':'c'},
+                      {'name':'Cont Qnt','value':'contQnt','j':'c'},{'name':'BL','value':'bl','j':'c'},
                       {'name':'Item Origin','value':'itemOrigin','j':'l'},
                       {'name':'Shipping agency','value':'shipAgency','j':'c'},{'name':'ETD','value':'etd','j':'c'},
                       {'name':'ETA', 'value':'eta','j':'c'}, {'name':'Remakr','value':'remark','j':'c'},
                       {'name':'Updated On','value':'updatedOn','j':'c'}];
       
-        this.activeOrderId = this.route.snapshot.params['id'];
-        this.loadAll(this.activeOrderId);
+        this.activeShippingId = this.route.snapshot.params['id'];
+        this.loadAll(this.activeShippingId);
         this.populateYear();
         this.getActiveOrder();
 
@@ -98,7 +115,18 @@ updateNameBrand(nameBrand){
 
 getActiveOrder(){
     var setRev :boolean;
-     this.orderService.getOrderById(this.activeOrderId) 
+    if(this.activeShippingId=='all'){
+      this.orderService.getAllOrders() 
+      .subscribe(
+          response => {
+              this.allOrders = response; 
+          },
+          error => {
+               console.error("order not found!");          
+          }
+        );
+    }else{
+     this.orderService.getOrderById(this.activeShippingId) 
       .subscribe(
           response => {
               this.activeOrder = response; 
@@ -107,6 +135,7 @@ getActiveOrder(){
                console.error("order not found!");          
           }
         );
+    }
 }
 
 triggerDelModal(event){
@@ -181,7 +210,7 @@ updateBaseUnit(unit){
 
     addUpdate(event){
       event.preventDefault();
-      this.itemDetail['orderRef'] = this.activeOrderId;
+      this.itemDetail['orderRef'] = this.activeShippingId;
         if (this.taskType=="Add"){
             this.shipService.add(this.itemDetail)
             .subscribe(

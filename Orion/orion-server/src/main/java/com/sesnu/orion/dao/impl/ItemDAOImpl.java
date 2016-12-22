@@ -36,6 +36,7 @@ public class ItemDAOImpl implements ItemDAO {
 		}
 		
 		date = Util.parseDate(rev);
+		System.out.println("**********************************"  +   date.toString());
 		String hql = "from Item where revision = :rev";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setDate("rev",date);

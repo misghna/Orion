@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sesnu.orion.dao.ShippingDAO;
 import com.sesnu.orion.web.model.Shipping;
+import com.sesnu.orion.web.model.ShippingView;
 import com.sesnu.orion.web.utility.Util;
 
 @CrossOrigin(origins = "http://localhost:4200")
@@ -31,10 +32,15 @@ public class ShippingController {
 	
 
 	@RequestMapping(value = "/api/user/ship/{orderRef}", method = RequestMethod.GET)
-	public @ResponseBody List<Shipping> items(@PathVariable("orderRef") long orderRef,
+	public @ResponseBody List<ShippingView> items(@PathVariable("orderRef") String orderRef,
 			HttpServletResponse response) throws IOException {
 
-		List<Shipping> shippings = shipDao.list(orderRef);
+		List<ShippingView> shippings = null;
+		if(orderRef.equals("all")){
+			shippings= shipDao.listAll();
+		}else{
+			shippings= shipDao.listByOrderId(Long.parseLong(orderRef));
+		}
 		if(shippings.size()>0){
 			return shippings;
 		}
@@ -44,14 +50,19 @@ public class ShippingController {
 	
 	
 	@RequestMapping(value = "/api/user/ship", method = RequestMethod.POST)
-	public @ResponseBody List<Shipping> addItem(HttpServletResponse response,@RequestBody Shipping shipping)
+	public @ResponseBody List<ShippingView> addItem(HttpServletResponse response,@RequestBody Shipping shipping)
 			throws Exception {
 		
+		List<ShippingView> shipings = shipDao.listByOrderId(shipping.getOrderRef());
+		if(shipings.size()>0){
+			response.sendError(404,"Shipping detail for this order already exists, please edit it if you want to add information.");
+			return null;
+		}
 		shipping.setUpdatedOn(Util.parseDate(new Date(),"/"));
 		shipping.setId(null);
 		shipDao.saveOrUpdate(shipping);
 		
-		List<Shipping> shippings = shipDao.list(shipping.getOrderRef());
+		List<ShippingView> shippings = shipDao.listByOrderId(shipping.getOrderRef());
 		if(shippings.size()>0){
 			return shippings;
 		}
@@ -62,18 +73,26 @@ public class ShippingController {
 	
 	
 	@RequestMapping(value = "/api/user/ship", method = RequestMethod.PUT)
-	public @ResponseBody List<Shipping> updateItem(HttpServletResponse response,
+	public @ResponseBody List<ShippingView> updateItem(HttpServletResponse response,
 			@RequestBody Shipping shipping)
 			throws Exception {
+		
 		
 		if(shipDao.get(shipping.getId())==null){
 			response.sendError(400);
 			return null;
 		}
+		
+		List<ShippingView> shipings = shipDao.listByOrderId(shipping.getOrderRef());
+		if(shipings.size()>1){
+			response.sendError(404,"Shipping detail for this order already exists, please edit it if you want to add information.");
+			return null;
+		}
+		
 		shipping.setUpdatedOn(Util.parseDate(new Date(),"/"));
 		shipDao.saveOrUpdate(shipping);
 		
-		List<Shipping> shippings = shipDao.list(shipping.getOrderRef());
+		List<ShippingView> shippings = shipDao.listByOrderId(shipping.getOrderRef());
 		if(shippings.size()>0){
 			return shippings;
 		}
@@ -86,13 +105,13 @@ public class ShippingController {
 
 	@RequestMapping(value = "/api/user/ship/{id}", method = RequestMethod.DELETE)
 	
-	public @ResponseBody List<Shipping> deleteItem(@PathVariable("id") long id,
+	public @ResponseBody List<ShippingView> deleteItem(@PathVariable("id") long id,
 			HttpServletResponse response) throws Exception {
 		Shipping shipping = shipDao.get(id);
 		long orderRef= shipping.getOrderRef();
 		if(shipping != null){
 			shipDao.delete(shipping);
-			List<Shipping> shippings = shipDao.list(orderRef);
+			List<ShippingView> shippings = shipDao.listByOrderId(orderRef);
 			if(shippings.size()>0){
 				return shippings;
 			}

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sesnu.orion.dao.DocumentDAO;
+import com.sesnu.orion.web.model.DocView;
 import com.sesnu.orion.web.model.Document;
 @SuppressWarnings("unchecked")
 @Transactional
@@ -23,19 +24,19 @@ public class DocumentDAOImpl implements DocumentDAO {
 
 
 	@Override
-	public List<Document> list(long orderRefId) {
-		String hql = "from Document where orderRef = :orderRefId";
+	public List<DocView> listByOrderRef(long orderRefId) {
+		String hql = "from DocView where orderRef = :orderRefId";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql)
 		.setLong("orderRefId",orderRefId);
-		return (List<Document>) query.list();
+		return (List<DocView>) query.list();
 	}
 	
 	@Override
-	public List<Document> listByDocType(String docType) {
+	public List<DocView> listByDocType(String docType) {
 		String hql = "from Document where type = :docType";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql)
 		.setParameter("docType",docType);
-		return (List<Document>) query.list();
+		return (List<DocView>) query.list();
 	}
 
 
@@ -46,15 +47,17 @@ public class DocumentDAOImpl implements DocumentDAO {
 
 
 	@Override
-	public Document get(long id) {
-		return (Document) sessionFactory.getCurrentSession().get(Document.class, id);
+	public DocView get(long id) {
+		return (DocView) sessionFactory.getCurrentSession().get(DocView.class, id);
 
 	}
 
 
 	@Override
-	public void delete(Document doc) {
-		sessionFactory.getCurrentSession().delete(doc);		
+	public void delete(DocView doc) {
+		Query query = sessionFactory.getCurrentSession().createSQLQuery("delete from doc where id= :id");
+		query.setParameter("id", doc.getId());
+		query.executeUpdate();
 	}
 
 

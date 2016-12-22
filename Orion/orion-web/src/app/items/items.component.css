@@ -30,4 +30,9 @@
 #rangeSelector{
     width:200px;
 }
+
+.noBorder{
+    border: none;
+    background: none;
+}
 /*.alert-auto {display:inline-block;}*/

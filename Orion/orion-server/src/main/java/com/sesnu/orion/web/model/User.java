@@ -25,6 +25,9 @@ public class User {
 	private String department;
 	private boolean approver;
 	
+	@Column(name="home_headers")
+	private String homeHeaders;
+	
 	
 	public long getId() {
 		return id;
@@ -98,6 +101,14 @@ public class User {
 
 	public void setApprover(boolean approver) {
 		this.approver = approver;
+	}
+
+	public String getHomeHeaders() {
+		return homeHeaders;
+	}
+
+	public void setHomeHeaders(String homeHeaders) {
+		this.homeHeaders = homeHeaders;
 	}
 
 

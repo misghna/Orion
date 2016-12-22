@@ -60,7 +60,7 @@ export class RegisterComponent implements OnInit {
       .subscribe(
         response => {
           this.loaderHidden = true;
-            this.registerMsg = "your request is pendding approval, you will get email once approved!";  
+            this.registerMsg = "your request is pendding approval, you will get text/email once it is approved!";  
         },
         error => {
           this.loaderHidden = true;

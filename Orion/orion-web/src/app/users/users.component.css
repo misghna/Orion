@@ -9,3 +9,23 @@
      border-top-left-radius: 5px;
      border-top-right-radius: 5px;
  }
+
+ .txt-flat {
+    overflow:hidden;
+    min-width: 100%;
+    resize: none;
+    border: none;
+    outline: none;
+
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.noBorder{
+    border: none;
+    background: none;
+}

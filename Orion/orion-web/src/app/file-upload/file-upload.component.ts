@@ -1,11 +1,14 @@
 import { Component, OnInit,ElementRef } from '@angular/core';
 import { FileUploader } from 'ng2-file-upload';
 import { UtilService } from '../service/util.service';
+import Utils  from '../service/utility';
+import { Router,ActivatedRoute, Params } from '@angular/router';
+
 
 declare var $ :any;
 
 //const URL = 'https://evening-anchorage-3159.herokuapp.com/api/';
-const URL = 'http://localhost:8080/uploadFile/';
+
 
 @Component({
   selector: 'app-file-upload',
@@ -14,23 +17,45 @@ const URL = 'http://localhost:8080/uploadFile/';
 })
 export class FileUploadComponent implements OnInit {
 
+  public uploader:FileUploader = new FileUploader({url: 'uploadUrl'});
+  public hasBaseDropZoneOver:boolean = false;
+  public hasAnotherDropZoneOver:boolean = false;
+
   optionsList;fData=[]; alertWin={};
-  docTypes;uploadType;
-  constructor(private el : ElementRef,private utilService: UtilService){
+  docTypes;uploadType;activeDocId;URL;
+  constructor(private el : ElementRef,private utilService: UtilService,public route: ActivatedRoute,public router: Router){
+  //  this.URL = Utils.getBaseUrl() + 'api/user/uploadFile/';
+
     this.alertWin = {'alertHidden':true,'type':'','label':'','msg':''}
     this.optionsList = [{'name':'Upload Document','value':'addNew'}];
-    this.docTypes = ['Proforma invoice','Commercial Invoice','Bill of Loading','Other'];
+    this.docTypes = ['Bill of Loading','Commerical Invoice','CNCA','Certificate of Health','Certificate of Origin','Certificate of Analise',
+                      'Certificate of Fumigation','Certificate of Quality',
+                      'Certificate of Insurance','Du License','Inspection','Local Phytosanitary','Packing List','Proforma Invoice','Other'];
+
     this.utilService.setToolsContent(this.optionsList);
     
     utilService.currentToolsOptCont$.subscribe(
       opt => {  
         this.option(opt);
     });
+
+
+    router.events.subscribe((val) => {
+      var newRouteParam = this.route.snapshot.params['id'];
+      if(this.activeDocId != newRouteParam){
+          this.activeDocId = newRouteParam;
+          if(newRouteParam.indexOf("orderRef")>=0){
+            this.utilService.setToolsContent(this.optionsList);
+          }else{
+            this.utilService.setToolsContent(null);
+          }
+      }
+        
+    });
+
+
   }
 
-  public uploader:FileUploader = new FileUploader({url: URL});
-  public hasBaseDropZoneOver:boolean = false;
-  public hasAnotherDropZoneOver:boolean = false;
 
   public fileOverBase(e:any):void {
     this.hasBaseDropZoneOver = e;
@@ -42,11 +67,12 @@ export class FileUploadComponent implements OnInit {
 
   ngOnInit() {
     // console.log(this.uploader.);
+    this.uploader.options.url = Utils.getBaseUrl() + 'api/user/uploadFile/';
     this.uploader.onBuildItemForm = (fileItem: any, form: any) => {
       var attachDoc = this.getFileDate(fileItem.file.name)
       // console.log(JSON.stringify(attachDoc));
-      form.append('data', JSON.stringify(attachDoc));
-      form.append('orderRef', 3344);
+      form.append('data', JSON.stringify(attachDoc[0]));
+      form.append('orderRef', this.activeDocId.split("-")[1]);
     };
 
     this.uploader.onAfterAddingFile =(fileItem: any) => {
@@ -54,11 +80,13 @@ export class FileUploadComponent implements OnInit {
     }
 
     this.uploader.onSuccessItem=(fileItem: any, response: string, status: number, headers: any)=>{
+      this.utilService.setLoaderState(false);
       this.popAlert("Info","success","Document(s) uploaded successfully!"); 
+      this.utilService.setDocList(JSON.parse(response));
         setTimeout(() => {
           if(this.uploadType=='multi'){
              this.uploader.clearQueue();
-          }
+          }  
       }, 2000)  
     }
   }
@@ -79,6 +107,7 @@ changeType(i,type){
           }
       });
       if(!dataInvalid){
+        this.utilService.setLoaderState(true);
         this.uploader.uploadAll()
       }
   }
@@ -93,6 +122,7 @@ uploadOneFile(item){
         }
     });
     if(!dataInvalid){
+      this.utilService.setLoaderState(true);
       item.upload();
     }
 }

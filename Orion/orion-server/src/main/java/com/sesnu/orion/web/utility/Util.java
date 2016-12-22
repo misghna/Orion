@@ -1,5 +1,12 @@
 package com.sesnu.orion.web.utility;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
@@ -12,7 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.TimeZone;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -21,17 +27,31 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.encrypt.Encryptors;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
 import org.springframework.stereotype.Component;
 
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.services.sns.AmazonSNSClient;
+import com.amazonaws.AmazonClientException;
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
+import com.amazonaws.services.s3.model.GetObjectRequest;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.sns.model.MessageAttributeValue;
 import com.amazonaws.services.sns.model.PublishRequest;
 import com.amazonaws.services.sns.model.PublishResult;
+import com.sesnu.orion.dao.UserDAO;
+import com.sesnu.orion.web.model.TCPResponse;
+import com.sesnu.orion.web.model.User;
+
+
 
 
 @Component
@@ -39,6 +59,9 @@ public class Util {
 	
 	@Autowired
 	SnsConfiguration cnsConf; 
+	
+	@Autowired
+	ConfigFile conf;
 	
 	static List<String> monthName= Arrays.asList(new String[]{"ALL","JAN", "FEB", "MAR", "APR", "MAY", "JUN","JUL", "AUG", "SEP", "OCT", "NOV", "DEC"});
 
@@ -90,6 +113,7 @@ public class Util {
 				"javax.net.ssl.SSLSocketFactory");
 		props.put("mail.smtp.auth", "true");
 		props.put("mail.smtp.port", "465");
+		
 
 		Session session = Session.getDefaultInstance(props,
 			new javax.mail.Authenticator() {
@@ -119,7 +143,6 @@ public class Util {
 	public void sendText(String txt,String phoneNo) {
         String message = "[Anseba web] \n" + txt;
         String phoneNumber = phoneNo;
-        System.out.println("sending sms to " +  phoneNo);
         Map<String, MessageAttributeValue> smsAttributes = 
                 new HashMap<String, MessageAttributeValue>();
         smsAttributes.put("AWS.SNS.SMS.SenderID", new MessageAttributeValue()
@@ -132,13 +155,56 @@ public class Util {
 	}
 
 	
+	public TCPResponse readFromS3(String key) throws IOException {
+      AmazonS3 s3client = new AmazonS3Client(cnsConf.getAwsCred());
+      try {
+	    S3Object s3object = s3client.getObject(new GetObjectRequest(
+	    		cnsConf.getBucketName(), key));
+	    InputStream in = s3object.getObjectContent();
+
+	    return new TCPResponse("Ok",200,in);
+	  }catch(AmazonServiceException ase){
+		  return new TCPResponse(ase.getMessage(),ase.getStatusCode(),null);
+	  }
+
+	}
+	
+	
+	public TCPResponse writeToS3(byte[] bytes, String fileName){
+        AmazonS3 s3client = new AmazonS3Client(cnsConf.getAwsCred());
+        try {
+            InputStream stream = new ByteArrayInputStream(bytes);
+            ObjectMetadata meta = new ObjectMetadata();
+            meta.setContentLength(bytes.length);
+ //           meta.setContentType("application/pdf");
+            s3client.putObject(cnsConf.getBucketName(), fileName, stream, meta);
+            s3client.setObjectAcl(cnsConf.getBucketName(), fileName, CannedAccessControlList.PublicRead);
+            return new TCPResponse("Ok",200,null);
+         } catch (AmazonServiceException ase) {
+            return new TCPResponse(ase.getMessage(),ase.getStatusCode(),null);
+        } catch (AmazonClientException ace) {
+            return new TCPResponse(ace.getMessage(),null,null);
+        }
+	}
+	
+	public TCPResponse deleteS3File(String keyName){
+        AmazonS3 s3client = new AmazonS3Client(cnsConf.getAwsCred());
+        try {
+        	s3client.deleteObject(new DeleteObjectRequest(cnsConf.getBucketName(), keyName));
+        		return new TCPResponse("Ok",200,null);
+	        } catch (AmazonServiceException ase) {
+	        	return new TCPResponse(ase.getMessage(),ase.getStatusCode(),null);
+	        } catch (AmazonClientException ace) {
+	        	return new TCPResponse(ace.getMessage(),null,null);
+	        }
+	}
+	
 	private void sendSMSMessage(String message, 
 			String phoneNumber, Map<String, MessageAttributeValue> smsAttributes) {
 	        PublishResult result = cnsConf.amazonSNS().publish(new PublishRequest()
 	                        .withMessage(message)
 	                        .withPhoneNumber(phoneNumber)
 	                        .withMessageAttributes(smsAttributes));
-	        System.out.println("hello" + result); // Prints the message ID.
 	}
 	
 	public String encrypText(String clearText){
@@ -168,6 +234,7 @@ public class Util {
 	    }
 	}
 	
+	
 	public static String parseDate(Date date){
 		DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 		String reportDate = df.format(date);
@@ -187,6 +254,23 @@ public class Util {
 	 
 	public static String parseError(String errMsg){
 		return "*$Start$* " + errMsg + " *$End$*";
+	}
+	
+	public static String getBuildTime(ServletContext context) throws IOException{
+		InputStream input = context.getResourceAsStream("/META-INF/MANIFEST.MF");
+		BufferedReader reader=new BufferedReader(new InputStreamReader(input, "UTF-8"));
+		String line = "";
+		while ((line = reader.readLine()) != null) {
+		    if(line.indexOf("Build-Time")>=0){
+		    	return line;
+		    }
+		}
+		return "";
+
+	}
+	
+	public User getDevUser(UserDAO userDao){
+		return userDao.getUserByEmail(conf.getProp().get("devEmail").toString());
 	}
 }
 

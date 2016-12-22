@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sesnu.orion.dao.PaymentDAO;
+import com.sesnu.orion.web.model.PayView;
 import com.sesnu.orion.web.model.Payment;
 import com.sesnu.orion.web.utility.Util;
 
@@ -31,10 +32,15 @@ public class PaymentController {
 	
 
 	@RequestMapping(value = "/api/user/pay/{orderRef}", method = RequestMethod.GET)
-	public @ResponseBody List<Payment> items(@PathVariable("orderRef") long orderRef,
+	public @ResponseBody List<PayView> items(@PathVariable("orderRef") String orderRef,
 			HttpServletResponse response) throws IOException {
 
-		List<Payment> pays = payDao.list(orderRef);
+		List<PayView> pays =null;
+		if(orderRef.equals("all")){
+			 pays = payDao.listAll();
+		}else{
+		 pays = payDao.listByOrderRef(Long.parseLong(orderRef));
+		}
 		if(pays.size()>0){
 			return pays;
 		}
@@ -44,14 +50,14 @@ public class PaymentController {
 	
 	
 	@RequestMapping(value = "/api/user/pay", method = RequestMethod.POST)
-	public @ResponseBody List<Payment> addItem(HttpServletResponse response,@RequestBody Payment pay)
+	public @ResponseBody List<PayView> addItem(HttpServletResponse response,@RequestBody Payment pay)
 			throws Exception {
 		
 		pay.setUpdatedOn(Util.parseDate(new Date(),"/"));
 		pay.setId(null);
 		payDao.saveOrUpdate(pay);
 		
-		List<Payment> pays = payDao.list(pay.getOrderRef());
+		List<PayView> pays = payDao.listByOrderRef(pay.getOrderRef());
 		if(pays.size()>0){
 			return pays;
 		}
@@ -62,7 +68,7 @@ public class PaymentController {
 	
 	
 	@RequestMapping(value = "/api/user/pay", method = RequestMethod.PUT)
-	public @ResponseBody List<Payment> updateItem(HttpServletResponse response,
+	public @ResponseBody List<PayView> updateItem(HttpServletResponse response,
 			@RequestBody Payment pay)
 			throws Exception {
 		
@@ -73,7 +79,7 @@ public class PaymentController {
 		pay.setUpdatedOn(Util.parseDate(new Date(),"/"));
 		payDao.saveOrUpdate(pay);
 		
-		List<Payment> Payments = payDao.list(pay.getOrderRef());
+		List<PayView> Payments = payDao.listByOrderRef(pay.getOrderRef());
 		if(Payments.size()>0){
 			return Payments;
 		}
@@ -86,13 +92,13 @@ public class PaymentController {
 
 	@RequestMapping(value = "/api/user/pay/{id}", method = RequestMethod.DELETE)
 	
-	public @ResponseBody List<Payment> deleteItem(@PathVariable("id") long id,
+	public @ResponseBody List<PayView> deleteItem(@PathVariable("id") long id,
 			HttpServletResponse response) throws Exception {
 		Payment pay = payDao.get(id);
 		long orderRef= pay.getOrderRef();
 		if(pay != null){
 			payDao.delete(pay);
-			List<Payment> pays = payDao.list(orderRef);
+			List<PayView> pays = payDao.listByOrderRef(orderRef);
 			if(pays.size()>0){
 				return pays;
 			}

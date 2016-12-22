@@ -61,6 +61,7 @@ public class SalesPlanController {
 	public @ResponseBody List<SalesView> addItem(HttpServletResponse response,@RequestBody SalesView sv,
 			@PathVariable("year") int year,@PathVariable("month") String month)
 			throws Exception {
+		
 		SalesPlan sp = new SalesPlan(sv);
 		sp.setUpdatedOn(Util.parseDate(new Date(),"/"));
 		sp.setId(null);

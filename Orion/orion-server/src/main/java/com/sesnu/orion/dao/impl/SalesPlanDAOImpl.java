@@ -28,13 +28,22 @@ public class SalesPlanDAOImpl implements SalesPlanDAO {
 	@Override
 	public List<SalesView> list(int year,String month) {
 		String hql = null;Query query = null;
-		if(month.equals("next3")){
+		if(month.equals("next6")){
 			Date date = new Date();
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(date);
-			int mon = cal.get(Calendar.MONTH);int mon3 = mon+3;
+			int mon1 = cal.get(Calendar.MONTH);
+			int year1 = cal.get(Calendar.YEAR);
+			cal.add(Calendar.MONTH, 6);
+			int mon2 = cal.get(Calendar.MONTH);
 			int year2 = cal.get(Calendar.YEAR);
-			hql = "from SalesView where year = " + year2 + " and mon >= " + mon + " and mon <" + mon3 ;
+			hql = "from SalesView where ";
+			if (year1==year2){
+				hql += "year =" + year1 + " and mon >=" + mon1 + " and mon <="+ mon2;
+			}else{
+				hql += "(year =" + year1 + " and mon >=" + mon1 + " and mon <=12) or (year =" + year2 + " and mon >=1 and mon <="+mon2+")";
+			}
+			System.out.println(hql);
 			query = sessionFactory.getCurrentSession().createQuery(hql);
 		}else{
 			hql = "from SalesView where year = :year and month = :month";

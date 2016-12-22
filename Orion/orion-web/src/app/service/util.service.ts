@@ -26,6 +26,15 @@ export class UtilService {
 
   private searchTxt = new Subject<boolean>();
   currentSearchTxt$ = this.searchTxt.asObservable();
+
+  private delItem = new Subject<boolean>();
+  currentdelItem$ = this.delItem.asObservable();
+
+  private docList = new Subject<boolean>();
+  currentDocList$ = this.docList.asObservable();
+  
+
+  
   
 
 constructor(public router: Router) {
@@ -33,8 +42,9 @@ constructor(public router: Router) {
 }
 
     redirectToLogin(){
-      this.router.navigate(['/login']);
+       window.location.replace("/");
     }
+
 
     getBaseUrl(){
       if(isDevMode()){
@@ -73,9 +83,19 @@ constructor(public router: Router) {
        this.toolsOpt.next(option);
     }
 
+    
+    setDocList(docs){
+      this.docList.next(docs);
+    }
+
     setSearchTxt(txt){
       this.searchTxt.next(txt);
     }
+
+    deleteItem(param){
+      this.delItem.next(param);
+    }
+
 
 
     getErrorMsg(error){

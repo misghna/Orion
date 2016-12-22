@@ -6,7 +6,10 @@
     html, body { height: 100%; }
 </style>
 
-<div >
+<input type="file" id="fileSelector" style="display:none" ng2FileSelect [uploader]="uploader" multiple /><br/>
+
+
+<div *ngIf="uploader.queue.length > 0">
 
 <div class="alert alert-auto" alert-dismissible
     [ngClass]="{
@@ -19,10 +22,9 @@
   <strong>{{alertWin.type}}!</strong> {{alertWin.msg}}
 </div>
 
-<input type="file" id="fileSelector" style="display:none" ng2FileSelect [uploader]="uploader" multiple /><br/>
 
 
-            <table width="100%" class="table tableFont" *ngIf="uploader.queue.length > 0">
+            <table width="100%" class="table tableFont" >
                 <thead>
                 <tr class="tbl-header">
                     <th >No</th>
@@ -59,17 +61,17 @@
                         <span *ngIf="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
                     </td>
                     <td nowrap>
-                        <button type="button" class="btn btn-success btn-xs"
+                        <button type="button" class="btn btn-default btn-xs"
                                 (click)="uploadOneFile(item)" [disabled]="item.isReady || item.isUploading || item.isSuccess">
                             <span class="glyphicon glyphicon-upload"></span> Upload
                         </button>
                      </td><td>
-                        <button type="button" class="btn btn-warning btn-xs"
+                        <button type="button" class="btn btn-default btn-xs"
                                 (click)="item.cancel()" [disabled]="!item.isUploading">
                             <span class="glyphicon glyphicon-ban-circle"></span> Cancel
                         </button>
                         </td><td>
-                        <button type="button" class="btn btn-danger btn-xs"
+                        <button type="button" class="btn btn-default btn-xs"
                                 (click)="item.remove()">
                             <span class="glyphicon glyphicon-trash"></span> Remove
                         </button>
@@ -83,17 +85,17 @@
                         </div>
                     </td>
                     <td>
-                        <button type="button" class="btn btn-success btn-xs"
+                        <button type="button" class="btn btn-default btn-xs"
                         (click)="uploadAllFiles($event)" [disabled]="!uploader.getNotUploadedItems().length">
                             <span class="glyphicon glyphicon-upload"></span> Upload all
                         </button>
                      </td><td>
-                        <button type="button" class="btn btn-warning btn-xs"
+                        <button type="button" class="btn btn-default btn-xs"
                                 (click)="uploader.cancelAll()" [disabled]="!uploader.isUploading">
                             <span class="glyphicon glyphicon-ban-circle"></span> Cancel all
                         </button>
                      </td><td>
-                        <button type="button" class="btn btn-danger btn-xs"
+                        <button type="button" class="btn btn-default btn-xs"
                                 (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length">
                             <span class="glyphicon glyphicon-trash"></span> Remove all
                         </button>
@@ -102,5 +104,5 @@
                 </tr>
                 </tbody>
             </table>
-
+<hr style="border-top:1px dotted gray">
 </div>

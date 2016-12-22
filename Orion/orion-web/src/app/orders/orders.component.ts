@@ -4,7 +4,7 @@ import { FilterNamePipe } from '../pipes/pipe.filterName';
 import { OrdersService } from '../orders/orders.service';
 import { UtilService } from '../service/util.service';
 import { SalesPlanService } from '../sales-plan/sales-plan.service';
-import { Router } from '@angular/router';
+import { Router,ActivatedRoute, Params } from '@angular/router';
 
 declare var jQuery : any;
 
@@ -32,15 +32,29 @@ export class OrdersComponent implements OnInit {
   headers = [];
   filterQuery = "";
   bntOption = "Search";
-  selectedDate;subscription;
+  selectedDate;subscription;activeOrderId;
   salesPlanList= []; filteredSalesPlanList=[];
 
   constructor(private utilService :UtilService,private orderService:OrdersService, private el: ElementRef,
-              private miscService:MiscService, private salesService:SalesPlanService,public router: Router) {
-    this.subscription = utilService.currentSearchTxt$.subscribe(txt => {this.search(txt);});
+              private miscService:MiscService, private salesService:SalesPlanService,public router: Router ,public route: ActivatedRoute) {
 
+    this.subscription = utilService.currentSearchTxt$.subscribe(txt => {this.search(txt);});
+    this.activeOrderId = this.route.snapshot.params['id'];
     this.optionsList = [{'name':'Add New Order','value':'addNew'}];
-    
+    this.utilService.setToolsContent(this.optionsList);
+
+    // tools listener
+    utilService.currentToolsOptCont$.subscribe(
+      opt => { 
+        console.log(opt);
+        this.option(opt);
+    }); 
+
+    utilService.currentdelItem$.subscribe(
+      opt => { 
+        this.delete();
+    }); 
+
     this.monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN","JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
     
     this.pageName;
@@ -60,10 +74,15 @@ export class OrdersComponent implements OnInit {
                       {'name':'Base Size', 'value':'baseSize','j':'c'}, {'name':'Base Unit','value':'baseUnit','j':'c'},
                       {'name':'Qty/pck','value':'qtyPerPack','j':'c'},{'name':'pck/cont','value': 'pckPerCont','j':'c'},
                       {'name':'Cont Size','value':'contSize','j':'c'},{'name':'Cont Qnt','value': 'contQnt','j':'c'},
-                      {'name':'Dest Port','value':'destinationPort','j':'c'},{'name':'Latest ETA','value':'latestETA','j':'c'},
+                      {'name':'Importer','value':'importer','j':'c'},{'name':'Dest Port','value':'destinationPort','j':'c'},
+                      {'name':'Latest ETA','value':'latestETA','j':'c'},{'name':'Inv. No.','value':'invNo','j':'c'},
                       {'name':'OrderedBy','value':'orderedBy','j':'c'}, {'name':'Updated On','value':'updatedOn','j':'l'}];
       
-        this.loadAll(2000,'latest');
+       if(this.activeOrderId=="all"){
+         this.loadAll(2000,'latest');
+       }else{
+         this.getOrderById(this.activeOrderId);
+       }
         this.getItemNameBrandList();
         this.populateYear();
         this.getSalesPlan();
@@ -89,6 +108,7 @@ updateBudgetRef(plan){
     return;
   }
   this.itemDetail['budgetRef'] = plan.id;
+  this.itemDetail['itemId'] = plan.itemId;
   this.itemDetail['item'] = plan.name;
   this.itemDetail['brand'] = plan.brand;
   this.itemDetail['baseSize'] = plan['baseSize'];
@@ -108,7 +128,7 @@ updateNameBrand(nameBrand){
 
 getSalesPlan(){
     var setRev :boolean;
-     this.salesService.getSalesPlan(2017,'next3')  // TBD
+     this.salesService.getSalesPlan(2017,'next6')  // TBD
       .subscribe(
           response => {
               this.salesPlanList = response; 
@@ -122,7 +142,6 @@ getSalesPlan(){
 
 triggerDelModal(event){
     event.preventDefault();
-    console.log("triigered");
     var modalInfo = {"title" : "Order", "msg" : this.activeProductHeader.split('-')[1],"task" :"myTask"};
     this.utilService.showModalState(modalInfo);
 }
@@ -178,6 +197,24 @@ updateBaseUnit(unit){
         );
   }
 
+  getOrderById(id){
+      this.orderService.getOrderById(id)
+      .subscribe(
+          response => {
+              console.log(response);
+              var resArray = [];resArray.push(response);
+              this.setData(resArray);    
+          },
+          error => {
+            if(error.status==404){
+               this.popAlert("Info","Info","Order for this time range not found!");          
+            }else{
+               this.popAlert("Error","danger","Something went wrong, please try again later!");          
+            }
+          }
+        );
+  }
+
   contains(myArray,str){
     var i = myArray.length;
     while (i--) {
@@ -187,11 +224,14 @@ updateBaseUnit(unit){
     }
     return false;
   }
+  
   setData(response){
+     if(response.length>0){
       var date = new Date(response[0]['createdOn']);
       this.selectedMonth = this.monthNames[date.getMonth()];
       this.selectedYear = date.getFullYear();
       this.returnedRange = this.selectedMonth+ " " + this.selectedYear;
+     }
       this.responseData=response;
       this.data = response;  
   }
@@ -199,10 +239,7 @@ updateBaseUnit(unit){
 
     addUpdateOrder(event){
       event.preventDefault();
-        if(new Date(this.itemDetail['latestETA']) < new Date() ){
-          this.popAlert("Error","danger","ETA cant be less than today!");
-          return;
-        }
+
         this.itemDetail['orderedBy'] = JSON.parse(this.utilService.getActiveUser())['fname'];
       
         if(this.itemDetail['budgetRef'] != 'none' ){
@@ -210,33 +247,34 @@ updateBaseUnit(unit){
            var selPlan= this.salesPlanList.filter(plan => {
               if(plan.id!=null && plan.id == this.itemDetail['budgetRef'] ) return plan;
             });
+
             selPlan = selPlan.length>0 ? selPlan[0] : selPlan;
             if(selPlan['name']!= this.itemDetail['item']){
-              this.popAlert("Error","danger","Product name doesnt much with refrenced budget item!");
+              this.popAlert("Error","danger","Product name doesnt much with refrenced budget item or set budget reference to none!");
               return;
             }
             if(selPlan['brand']!= this.itemDetail['brand']){
-              this.popAlert("Error","danger","Brand name doesnt much with refrenced budget item!");
+              this.popAlert("Error","danger","Brand name doesnt much with refrenced budget item or set budget reference to none!");
               return;
             }
             if(selPlan['baseUnit']!= this.itemDetail['baseUnit']){
-              this.popAlert("Error","danger","Base unit doesnt much with refrenced budget item!");
+              this.popAlert("Error","danger","Base unit doesnt much with refrenced budget item or set budget reference to none!");
               return;
             }
             if(selPlan['baseSize']!= this.itemDetail['baseSize']){
-              this.popAlert("Error","danger","Base size doesnt much with refrenced budget item!");
+              this.popAlert("Error","danger","Base size doesnt much with refrenced budget item or set budget reference to none!");
               return;
             }
             if(selPlan['qtyPerPack']!= this.itemDetail['qtyPerPack']){
-              this.popAlert("Error","danger","quantity per pack doesnt much with refrenced budget item!");
+              this.popAlert("Error","danger","quantity per pack doesnt much with refrenced budget item or set budget reference to none!");
               return;
             }
             if(selPlan['itemOrigin']!= this.itemDetail['itemOrigin']){
-              this.popAlert("Error","danger","Item Origin doesnt much with refrenced budget item!");
+              this.popAlert("Error","danger","Item Origin doesnt much with refrenced budget item or set budget reference to none!");
               return;
             }
             if(selPlan['destinationPort']!= this.itemDetail['destinationPort']){
-              this.popAlert("Error","danger","Destination port doesnt much with refrenced budget item!");
+              this.popAlert("Error","danger","Destination port doesnt much with refrenced budget item or set budget reference to none!");
               return;
             }
         }else{
@@ -255,7 +293,6 @@ updateBaseUnit(unit){
         }
 
         this.itemDetail['destinationPort'] = this.capitalizeFirstLetter(this.itemDetail['destinationPort']);
-        this.itemDetail['itemOrigin'] = this.capitalizeFirstLetter(this.itemDetail['itemOrigin']);
 
         if (this.taskType=="Add"){
             var year = this.selectedYear == 'Select Year' ? 2000 : this.selectedYear;
@@ -269,7 +306,7 @@ updateBaseUnit(unit){
                 },
                 error => {
                   if(error.status==400){
-                    this.popAlert("Error","danger","Product Name or HSCode already exists, please check & try again!");
+                    this.popAlert("Error","danger",this.utilService.getErrorMsg(error));
                   }else{
                     this.popAlert("Error","danger","Something went wrong, please try again later!");
                   }
@@ -312,11 +349,7 @@ updateBaseUnit(unit){
       this.router.navigate(['/import/' + type +  '/' + refId]);
     }
 
-    delete(event){
-      if(this.activeProductHeader.indexOf('Plan for ')>0){
-         this.deleteCurrentPlan();
-         return;
-      }
+    delete(){
       var id = this.activeProductHeader.split('-')[0];
       this.orderService.deleteOrderById(id,this.selectedYear,this.selectedMonth)
       .subscribe(
@@ -325,6 +358,7 @@ updateBaseUnit(unit){
               this.popAlert("Info","success","Plan successfully deteled!"); 
           },
           error => {
+              this.setData([]);
               this.popAlert("Error","danger","Something went wrong, please try again later!");
           }
         );
@@ -348,7 +382,11 @@ updateBaseUnit(unit){
                     this.setData(response);     
                 },
                 error => {      
+                  if(error.status==400){
+                    this.popAlert("Error","danger",this.utilService.getErrorMsg(error));
+                  }else{
                     this.popAlert("Error","danger","Something went wrong, please try again later!");
+                  }
                 }
               );
     }
@@ -422,18 +460,18 @@ updateBaseUnit(unit){
       }
     }
 
-   deleteCurrentPlan(){
-     this.orderService.deleteOrder(this.selectedYear,this.selectedMonth)
-      .subscribe(
-          response => {
-              this.setData(response);  
-              this.popAlert("Info","success","Plan successfully deteled!"); 
-          },
-          error => {
-              this.popAlert("Error","danger","Something went wrong, please try again later!");
-          }
-        );
-    }
+  //  deleteorder(){
+  //    this.orderService.deleteOrder(this.selectedYear,this.selectedMonth)
+  //     .subscribe(
+  //         response => {
+  //             this.setData(response);  
+  //             this.popAlert("Info","success","Plan successfully deteled!"); 
+  //         },
+  //         error => {
+  //             this.popAlert("Error","danger","Something went wrong, please try again later!");
+  //         }
+  //       );
+  //   }
 
     replaceAll(string,old,newStr){
       return string.split('old').join('newStr');

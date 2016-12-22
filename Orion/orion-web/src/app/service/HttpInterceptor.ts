@@ -11,7 +11,7 @@ import 'rxjs/add/operator/do';
 
 export class HttpInterceptor extends Http {
 
-    sent = 0;total =0;state =false;
+    sent = 0;total =0;state =false;refererReset=false;
     constructor(connectionBackend: ConnectionBackend, defaultOptions: RequestOptions,public util:UtilService) {
         super(connectionBackend, defaultOptions);
 
@@ -21,6 +21,7 @@ export class HttpInterceptor extends Http {
         this.util.setLoaderState(true);
         this.state=true;
         this.sent = this.sent + 1 ;
+
         return this.intercept(super.request(url, options));
     }
 
@@ -43,35 +44,6 @@ export class HttpInterceptor extends Http {
     }
 
     intercept(observable: Observable<Response>): Observable<Response> {
-           // this.total = this.total + 1 ;           
-
-    //    var myObservable =  observable.subscribe(r => {
-                // this.total = this.total + 1;
-                // if(this.total >= this.sent * 2){
-                //  this.util.setLoaderState(false);
-                // }
-    //         },
-    //         error => {
-    //              if (error.status  === 401) {
-    //                 console.error("401 error");
-    //                 this.util.redirectToLogin();
-    //                 return Observable.empty();
-    //             } else {
-    //                 return Observable.throw(error);
-    //             }             
-
-    //         }
-    //     );
-        //  return observable.catch((err, source) => {
-        //     if (err.status  === 401) {
-        //             console.error("401 error");
-        //         //  this.navigator.navigateToLogin({ redirectPath: "sections" });
-        //             this.util.redirectToLogin();
-        //             return Observable.empty();
-        //         } else {
-        //             return Observable.throw(err);
-        //         }
-        // });
 
         return observable.catch(this.onCatch)
             .do((res: Response) => {
@@ -87,17 +59,28 @@ export class HttpInterceptor extends Http {
             if(this.total >= this.sent * 2){
                 this.util.setLoaderState(false);
             }
+
+       //      console.log("catch()  " + error);
+
             if (error.status  === 401) {
                 console.error("401 error");
-                this.util.redirectToLogin();
+                window.location.replace("/login");
                 return Observable.empty();
-            } else {
+            } else if (error.status ==0 || error.status==302){
+                console.error("302 redirecting..");
+
+                 return Observable.empty();
+            }else {
                 return Observable.throw(error);
             }
     //    return Observable.throw(error);
     }
 
     private onSubscribeSuccess(res: Response): void {
+
+        if(res.url.indexOf("login")>=0 ){
+            this.util.redirectToLogin();
+        }
        this.total = this.total + 1;
         if(this.total >= this.sent * 2){
             this.util.setLoaderState(false);
@@ -105,6 +88,7 @@ export class HttpInterceptor extends Http {
     }
 
     private onSubscribeError(error: any): void {
+   //     console.log("error()  " + error);
         this.total = this.total + 1;
         if(this.total >= this.sent * 2){
             this.util.setLoaderState(false);

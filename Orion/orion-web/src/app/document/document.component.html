@@ -1,0 +1,124 @@
+
+   <app-file-upload ></app-file-upload> 
+
+<div class="alert alert-auto" alert-dismissible
+    [ngClass]="{
+      'hidden' : alertHidden,
+      'alert-danger' :  alertType == 'Error',
+      'alert-success' : alertType == 'Info'
+    }"
+  >
+<a  class="close" data-dismiss="alert" aria-label="close">&times;</a>
+  <strong>{{alertType}}!</strong> {{itemMsg}}
+</div>
+
+<div id="wrapper" style="text-align: center"> 
+  <div *ngIf="activeOrder != null" class="dropdown pull-center">
+    Documents For : {{activeOrder.item + '(' + activeOrder.brand + ') ordered on '}} {{ activeOrder.createdOn | date: 'dd/MM/yyyy'}}
+  </div>
+  <div *ngIf="activeOrder==null" class="dropdown pull-center">
+    Documents : [{{docType}}]
+  </div>
+</div>
+
+<div id="rangeSelector" [class.hidden]="rangeSelectorHidden"><br>
+    <table>
+      <tr>
+      <td>
+        <div class="dropdown">
+        <button class="btn btn-default dropdown-toggle" type="button" id="yearBtn" #yearBtn data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="true" style="min-width:150px">
+        {{selectedYear}}
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" id="yearSelector">
+          <li *ngFor ="let year of years;">
+            <a (click)="selectedYear = year">{{year}}</a>
+          </li>
+        </ul>
+      </div>
+    </td>
+  
+  <td>
+    <div class="dropdown">
+        <button class="btn btn-default dropdown-toggle" type="button" id="monthBtn" #monthBtn style="min-width:150px"
+        data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" >
+            {{selectedMonth}}
+            <span class="caret"></span>
+          </button>
+          <ul id="monthSelector" #monthSelector class="dropdown-menu " aria-labelledby="dropdownMenu2" >
+            <li *ngFor ="let month of monthNames"><a (click)="selectedMonth = month">{{month}}</a></li>
+          </ul>
+      </div>
+    </td>
+
+  <td>
+     <button #bntOption1 class="btn btn-default" (click)="execute(bntOption1.value)" value ="{{bntOption}}" >{{bntOption}}</button>
+  </td>
+  </tr>
+</table>
+</div>
+
+<form (submit)="addUpdate($event)">
+<table class="table table-striped tableFont" [mfData]="data" #mf="mfDataTable" [mfRowsOnPage]="20" >
+    <thead>
+    <tr>
+        <th class="text-center"
+            [ngClass]="{
+            'text-center' : tableHeader.j=='c' || tableHeader.j=='x',
+            'text-left' : tableHeader.j=='l'
+            }"
+         *ngFor="let tableHeader of headers; let i = index"> 
+            <mfDefaultSorter by="{{tableHeader.value}}"><font class ="tbl-header">{{tableHeader.name}}</font></mfDefaultSorter>
+        </th>
+        <th style="width: 5%;" class ="tbl-header">Action</th>
+    </tr>
+    </thead>
+    <tbody>
+
+      <tr *ngFor="let item of mf.data; let i = index">
+         <td class="text-center" >{{i+1 + mf.rowsOnPage*(mf.activePage -1)}}</td>     
+         <td class="text-center"
+            [ngClass]="{
+            'text-center' : tableHeader.j=='c',
+            'text-left' : tableHeader.j=='l',
+            'hidden' : tableHeader.j=='x'
+            }"
+         *ngFor="let tableHeader of headers; let i = index">
+              <div *ngIf = "tableHeader.value != 'paymentDate'"> 
+                {{item[tableHeader.value]}}
+              </div>
+              <div *ngIf = "tableHeader.value == 'paymentDate'"> 
+                {{item[tableHeader.value] | date: 'dd/MM/yyyy'}}
+              </div>
+            </td>
+        <td class="text-center" >
+            <div class="dropdown" style="border: 0">
+            <button id= "{{item.id.toString() + '-' + item.type}}" #dropButton class="btn btn-default dropdown-toggle"
+                (click)="activeProductHeader = dropButton.id"
+                 style="border:0px solid transparent !important;background-color:transparent" type="button" id="dropdownMenu2"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <span class="caret"></span>
+            </button>
+            <ul id="{{item.id.toString() + '-' + item.supplier}}" #dropDownBox class="dropdown-menu dropdown-menu-right" 
+                 aria-labelledby="dropdownMenu2">
+                <li><a id= "{{item.path}" href="{{'documents/' + item.path}}" target="_blank">Open</a></li>
+                 <li role="separator" class="divider"></li>
+                <li><a #deleteitem (click)="triggerDelModal($event)">Delete</a></li>
+            </ul>
+            </div>
+        </td>
+      </tr>
+    </tbody>
+    
+    <tfoot>    
+    <tr>
+        <td colspan="17" > <font class ="tbl-header">
+            <mfBootstrapPaginator [rowsOnPageSet]="[5,20,25]"></mfBootstrapPaginator></font>
+        </td>
+    </tr>
+    </tfoot>
+</table>
+
+</form>
+

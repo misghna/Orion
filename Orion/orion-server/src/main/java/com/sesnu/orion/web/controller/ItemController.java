@@ -38,12 +38,13 @@ public class ItemController {
 	@RequestMapping(value = "/api/admin/item", method = RequestMethod.POST)
 	public @ResponseBody List<Item> addItem(HttpServletResponse response,@RequestBody Item item)
 			throws Exception {
-		if(itemDao.isExists(item.getName(), item.getBrand())){
-			response.sendError(400);
+		if(item.getRevision()==null){
+			response.sendError(400,"invalid revision no");
 			return null;
 		}
+		item.setUpdatedOn(Util.parseDate(new Date(),"-"));
 		itemDao.saveOrUpdate(item);
-		return itemDao.list(item.getRevision().toString());
+		return itemDao.list(Util.parseDate(item.getRevision()));
 
 	}
 	
@@ -57,7 +58,7 @@ public class ItemController {
 			return null;
 		}
 		item.setRevision(orginal.getRevision());
-		item.setUpdatedOn(Util.parseDate(new Date(),"/"));
+		item.setUpdatedOn(Util.parseDate(new Date(),"-"));
 		itemDao.saveOrUpdate(item);
 		return itemDao.list(Util.parseDate(orginal.getRevision()));
 
@@ -126,7 +127,8 @@ public class ItemController {
 		Item item = itemDao.get(id);
 		if(item != null){
 			itemDao.delete(id);
-			return itemDao.list(item.getRevision().toString());
+			System.out.println("********************** returning revision " + item.getRevision().toString());
+			return itemDao.list(util.parseDate(item.getRevision()));
 		}
 		response.sendError(400);
 		return null;

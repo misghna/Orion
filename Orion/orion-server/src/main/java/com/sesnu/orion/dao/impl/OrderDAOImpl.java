@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sesnu.orion.dao.OrderDAO;
 import com.sesnu.orion.web.model.Item;
 import com.sesnu.orion.web.model.Order;
+import com.sesnu.orion.web.model.OrderView;
 @SuppressWarnings("unchecked")
 @Transactional
 @Repository
@@ -23,20 +24,38 @@ public class OrderDAOImpl implements OrderDAO {
 	}
 
 	@Override
-	public Order list(long id) {
+	public OrderView list(long id) {
 		
-		return (Order) sessionFactory.getCurrentSession().get(Order.class, id);
+		return (OrderView) sessionFactory.getCurrentSession().get(OrderView.class, id);
 
 	}
 	
 	@Override
-	public List<Order> list(int year,int month) {
+	public List<OrderView> listAll() {	
+		String hql = "from OrderView";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		return (List<OrderView>) query.list();
+
+	}	
+	
+	@Override
+	public List<OrderView> list(int year,int month) {
 		
-		String hql = "from Order " + getDateRange(year,month);
+		String hql = "from OrderView " + getDateRange(year,month);
 		Query query = sessionFactory.getCurrentSession().createQuery(hql)
 		.setInteger("year",year)
 		.setInteger("month",month);
-		return (List<Order>) query.list();
+		return (List<OrderView>) query.list();
+
+	}	
+	
+	@Override
+	public List<OrderView> getOrdersByInvNo(String invNo) {
+		
+		String hql = "from OrderView where lower(invNo) = :invNo";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql)
+		.setString("invNo",invNo.toLowerCase());
+		return (List<OrderView>) query.list();
 
 	}	
 	
@@ -50,18 +69,18 @@ public class OrderDAOImpl implements OrderDAO {
 	}
 	
 	@Override
-	public List<Order> getOrderByTime(int year,String month) {
+	public List<OrderView> getOrderByTime(int year,String month) {
 
-		String hql = "from Order where year = :year and month = :month";
+		String hql = "from Order OrderView year = :year and month = :month";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setParameter("year",year);
 		query.setParameter("month",month);
-		return (List<Order>) query.list();
+		return (List<OrderView>) query.list();
 	}	
 	
 	@Override
-	public Order get(long id) {
-		return (Order) sessionFactory.getCurrentSession().get(Order.class, id);
+	public OrderView get(long id) {
+		return (OrderView) sessionFactory.getCurrentSession().get(OrderView.class, id);
 	}
 
 	@Override

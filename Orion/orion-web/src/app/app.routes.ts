@@ -1,7 +1,6 @@
 // Import our dependencies
 import { Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
-import { LoginComponent } from './login/login.component';
 import { UsersComponent } from './users/users.component';
 import { RegisterComponent } from './register/register.component';
 import { PassRenewComponent } from './passrenew/passrenew.component';
@@ -20,20 +19,27 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
 
 // Define which component should be loaded based on the current URL
 export const routes: Routes = [
-  { path: '',   component: HomeComponent, canActivate: [AuthGuard] },
-  { path: 'login',  component: LoginComponent },
-  { path: 'logout',  component: LoginComponent },
+  { path: '',   component: HomeComponent},
+  // { path: '',   component: HomeComponent, canActivate: [AuthGuard] },
+  // { path: 'login',  component: LoginComponent },
+  // { path: 'logout',  component: LoginComponent },
+  { path: 'setting/items',  component: ItemsComponent },
   { path: 'setting/users',  component: UsersComponent },
   { path: 'setting/salesPlan',  component: SalesPlanComponent },
-  { path: 'import/orders',  component: OrdersComponent },
+
+  { path: 'import/order/:id',  component: OrdersComponent },
   { path: 'import/payment/:id',  component: PaymentComponent },
   { path: 'import/shipping/:id',  component: ShippingComponent },
   { path: 'import/bid/:id',  component: BidComponent },
-  { path: 'setting/items',  component: ItemsComponent },
-  { path: 'fileUpload',  component: FileUploadComponent },
+  
+  // { path: 'fileUpload',  component: FileUploadComponent },
   { path: 'document/:id',  component: DocumentComponent },
-  { path: 'other/register',  component: RegisterComponent },
+
+  { path: 'open/register',  component: RegisterComponent },
+  { path: 'open/passrenew',  component: PassRenewComponent },
+
+
   { path: 'other/changePassowrd',  component: ChangePasswordComponent },
-  { path: 'other/passrenew',  component: PassRenewComponent },
-  { path: '**',     component: LoginComponent },
+
+  { path: '**',     component: HomeComponent},
 ];

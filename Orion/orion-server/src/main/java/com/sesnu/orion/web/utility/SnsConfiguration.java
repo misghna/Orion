@@ -24,19 +24,25 @@ public class SnsConfiguration {
 	
 	@Bean
 	public AmazonSNS amazonSNS() {
-		String awsAccKey = util.decryptText(conf.getProp().getProperty("awsAccKey"));
-		String awsSecKey = util.decryptText(conf.getProp().getProperty("awsSecKey"));
-		
-		BasicAWSCredentials awsCreds = new BasicAWSCredentials(awsAccKey, awsSecKey);
-		AmazonSNSClient amazonSNSClient;
-		amazonSNSClient = new AmazonSNSClient(awsCreds);
-//		amazonSNSClient.setRegion(new Region());
-
-//		if (this.regionProvider != null) {
-//			amazonSNSClient.setRegion(this.regionProvider.getRegion());
-//		}
+//		String awsAccKey = util.decryptText(conf.getProp().getProperty("awsAccKey"));
+//		String awsSecKey = util.decryptText(conf.getProp().getProperty("awsSecKey"));
+//		
+//		BasicAWSCredentials awsCreds = new BasicAWSCredentials(awsAccKey, awsSecKey);
+		AmazonSNSClient amazonSNSClient = new AmazonSNSClient(getAwsCred());
 
 		return amazonSNSClient;
+	}
+	
+	public BasicAWSCredentials getAwsCred (){
+		String awsAccKey = util.decryptText(conf.getProp().getProperty("awsAccKey"));
+		String awsSecKey = util.decryptText(conf.getProp().getProperty("awsSecKey"));
+		BasicAWSCredentials awsCreds = new BasicAWSCredentials(awsAccKey, awsSecKey);
+		return awsCreds;
+	}
+	
+	
+	public String getBucketName(){
+		return conf.getProp().getProperty("s3BucketName");
 	}
 	
 }

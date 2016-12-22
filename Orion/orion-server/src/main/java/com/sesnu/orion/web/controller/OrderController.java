@@ -21,6 +21,7 @@ import com.sesnu.orion.dao.OrderDAO;
 import com.sesnu.orion.dao.OrderDAO;
 import com.sesnu.orion.web.model.Item;
 import com.sesnu.orion.web.model.Order;
+import com.sesnu.orion.web.model.OrderView;
 import com.sesnu.orion.web.model.Order;
 import com.sesnu.orion.web.model.Order;
 import com.sesnu.orion.web.utility.Util;
@@ -36,10 +37,10 @@ public class OrderController {
 	
 
 	@RequestMapping(value = "/api/user/order/{id}", method = RequestMethod.GET)
-	public @ResponseBody Order items(@PathVariable("id") long id,
+	public @ResponseBody OrderView items(@PathVariable("id") long id,
 				HttpServletResponse response) throws IOException {
 
-		Order order = orderDao.list(id);
+		OrderView order = orderDao.list(id);
 		if(order!=null){
 			return order;
 		}
@@ -47,20 +48,37 @@ public class OrderController {
 		return null;
 	}
 	
+	@RequestMapping(value = "/api/user/orders", method = RequestMethod.GET)
+	public @ResponseBody List<OrderView> getAll(
+				HttpServletResponse response) throws IOException {
+
+		List<OrderView> orders = orderDao.listAll();
+		if(orders!=null){
+			return orders;
+		}
+		response.sendError(404);
+		return null;
+	}
+	
 	@RequestMapping(value = "/api/user/order/{year}/{month}", method = RequestMethod.GET)
-	public @ResponseBody List<Order> items(@PathVariable("year") int year,
+	public @ResponseBody List<OrderView> items(@PathVariable("year") int year,
 			@PathVariable("month") String monthStr,HttpServletResponse response)
 						throws IOException {
 		int month =0;
 		if(year==0 || monthStr.equals("latest")){
 			String latestTime = orderDao.getLatest();
-			year = Integer.parseInt(latestTime.split("-")[0]);
-			month = Integer.parseInt(latestTime.split("-")[1].toString());
+			if(latestTime!=null){
+				year = Integer.parseInt(latestTime.split("-")[0]);
+				month = Integer.parseInt(latestTime.split("-")[1].toString());
+			}else{
+				response.sendError(404);
+				return null;
+			}
 		}else{
 			month =Util.getMonth(monthStr.trim());
 		}
 		
-		List<Order> Orders = orderDao.list(year,month);
+		List<OrderView> Orders = orderDao.list(year,month);
 		if(Orders.size()>0){
 			return Orders;
 		}
@@ -70,16 +88,21 @@ public class OrderController {
 	
 	
 	@RequestMapping(value = "/api/admin/order/{year}/{month}", method = RequestMethod.POST)
-	public @ResponseBody List<Order> addItem(HttpServletResponse response,@RequestBody Order order,
+	public @ResponseBody List<OrderView> addItem(HttpServletResponse response,@RequestBody Order order,
 			@PathVariable("year") int year,@PathVariable("month") String month)
 			throws Exception {
 		
+		List<OrderView> ord = orderDao.getOrdersByInvNo(order.getInvNo());
+		if(ord.size()>0){
+			response.sendError(400,Util.parseError("Invoice number is already assigned"));
+			return null;
+		}
 		order.setUpdatedOn(Util.parseDate(new Date(),"/"));
 		order.setId(null);
 		order.setCreatedOn(new Date());
 		orderDao.saveOrUpdate(order);
 		
-		List<Order> Orders = orderDao.list(year,Util.getMonth(month));
+		List<OrderView> Orders = orderDao.list(year,Util.getMonth(month));
 		if(Orders.size()>0){
 			return Orders;
 		}
@@ -90,10 +113,16 @@ public class OrderController {
 	
 	
 	@RequestMapping(value = "/api/admin/order/{year}/{month}", method = RequestMethod.PUT)
-	public @ResponseBody List<Order> updateItem(HttpServletResponse response,
+	public @ResponseBody List<OrderView> updateItem(HttpServletResponse response,
 			@RequestBody Order order,@PathVariable("year") int year,
 			@PathVariable("month") String month)
 			throws Exception {
+		
+		List<OrderView> ord = orderDao.getOrdersByInvNo(order.getInvNo());
+		if(ord.size()>0 && ord.get(0).getId()!=order.getId()){
+			response.sendError(400,Util.parseError("Invoice number is already assigned"));
+			return null;
+		}
 		
 		if(orderDao.get(order.getId())==null){
 			response.sendError(400);
@@ -102,7 +131,7 @@ public class OrderController {
 		order.setUpdatedOn(Util.parseDate(new Date(),"/"));
 		orderDao.saveOrUpdate(order);
 		
-		List<Order> orders = orderDao.list(year,Util.getMonth(month.trim()));
+		List<OrderView> orders = orderDao.list(year,Util.getMonth(month.trim()));
 		if(orders.size()>0){
 			return orders;
 		}
@@ -111,54 +140,32 @@ public class OrderController {
 
 	}
 	
-		
-//	@RequestMapping(value = "api/admin/order/duplicatePlan", method = RequestMethod.POST)
-//	public @ResponseBody List<Order> duplicatePlan(@RequestBody JSONObject prop,HttpServletResponse response)
-//			throws IOException {
-//		List<Order> Orders = orderDao.getOrderByTime(Integer.parseInt(prop.get("sourceYear").toString()),
-//														prop.get("sourceMonth").toString());
-//	
-//		int year = Integer.parseInt(prop.get("newYear").toString());
-//		String month = prop.get("newMonth").toString();
-//		
-//		if(Orders.size()>0){
-//			for (Order sp : Orders) {
-//				 sp.setYear(year);
-//			//	 sp.setMonth(month);
-//			//	 sp.setMon(Util.getMonth(month));
-//				 sp.setId(null);
-//				 orderDao.saveOrUpdate(sp);
-//			}
-//		}
-//		
-//		List<Order> Orders2 = orderDao.list(year,Util.getMonth(month.trim()));
-//		if(Orders2.size()>0){
-//			return Orders2;
-//		}
-//		response.sendError(404);
-//		return null;
-//		
-//	}
+
 	
 
 	@RequestMapping(value = "/api/admin/order/{id}/{year}/{month}", method = RequestMethod.DELETE)
 	
-	public @ResponseBody List<Order> deleteItem(@PathVariable("id") long id,@PathVariable("year") int year,
+	public @ResponseBody List<OrderView> deleteItem(@PathVariable("id") long id,@PathVariable("year") int year,
 			@PathVariable("month") String month,HttpServletResponse response) throws Exception {
 		System.out.println("caling **********************");
-		Order sp = orderDao.get(id);
+		OrderView sp = orderDao.get(id);
 		if(sp != null){
 			orderDao.delete(id);
-			List<Order> Orders = orderDao.list(year,Util.getMonth(month.trim()));
+			List<OrderView> Orders = orderDao.list(year,Util.getMonth(month.trim()));
 			if(Orders.size()>0){
 				return Orders;
 			}else{
 				String latestTime = orderDao.getLatest();
+				if(latestTime!=null){
 				year = Integer.parseInt(latestTime.split("-")[0]);
 				month = latestTime.split("-")[1].toString();
 				Orders = orderDao.list(year,Util.getMonth(month.trim()));
 				if(Orders.size()>0){
 					return Orders;
+				}else{
+					response.sendError(404);
+					return null;
+				}
 				}else{
 					response.sendError(404);
 					return null;
@@ -170,18 +177,23 @@ public class OrderController {
 	}
 	
 	@RequestMapping(value = "/api/admin/order/{year}/{month}", method = RequestMethod.DELETE)
-	public @ResponseBody List<Order> deleteOrder(@PathVariable("year") int year,
+	public @ResponseBody List<OrderView> deleteOrder(@PathVariable("year") int year,
 			@PathVariable("month") String month,HttpServletResponse response) throws Exception {
 		
-		List<Order> sp =  orderDao.list(year,Util.getMonth(month.trim()));
+		List<OrderView> sp =  orderDao.list(year,Util.getMonth(month.trim()));
 		if(sp != null){
 			orderDao.deleteByTime(year, month);
 			String latestTime = orderDao.getLatest();
+			if(latestTime!=null){
 			year = Integer.parseInt(latestTime.split("-")[0]);
 			month = latestTime.split("-")[1].toString();
-			List<Order> Orders = orderDao.list(year,Util.getMonth(month.trim()));
+			List<OrderView> Orders = orderDao.list(year,Util.getMonth(month.trim()));
 			if(Orders.size()>0){
 				return Orders;
+			}else{
+				response.sendError(404);
+				return null;
+			}
 			}else{
 				response.sendError(404);
 				return null;

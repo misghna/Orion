@@ -24,20 +24,21 @@ export class PaymentComponent implements OnInit {
   activeProductHeader;
   pageName;
   optionsList;constantOptionList;
-  revision;
-  revisionLong;
+  allOrders;allOrdersResponse;
   rangeSelectorHidden;selectedMonth;selectedYear;years;returnedRange;todayDate;
   monthNames;
   productNameList=[]; allPrdList=[];
   headers = [];
   filterQuery = "";
   bntOption = "Search";
-  selectedDate;activeOrderId;
+  selectedDate;
   activeOrder= {}; filteredSalesPlanList=[];
 
+  activeOrderId;
   constructor(private utilService :UtilService,private payService:PaymentService, private el: ElementRef,
-              private orderService:OrdersService ,public route: ActivatedRoute) {
-
+              private orderService:OrdersService ,public route: ActivatedRoute,public router : Router) {
+    
+    utilService.currentSearchTxt$.subscribe(txt => {this.search(txt);});
     this.optionsList = [{'name':'Add New Payment','value':'addNew'}];
     this.utilService.setToolsContent(this.optionsList);
     
@@ -58,25 +59,48 @@ export class PaymentComponent implements OnInit {
       opt => {  
         this.option(opt);
     });
+
+    router.events.subscribe((val) => {
+      var newRouteParam = this.route.snapshot.params['id'];
+      if(this.activeOrderId != newRouteParam){
+        this.activeOrderId = newRouteParam;
+          this.loadAll(this.activeOrderId);
+          this.setTitle();
+      }       
+    });
+
    }
 
+   setTitle(){
+          if(this.activeOrderId.indexOf("all")>=0){
+            this.activeOrder = null;        
+          }else{
+            this.getActiveOrder()
+          }
+   }
+
+
   ngOnInit() {
-      this.headers = [{'name':'No','value':'id','j':'x'},{'name':'Payment Method','value':'paymentMethod','j':'l'},
-                      {'name':'Bank Name','value':'bankName','j':'c'},{'name':'Transaction Id','value':'transactionId','j':'c'},
-                      {'name':'Payment Amount', 'value':'paymentAmount','j':'c'}, {'name':'Payment Date','value':'paymentDate','j':'c'},
-                      {'name':'Remakr','value':'remark','j':'c'},{'name':'Updated On','value':'updatedOn','j':'c'}];
+    this.activeOrderId = this.route.snapshot.params['id'];
+
+      this.headers = [{'name':'No','value':'id','j':'x'},{'name':'Inv No','value':'invNo','j':'c'},{'name':'BL','value':'bl','j':'c'},
+                      {'name':'Payed For','value':'name','j':'c'},{'name':'Payment Method','value':'paymentMethod','j':'l'},
+                      {'name':'Currency','value':'curr','j':'c'},{'name':'Payment Amount', 'value':'paymentAmount','j':'c'}, 
+                      {'name':'Payment Date','value':'paymentDate','j':'c'},{'name':'Remakr','value':'remark','j':'c'},
+                      {'name':'Status','value':'status','j':'c'},{'name':'Updated On','value':'updatedOn','j':'c'}];
       
         this.activeOrderId = this.route.snapshot.params['id'];
         this.loadAll(this.activeOrderId);
         this.populateYear();
-        this.getActiveOrder();
+        this.setTitle();
+        this.getAllOrders();
+
 
         jQuery(this.el.nativeElement).find('#monthSelector li').on('click',function(){  
           jQuery('#monthBtn').html(jQuery(this).text().trim()); 
           jQuery('#monthBtn').attr('value',jQuery(this).text().trim());       
         });
 
-        console.log(this.route.snapshot.params['id']);
   } 
   
 populateYear() {
@@ -86,6 +110,12 @@ populateYear() {
      this.years.push(cYear + i);
    }
 } 
+
+
+openOrder(id){
+  this.router.navigate['/order/' + id];
+}
+
 
 updateBudgetRef(plan){
   if(plan=='none'){
@@ -115,7 +145,7 @@ getActiveOrder(){
      this.orderService.getOrderById(this.activeOrderId) 
       .subscribe(
           response => {
-              this.activeOrder = response; 
+              this.activeOrder = response;
           },
           error => {
                console.error("order not found!");          
@@ -149,12 +179,6 @@ updateBaseUnit(unit){
     this.rangeSelectorHidden = !this.rangeSelectorHidden;
   }
 
-  execute(task){
-    if(task =="Search"){
-    //  this.loadAll(this.selectedYear,this.selectedMonth);
-    }
-  }
-
 
   loadAll(orderId){
 
@@ -183,6 +207,8 @@ updateBaseUnit(unit){
     }
     return false;
   }
+
+
   setData(response){
       var date = new Date(response[0]['createdOn']);
       this.selectedMonth = this.monthNames[date.getMonth()];
@@ -195,8 +221,10 @@ updateBaseUnit(unit){
 
     addUpdate(event){
       event.preventDefault();
-      this.itemDetail['orderRef']=this.activeOrderId;
+      
+      console.log("payment " + JSON.stringify(this.itemDetail));
         if (this.taskType=="Add"){
+            this.itemDetail['orderRef'] = this.activeOrderId;
             this.payService.add(this.itemDetail)
             .subscribe(
                 response => {
@@ -226,8 +254,12 @@ updateBaseUnit(unit){
       this.hideAddNewForm=false;
       this.itemDetail={};
       var today = new Date();
+      this.itemDetail['invNo'] = this.activeOrder['invNo'];
+      this.itemDetail['bl'] = this.activeOrder['bl'];
+      this.itemDetail['orderRef'] = this.activeOrder['id'];
       this.itemDetail['year'] = today.getFullYear();
     }
+
 
     popAlert(type,label,msg){
           this.alertHidden = false;
@@ -260,6 +292,18 @@ updateBaseUnit(unit){
       this.hideAddNewForm=false;
     }
 
+    filterOrder(txt){
+        if(txt.length==0) {
+          this.allOrders = this.allOrdersResponse
+        }
+        this.allOrders = this.allOrdersResponse.filter(order => {
+          if(order!=null && ((order.bl!=null && order.bl.toLowerCase().indexOf(txt.toLowerCase())>-1) || 
+                             (order.invNo !=null &&  order.invNo.toLowerCase().indexOf(txt.toLowerCase()))>-1 ))
+              return order;
+        });
+
+    }
+
     update(){
           console.log(this.itemDetail['id']);
             this.payService.update(this.itemDetail)
@@ -287,14 +331,25 @@ updateBaseUnit(unit){
         });
     }
 
-
+   getAllOrders(){
+     this.orderService.getAllOrders()
+            .subscribe(
+                response => {
+                    this.allOrdersResponse =response;  
+                    this.allOrders =response;     
+                },
+                error => {      
+                    console.error("Something went wrong, please try again later!");
+                }
+              );
+   }
 
     search(searchObj){
       this.data= this.responseData.filter(item => (
-        (item.name.toLowerCase().indexOf(searchObj.searchTxt.toLowerCase()) !== -1) || 
-        (item.brand.toLowerCase().indexOf(searchObj.searchTxt) !== -1) || 
-        (item.itemOrigin.toLowerCase().indexOf(searchObj.searchTxt) !== -1) || 
-        (item.destinationPort.toLowerCase().indexOf(searchObj.searchTxt) !== -1)
+        (item.name!=null && item.name.toLowerCase().indexOf(searchObj.searchTxt.toLowerCase()) !== -1) || 
+        (item.bl!=null && item.bl.toLowerCase().indexOf(searchObj.searchTxt.toLowerCase()) !== -1) || 
+        (item.invNo!=null && item.invNo.toLowerCase().indexOf(searchObj.searchTxt.toLowerCase()) !== -1) || 
+        (item.paymentMethod!=null && item.paymentMethod.toLowerCase().indexOf(searchObj.searchTxt) !== -1)
         ));
     }
 

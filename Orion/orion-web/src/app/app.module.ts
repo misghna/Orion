@@ -6,7 +6,6 @@ import { FormsModule } from '@angular/forms';
 import { routes } from './app.routes';
 
 import { AppComponent }  from './app.component';
-import { LoginComponent }  from './login/login.component';
 import { HomeComponent }  from './home/home.component';
 import { AuthGuard } from './service/auth.guard';
 import { UtilService } from './service/util.service';
@@ -34,10 +33,15 @@ import { BidService } from './bid/bid.service';
 import { ShippingService } from './shipping/shipping.service';
 import { PaymentService } from './payment/payment.service';
 import { BidComponent } from './bid/bid.component';
+import { DocumentService } from './document/document.service';
+import { HomeService } from './home/home.service';
 import { PaymentComponent } from './payment/payment.component';
 import { ShippingComponent } from './shipping/shipping.component';
 import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-upload/ng2-file-upload';
 import { DocumentComponent } from './document/document.component';
+import { DigitsOnly } from './service/digitsOnly.directive';
+import { NumberOnly } from './service/numberOnly.directive';
+
 
 
 @NgModule({
@@ -48,7 +52,6 @@ import { DocumentComponent } from './document/document.component';
     }) 
    ],
   declarations: [ AppComponent,
-                LoginComponent,
                 HomeComponent,
                 RegisterComponent,
                 AdminComponent,
@@ -58,10 +61,11 @@ import { DocumentComponent } from './document/document.component';
                 ChangePasswordComponent,
                 ItemsComponent,FilterNamePipe, SalesPlanComponent, OrdersComponent, FileUploadComponent,
                 BidComponent, PaymentComponent, ShippingComponent,
-                FileSelectDirective, FileDropDirective, DocumentComponent
+                FileSelectDirective, FileDropDirective, DocumentComponent,DigitsOnly,NumberOnly
                  ],
-  providers:[AuthGuard,UtilService,UserService,AppSettings,MiscService,SalesPlanService,OrdersService,
-            BidService,PaymentService,ShippingService,
+  providers:[AuthGuard,UtilService,UserService,AppSettings,MiscService,
+            SalesPlanService,OrdersService,DocumentService,
+            BidService,PaymentService,ShippingService,HomeService,
         {
           provide: Http,
           useFactory: (backend: XHRBackend, defaultOptions: RequestOptions, utilService:UtilService) => {

@@ -19,14 +19,21 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Home <span class="sr-only">(current)</span></a></li>
+        <li class="active"><a routerLink="/" routerLinkActive="active" >Home <span class="sr-only">(current)</span></a></li>
        
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Import <span class="caret"></span></a>
           <ul class="dropdown-menu">           
-            <li><a routerLink="/import/orders" routerLinkActive="active" >Orders</a></li> 
-            <li><a href="#">Payments</a></li>
-            <li><a href="#">Shipments</a></li>
+            <li><a routerLink="/import/order/all" routerLinkActive="active" >Orders</a></li> 
+            <li><a routerLink="/import/shipping/all" routerLinkActive="active" >Shipments</a></li>        
+          </ul>
+        </li>
+
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Finance <span class="caret"></span></a>
+          <ul class="dropdown-menu">           
+            <li><a routerLink="/import/payment/all" routerLinkActive="active" >Payments</a></li> 
+            <li><a  >Approvals</a></li>
             <li><a href="#">Budget</a></li>
           </ul>
         </li>
@@ -43,10 +50,22 @@
 
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Documents <span class="caret"></span></a>
-          <ul class="dropdown-menu">           
-            <li><a routerLink="/document/proformaInvoice" routerLinkActive="active" >Proforma Invoice</a></li> 
-            <li><a routerLink="/document/commercialInvoice" routerLinkActive="active" >Commerical Invoice</a></li>
-            <li><a routerLink="/document/billOfLoading" routerLinkActive="active" >Bill Of Loading</a></li>
+          <ul class="dropdown-menu">   
+            <li><a routerLink="/document/Bill_of_Loading" routerLinkActive="active" >Bill of Loading</a></li>               
+            <li><a routerLink="/document/Commercial_Invoice" routerLinkActive="active" >Commerical Invoice</a></li>
+            <li><a routerLink="/document/CNCA" routerLinkActive="active" > CNCA</a></li>
+            <li><a routerLink="/document/Certificate_of_Health" routerLinkActive="active" > Certificate of Health</a></li>
+            <li><a routerLink="/document/Certificate_of_Origin" routerLinkActive="active" > Certificate of Origin</a></li>
+            <li><a routerLink="/document/Certificate_of_Analise" routerLinkActive="active" > Certificate of Analise</a></li>
+            <li><a routerLink="/document/Certificate_of_Fumigation" routerLinkActive="active" > Certificate of Fumigation</a></li>
+            <li><a routerLink="/document/Certificate_of_Quality" routerLinkActive="active" > Certificate of Quality</a></li>
+            <li><a routerLink="/document/Certificate_of_Insurance" routerLinkActive="active" > Certificate of Insurance</a></li>
+            <li><a routerLink="/document/Du License" routerLinkActive="active" >Du License </a></li>
+            <li><a routerLink="/document/Inspection" routerLinkActive="active" >Inspection </a></li>
+            <li><a routerLink="/document/Local_Phytosanitary" routerLinkActive="active" >Local Phytosanitary </a></li>
+            <li><a routerLink="/document/Packing_List" routerLinkActive="active" >Packing List </a></li>
+            <li><a routerLink="/document/Proforma_Invoice" routerLinkActive="active" >Proforma Invoice</a></li> 
+            <li><a routerLink="/document/Other" routerLinkActive="active" >Other</a></li>
           </ul>
         </li>
 
@@ -100,7 +119,9 @@
             <li><a href="#">Setting</a></li>
             <li><a routerLink="/changePassowrd" routerLinkActive="active">Change Password</a></li>  
             <li role="separator" class="divider"></li>
-            <li><a (click)="logout()">logout</a></li>
+            <li><a>{{buildNo}}</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="/logout">logout</a></li>
           </ul>
         </li>
       </ul>
@@ -127,6 +148,6 @@
     </div>
   </div>
 
- <button #myModalBtn data-toggle="modal" data-target="#itemModal" hidden>kjknk</button>
+ <button #myModalBtn data-toggle="modal" data-target="#itemModal" hidden></button>
 
 

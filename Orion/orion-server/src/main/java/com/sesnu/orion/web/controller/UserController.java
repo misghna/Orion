@@ -1,9 +1,13 @@
 package com.sesnu.orion.web.controller;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -23,6 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sesnu.orion.dao.UserDAO;
 import com.sesnu.orion.web.model.User;
+import com.sesnu.orion.web.utility.ConfigFile;
 import com.sesnu.orion.web.utility.Util;
 
 @CrossOrigin(origins = "http://localhost:4200")
@@ -33,7 +38,63 @@ public class UserController {
 	@Autowired
 	UserDAO userDao;
 	@Autowired Util util;
+	@Autowired private ConfigFile conf;
 
+	@RequestMapping(value = "/api/check", method = RequestMethod.GET)
+	public String ckeck(ModelMap model,HttpServletRequest request,HttpServletResponse response) {
+		return "index";
+	}
+	
+	
+	@RequestMapping(value = "/api/user/user", method = RequestMethod.GET)
+	public @ResponseBody JSONObject getUser(ModelMap model,HttpServletRequest request,HttpServletResponse response) {	
+		JSONObject jo = new JSONObject();	
+		try {
+			HttpSession session = request.getSession();
+			
+		if(session.getAttribute("user")!=null){			
+			User user = (User) session.getAttribute("user");
+			if(!user.getStatus().equals("Active")){
+			    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			    new SecurityContextLogoutHandler().logout(request, response, auth);
+			    response.sendError(403,"inactive");
+				jo.put("access", "inactive");
+			}else{
+				return filterUser(user,session.getId(),request.getServletContext());
+			}
+			return jo;
+		
+		
+		}else if(conf.getProp().get("devMode").equals("true"))	{
+			User user = util.getDevUser(userDao);
+			return filterUser(user,session.getId(),request.getServletContext());
+		}
+			response.sendError(401);
+			
+		} catch (IOException e) {}
+		
+		jo.put("access", "denied");
+		return jo;
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	private JSONObject filterUser(User user,String sId, ServletContext context) 
+			throws IOException{
+		JSONObject jo = new JSONObject();
+		jo.put("access", "granted");
+		jo.put("role", user.getRole());
+		jo.put("fname", user.getFullname());
+		jo.put("status", user.getStatus());
+		jo.put("sId", sId);
+		jo.put("id", user.getId());
+		jo.put("email", user.getEmail());
+		jo.put("buildTime", Util.getBuildTime(context));
+		jo.put("homeHeaders", user.getHomeHeaders());
+		return jo;
+	}
+	
+	
 	@RequestMapping(value = "/api/admin/users", method = RequestMethod.GET)
 	public @ResponseBody JSONArray users(ModelMap model,HttpServletRequest request,HttpServletResponse response) {	
 		return filterUsers(userDao.list());
@@ -101,7 +162,8 @@ public class UserController {
 		}
 		
 		return filterUsers(userDao.list());
-	}
+	}	
+
 	
 	@RequestMapping(value = "/api/admin/deleteUser/{id}", method = RequestMethod.DELETE)
 	public @ResponseBody JSONArray deleteUser(@PathVariable("id") long id)
@@ -135,7 +197,7 @@ public class UserController {
 		msg.append("\n\n if you didnt initiate this request plz inform admin immidately");
 		msg.append("\n\n Do not replay to this email, this is an automated message.");
 		msg.append("\n\n Thank you!!");
-		//util.sendMail("Password recovery code", email ,msg.toString());
+		util.sendMail("Password recovery code", email ,msg.toString());
 		response.setStatus(200);
 		return "{\"response\" : \"please check your email for verification code!\"}";
 	}
@@ -234,6 +296,7 @@ public class UserController {
 			jo.put("department", user.getDepartment());
 			jo.put("approver", user.getApprover());
 			jo.put("header", user.getFullname() + "-" + user.getId());
+			jo.put("homeHeaders", user.getHomeHeaders());
 			users.add(jo);
 		}
 		

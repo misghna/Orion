@@ -49,9 +49,6 @@ public class SalesView {
 	@Column(name = "cif")
 	private double cif;
 	
-	@Column(name = "item_origin")
-	private String itemOrigin;
-	
 	@Column(name = "destination_port")
 	private String destinationPort;
 	
@@ -155,13 +152,6 @@ public class SalesView {
 		this.cif = cif;
 	}
 
-	public String getItemOrigin() {
-		return itemOrigin;
-	}
-
-	public void setItemOrigin(String itemOrigin) {
-		this.itemOrigin = itemOrigin;
-	}
 
 	public String getDestinationPort() {
 		return destinationPort;
