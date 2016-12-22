@@ -2,6 +2,7 @@ package com.sesnu.orion.dao;
 
 import java.util.List;
 
+import com.sesnu.orion.web.model.PayView;
 import com.sesnu.orion.web.model.Payment;
 
 
@@ -9,8 +10,10 @@ import com.sesnu.orion.web.model.Payment;
 
 public interface PaymentDAO {
 	
-	public List<Payment> list(long orderRef);
+	public List<PayView> listByOrderRef(long orderRefId);
 
+	public List<PayView> listAll();
+	
 	public void saveOrUpdate(Payment pay);
 
 	public Payment get(long id);

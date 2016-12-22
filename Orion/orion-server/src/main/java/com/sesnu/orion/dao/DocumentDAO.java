@@ -2,6 +2,7 @@ package com.sesnu.orion.dao;
 
 import java.util.List;
 
+import com.sesnu.orion.web.model.DocView;
 import com.sesnu.orion.web.model.Document;
 
 
@@ -9,15 +10,15 @@ import com.sesnu.orion.web.model.Document;
 
 public interface DocumentDAO {
 	
-	public List<Document> list(long orderRef);
+	public List<DocView> listByOrderRef(long orderRef);
 	
-	public List<Document> listByDocType(String docType);
+	public List<DocView> listByDocType(String docType);
 
 	public void saveOrUpdate(Document doc);
 
-	public Document get(long id);
+	public DocView get(long id);
 
-	public void delete(Document doc);
+	public void delete(DocView doc);
 
 
 	
