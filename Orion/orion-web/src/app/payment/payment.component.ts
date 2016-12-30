@@ -1,10 +1,13 @@
-import { Component, OnInit,ElementRef} from '@angular/core';
+import { Component, OnInit,ElementRef,ViewChild,Renderer} from '@angular/core';
 import { MiscService } from '../service/misc.service';
 import { FilterNamePipe } from '../pipes/pipe.filterName';
 import { PaymentService } from '../payment/payment.service';
 import { UtilService } from '../service/util.service';
 import { OrdersService } from '../orders/orders.service';
 import { Router,ActivatedRoute, Params } from '@angular/router';
+import { UserService } from '../users/users.service';
+import { ApprovalService } from '../approval/approval.service';
+
 
 declare var jQuery : any;
 
@@ -14,6 +17,10 @@ declare var jQuery : any;
   styleUrls: ['./payment.component.css']
 })
 export class PaymentComponent implements OnInit {
+
+  @ViewChild('mdlCloseBtn') modalInput:ElementRef;
+
+
   data;responseData;itemMsg;
   alertType;alertHidden;alertLabel;
   hideAddNewForm;  hideLoader;
@@ -32,12 +39,15 @@ export class PaymentComponent implements OnInit {
   filterQuery = "";
   bntOption = "Search";
   selectedDate;
-  activeOrder= {}; filteredSalesPlanList=[];
+  activeOrder= {}; filteredSalesPlanList=[];allPaymentList;
+  approversList;approversPlaceHolder;approvalAlert={};
 
   activeOrderId;
   constructor(private utilService :UtilService,private payService:PaymentService, private el: ElementRef,
-              private orderService:OrdersService ,public route: ActivatedRoute,public router : Router) {
-    
+              private orderService:OrdersService ,public route: ActivatedRoute,public router : Router,
+              private userService :UserService,private approvalService :ApprovalService,private rd: Renderer) {
+
+    this.approvalAlert['hidden']=true;
     utilService.currentSearchTxt$.subscribe(txt => {this.search(txt);});
     this.optionsList = [{'name':'Add New Payment','value':'addNew'}];
     this.utilService.setToolsContent(this.optionsList);
@@ -71,6 +81,58 @@ export class PaymentComponent implements OnInit {
 
    }
 
+
+   getOrderApprovers(){
+     console.log("name " + JSON.stringify(this.itemDetail));
+     this.userService.getApprovers(this.itemDetail['name'])
+      .subscribe(
+          response => {
+              this.approversList = response; 
+              console.log("got response " + JSON.stringify(response));
+          },
+          error => {
+            console.log("approvers not found");
+               this.approversPlaceHolder = "Approvers not found" ;      
+          }
+        );
+}
+
+
+ reqApproval(event){
+    event.preventDefault();
+    // console.log("value '" + orderRef + "'");
+      if(this.itemDetail['approver']=='' || this.itemDetail['approver']==null){
+        this.approvalAlert= {'hidden':false,'content':'Please select approver from list'};
+        return;
+      }
+      var body = {'forId':this.itemDetail['id'], 'type':'Payment','forName':this.itemDetail['name'],
+                  'orderRef':this.itemDetail['orderRef'],'approver':this.itemDetail['approver']};
+      this.approvalService.add(body)
+      .subscribe(
+          response => {
+              //close modal 
+             let event = new MouseEvent('click', {bubbles: true});
+             this.rd.invokeElementMethod(this.modalInput.nativeElement, 'dispatchEvent', [event]);
+           
+             // inform
+              this.loadAll(this.activeOrderId);
+              this.approvalAlert['hidden']= true;
+              this.popAlert("Info","success","Approval Request submited!");    
+          },
+          error => { 
+            if(error.status = 'undefined'){
+              let event = new MouseEvent('click', {bubbles: true});
+              this.rd.invokeElementMethod(this.modalInput.nativeElement, 'dispatchEvent', [event]);
+              this.loadAll(this.activeOrderId);
+              this.approvalAlert['hidden']= true;
+              this.popAlert("Info","success","Approval Request submited!"); 
+            }else{
+              this.popAlert("Error","danger",this.utilService.getErrorMsg(error));
+            }
+          }
+        );
+  }
+
    setTitle(){
           if(this.activeOrderId.indexOf("all")>=0){
             this.activeOrder = null;        
@@ -94,7 +156,7 @@ export class PaymentComponent implements OnInit {
         this.populateYear();
         this.setTitle();
         this.getAllOrders();
-
+        this.allPaymentList = this.payService.getPaymentList();
 
         jQuery(this.el.nativeElement).find('#monthSelector li').on('click',function(){  
           jQuery('#monthBtn').html(jQuery(this).text().trim()); 
@@ -332,7 +394,7 @@ updateBaseUnit(unit){
     }
 
    getAllOrders(){
-     this.orderService.getAllOrders()
+     this.orderService.getAllOrders('all')
             .subscribe(
                 response => {
                     this.allOrdersResponse =response;  

@@ -15,7 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.sesnu.orion.dao.OrderDAO;
 import com.sesnu.orion.dao.ShippingDAO;
+import com.sesnu.orion.dao.impl.OrderDAOImpl;
+import com.sesnu.orion.web.model.Order;
+import com.sesnu.orion.web.model.OrderView;
 import com.sesnu.orion.web.model.Shipping;
 import com.sesnu.orion.web.model.ShippingView;
 import com.sesnu.orion.web.utility.Util;
@@ -27,6 +31,7 @@ public class ShippingController {
 	
 	@Autowired
 	ShippingDAO shipDao;
+	@Autowired OrderDAO orderDao;
 
 	@Autowired Util util;
 	
@@ -49,31 +54,52 @@ public class ShippingController {
 	}
 	
 	
-	@RequestMapping(value = "/api/user/ship", method = RequestMethod.POST)
-	public @ResponseBody List<ShippingView> addItem(HttpServletResponse response,@RequestBody Shipping shipping)
+	@RequestMapping(value = "/api/user/ship/{state}", method = RequestMethod.POST)
+	public @ResponseBody List<ShippingView> addItem(HttpServletResponse response,
+			@RequestBody Shipping shipping,@PathVariable("state") String state)
 			throws Exception {
 		
-		List<ShippingView> shipings = shipDao.listByOrderId(shipping.getOrderRef());
-		if(shipings.size()>0){
-			response.sendError(404,"Shipping detail for this order already exists, please edit it if you want to add information.");
+		OrderView order = orderDao.get(shipping.getOrderRef());
+		if(order==null){
+			response.sendError(400,Util.parseError("Invalid Inv No."));
 			return null;
 		}
+				
+		List<ShippingView> shipings = shipDao.listByOrderId(shipping.getOrderRef());
+		if(shipings.size()>0){
+			response.sendError(400,Util.parseError("Shipping detail for this order(Inv No) already exists"));
+			return null;
+		}
+		
+		shipings = shipDao.listByBL(shipping.getBl());
+		if(shipings.size()>0){
+			response.sendError(400,Util.parseError("Specified BL already exists"));
+			return null;
+		}
+				
 		shipping.setUpdatedOn(Util.parseDate(new Date(),"/"));
 		shipping.setId(null);
 		shipDao.saveOrUpdate(shipping);
-		
-		List<ShippingView> shippings = shipDao.listByOrderId(shipping.getOrderRef());
+
+		List<ShippingView> shippings=null;
+		if(state.equals("all")){
+			shippings = shipDao.listAll();
+		}else{
+			shippings = shipDao.listByOrderId(shipping.getOrderRef());
+		}
 		if(shippings.size()>0){
 			return shippings;
 		}
 		response.sendError(404);
 		return null;
+		
 
 	}
 	
 	
-	@RequestMapping(value = "/api/user/ship", method = RequestMethod.PUT)
+	@RequestMapping(value = "/api/user/ship/{state}", method = RequestMethod.PUT)
 	public @ResponseBody List<ShippingView> updateItem(HttpServletResponse response,
+			@PathVariable("state") String state,
 			@RequestBody Shipping shipping)
 			throws Exception {
 		
@@ -84,15 +110,27 @@ public class ShippingController {
 		}
 		
 		List<ShippingView> shipings = shipDao.listByOrderId(shipping.getOrderRef());
-		if(shipings.size()>1){
-			response.sendError(404,"Shipping detail for this order already exists, please edit it if you want to add information.");
+		System.out.println("existing " + shipings.get(0).getId() + " new " +  shipping.getId());
+		if(shipings.size()>0 && !shipings.get(0).getId().equals(shipping.getId())){
+			response.sendError(400,Util.parseError("Shipping detail for this order already exists!"));
+			return null;
+		}
+		
+		shipings = shipDao.listByBL(shipping.getBl());
+		if(shipings.size()>0 && !shipings.get(0).getId().equals(shipping.getId())){
+			response.sendError(400,Util.parseError("Specified BL already exists"));
 			return null;
 		}
 		
 		shipping.setUpdatedOn(Util.parseDate(new Date(),"/"));
 		shipDao.saveOrUpdate(shipping);
-		
-		List<ShippingView> shippings = shipDao.listByOrderId(shipping.getOrderRef());
+		List<ShippingView> shippings=null;
+	
+		if(state.equals("all")){
+			shippings = shipDao.listAll();
+		}else{
+			shippings = shipDao.listByOrderId(shipping.getOrderRef());
+		}
 		if(shippings.size()>0){
 			return shippings;
 		}
@@ -103,20 +141,28 @@ public class ShippingController {
 	
 	
 
-	@RequestMapping(value = "/api/user/ship/{id}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/api/user/ship/{id}/{state}", method = RequestMethod.DELETE)
 	
-	public @ResponseBody List<ShippingView> deleteItem(@PathVariable("id") long id,
+	public @ResponseBody List<ShippingView> deleteItem(@PathVariable("id") long id,@PathVariable("state") String state,
 			HttpServletResponse response) throws Exception {
 		Shipping shipping = shipDao.get(id);
-		long orderRef= shipping.getOrderRef();
+	
 		if(shipping != null){
 			shipDao.delete(shipping);
-			List<ShippingView> shippings = shipDao.listByOrderId(orderRef);
+			List<ShippingView> shippings=null;			
+		
+			if(state.equals("all")){
+				shippings = shipDao.listAll();
+			}else{
+				shippings = shipDao.listByOrderId(shipping.getOrderRef());
+			}
 			if(shippings.size()>0){
 				return shippings;
+			}else{
+				response.sendError(404,Util.parseError("not found"));
 			}
 		}
-		response.sendError(400);
+		response.sendError(400,Util.parseError("Shipment not found"));
 		return null;
 	}
 	

@@ -14,37 +14,39 @@
   </div>
   </div>
 
-
-
 <div id="main">
   <table style="width: 100%; padding-bottom:20px;">
     <tr>
         <td>
-          <div class="meterBox">
-             <div class="meterNumber"><span class = "meterTestSpan"> 8</span></div>
+          <div class="meterBox" ><a routerLink="/import/order/new" routerLinkActive="active" >
+             <div class="meterNumber"><span class = "meterTestSpan"> {{newOrders}}</span></div>
              <div class="txtOrders"><span class = "meterTestSpan"> Orders</span></div>
               <div class="meterText"><span class = "meterTestSpan"> New </span></div>
+              </a>
           </div>
       </td>
        <td>
-          <div class="meterBox">
-             <div class="meterNumber"><span class = "meterTestSpan"> 4</span></div>
+          <div class="meterBox"><a routerLink="/import/order/inTransit" routerLinkActive="active" >
+             <div class="meterNumber"><span class = "meterTestSpan"> {{inTransitOrders}}</span></div>
               <div class="txtOrders"><span class = "meterTestSpan"> Orders</span></div>
              <div class="meterText"><span class = "meterTestSpan">In Transit</span></div>
+              </a>
           </div>
       </td>
        <td>
-          <div class="meterBox">
-             <div class="meterNumber"><span class = "meterTestSpan"> 12</span></div>
+          <div class="meterBox"><a routerLink="/import/order/inPort" routerLinkActive="active" >
+             <div class="meterNumber"><span class = "meterTestSpan"> {{inPortOrders}}</span></div>
              <div class="txtOrders"><span class = "meterTestSpan"> Orders</span></div>
              <div class="meterText"><span class = "meterTestSpan">In Port</span></div>
+              </a>
           </div>
       </td>
       <td>
-          <div class="meterBox">
-             <div class="meterNumber"><span class = "meterTestSpan"> 7</span></div>
+          <div class="meterBox"><a routerLink="/import/order/inTerminal" routerLinkActive="active" >
+             <div class="meterNumber"><span class = "meterTestSpan"> {{inTerminalOrders}}</span></div>
              <div class="txtOrders"><span class = "meterTestSpan"> Orders</span></div>
              <div class="meterText"><span class = "meterTestSpan">In Terminal</span></div>
+              </a>
           </div>
       </td>
 
@@ -64,11 +66,17 @@
          *ngFor="let tableHeader of selectedHeaders; let i = index"> 
             <mfDefaultSorter by="{{tableHeader.value}}"><font class ="tbl-header">{{tableHeader.name}}</font></mfDefaultSorter>
         </th>
+        <th style="width: 5%;" class ="tbl-header">Progress</th>
         <th style="width: 5%;" class ="tbl-header">Action</th>
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let item of mf.data; let i = index">
+    <tr *ngFor="let item of mf.data; let i = index"
+        [ngStyle]="{
+            'background-color':item.bckColor,
+            'color':item.txtColor
+        }"
+        >
          <td >{{i+1 + mf.rowsOnPage*(mf.activePage -1)}}</td>    
          <td class="text-center"
             [ngClass]="{
@@ -78,11 +86,16 @@
             }"
          *ngFor="let tableHeader of selectedHeaders; let i = index"> 
              <div>{{item[tableHeader.value]}}</div>
-             <!--<div *ngIf="tableHeader.value == 'total' ">{{item['financialServices'] + item['consumerTax'] + item['stampTax'] + item['fees'] + item['others']}}</div>-->
-             <!--<div *ngIf="tableHeader.value=='food' && item.food == true"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></div>-->
-             <!--<div *ngIf="tableHeader.value=='food' && item.food == false"></div>-->
           </td>
-       
+
+       <td>
+           <div class="progress" style="padding:0px;margin-bottom:0px">
+                <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40"
+                aria-valuemin="0" aria-valuemax="100" style="width:40%">
+                    40%
+                </div>
+           </div>
+       </td>
         <td class="text-center" >
             <div class="dropdown" style="border: 0">
             <button id= "{{item.id.toString() + '*' + item.name}}" #dropButton class="btn btn-default dropdown-toggle"
@@ -108,15 +121,95 @@
     </tbody>
     <tfoot> 
     <tr>
-        <td [attr.colspan]="selectedHeaders.length + 2">
+        <td [attr.colspan]="selectedHeaders.length + 3">
             <mfBootstrapPaginator [rowsOnPageSet]="[10,20,40]"></mfBootstrapPaginator>
         </td>
     </tr>
     </tfoot>
 </table>
 
-
-
-
-
 </div>
+
+
+
+  <!-- Modal -->
+  <div #myModal class="modal fade" id="homeModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Home Page Table color settings</h4>
+        </div>
+        <div class="modal-body" style="margin-bottom:-35px">
+          <table class="table">
+            <thead>
+            <tr>
+                <th>No</th>
+                <th>Column</th>
+                <th>Back Color</th>
+                <th>Text Color</th>
+                <th>Greater Than</th>
+                <th>Less Than</th>            
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let clrSet of colorSettings; let i = index">
+                <td>{{i+1}}</td>
+                <td>{{clrSet.colName}}</td>
+                <td><label [style.background]="clrSet.bckColor" [style.color]="clrSet.bckColor">___</label>&nbsp; {{clrSet.bckColor}}</td>
+                <td><label [style.background]="clrSet.txtColor" [style.color]="clrSet.txtColor">___</label>&nbsp; {{clrSet.txtColor}}</td>
+                <td>{{clrSet.greater}}</td>
+                <td>{{clrSet.less}}</td>
+                <td><a (click)="deleteColor(clrSet)">Delete</a></td>
+            </tr>
+            <tr >
+                <td style="padding-top:60px">+</td>
+                <td style="padding-top:60px">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{colorConfig.colName}} <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li *ngFor ="let col of coloredColumns" (click)="colorConfig.colName=col.name;colorConfig.colValue=col.value"><a href="#">{{col.name}}</a></li>
+                        </ul>
+                    </div>
+                </td>
+                <td style="padding-top:60px">
+                <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{colorConfig.bckColor}} <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li *ngFor ="let color of colors" (click)="colorConfig.bckColor=color">
+                                <a href="#"><label [style.background]="color" [style.color]="color">___</label>&nbsp; {{color}}</a></li>
+                        </ul>
+                    </div>
+                </td>
+                <td style="padding-top:60px">
+                    <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{colorConfig.txtColor}} <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li *ngFor ="let color of colors" (click)="colorConfig.txtColor=color">
+                            <a href="#"><label [style.background]="color" [style.color]="color">___</label>&nbsp; {{color}}</a></li>
+                    </ul>
+                    </div>
+                </td>
+                <td style="padding-top:60px"><input digitsonly type="text" placeholder="Greater Than" style="width: 100px;line-height: 26px" [(ngModel)]="colorConfig.greater"/></td>
+                <td style="padding-top:60px"><input digitsonly type="text" placeholder="Less Than" style="width: 100px;line-height: 26px" [(ngModel)]="colorConfig.less"/></td>
+                <td style="padding-top:60px"><button class="btn btn-default" (click) ="addColorSetting()"> Add</button></td>
+            </tr>
+    </tbody>
+  </table>
+</div>
+            <div class="modal-footer">
+            <!--<button type="button" class="btn btn-default" >Apply</button>-->
+            <button type="button" class="btn btn-default" data-dismiss="modal" (click)="reloadData()">Apply</button>
+            </div>
+      </div>
+    </div>
+  </div>
+
+ <button #myModalBtn2 data-toggle="modal" data-target="#homeModal" hidden></button>

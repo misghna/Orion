@@ -1,6 +1,8 @@
 package com.sesnu.orion.web.controller;
 
 import java.io.IOException;
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sesnu.orion.dao.ItemDAO;
 import com.sesnu.orion.dao.OrderDAO;
+import com.sesnu.orion.dao.ShippingDAO;
 import com.sesnu.orion.dao.SummaryDAO;
 import com.sesnu.orion.dao.UserDAO;
 import com.sesnu.orion.dao.OrderDAO;
@@ -39,8 +42,9 @@ public class SummaryController {
 	@Autowired
 	SummaryDAO summaryDao;
 	@Autowired Util util;
-	@Autowired
-	UserDAO userDao;
+	@Autowired UserDAO userDao;
+	@Autowired OrderDAO orderDao;
+	@Autowired ShippingDAO shipDao;
 
 
 	
@@ -56,7 +60,45 @@ public class SummaryController {
 		return null;
 	}
 	
+	@RequestMapping(value = "/api/user/newOrder", method = RequestMethod.GET)
+	public @ResponseBody List<BigInteger> newOrdersList(
+				HttpServletResponse response) throws IOException {
+		List<BigInteger> newOrderList = orderDao.newOrdersList();
+		if(newOrderList!=null){
+			return newOrderList;
+		}
+		return new ArrayList<BigInteger>();
+	}
 	
+	@RequestMapping(value = "/api/user/inTransit", method = RequestMethod.GET)
+	public @ResponseBody List<BigInteger> inTransitList(
+				HttpServletResponse response) throws IOException {
+		List<BigInteger> newOrderList = shipDao.inTransitList();
+		if(newOrderList!=null){
+			return newOrderList;
+		}
+		return new ArrayList<BigInteger>();
+	}
+	
+	@RequestMapping(value = "/api/user/inPort", method = RequestMethod.GET)
+	public @ResponseBody List<BigInteger> inPortList(
+				HttpServletResponse response) throws IOException {
+		List<BigInteger> newOrderList = shipDao.inPortList();
+		if(newOrderList!=null){
+			return newOrderList;
+		}
+		return new ArrayList<BigInteger>();
+	}
+	
+	@RequestMapping(value = "/api/user/inTerminal", method = RequestMethod.GET)
+	public @ResponseBody List<BigInteger> inTerminal(
+				HttpServletResponse response) throws IOException {
+		List<BigInteger> newOrderList = shipDao.inTerminalList();
+		if(newOrderList!=null){
+			return newOrderList;
+		}
+		return new ArrayList<BigInteger>();
+	}
 	
 	@RequestMapping(value = "/api/user/homeHeaders", method = RequestMethod.PUT)
 	public @ResponseBody String updateHomeHeaders(HttpServletRequest request,@RequestBody String heders)
@@ -73,6 +115,19 @@ public class SummaryController {
 		return user.getHomeHeaders();
 	}
 	
+	@RequestMapping(value = "/api/user/homeColor", method = RequestMethod.PUT)
+	public @ResponseBody String updateHomeColorSet(HttpServletRequest request,@RequestBody String homeColor)
+			throws Exception {
+		User user=null;
+		if(request.getSession().getAttribute("user")!=null){	
+			user = (User) request.getSession().getAttribute("user");
+		}else{
+			user = util.getDevUser(userDao);
+		}
+		user.setHomeColor(homeColor);
+		userDao.saveOrUpdate(user);
+		return user.getHomeColor();
+	}
 	
 	
 }

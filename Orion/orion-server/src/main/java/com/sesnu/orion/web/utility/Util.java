@@ -3,6 +3,8 @@ package com.sesnu.orion.web.utility;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -33,6 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.encrypt.Encryptors;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
 import org.springframework.stereotype.Component;
+import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
@@ -47,6 +50,7 @@ import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.sns.model.MessageAttributeValue;
 import com.amazonaws.services.sns.model.PublishRequest;
 import com.amazonaws.services.sns.model.PublishResult;
+import com.lowagie.text.DocumentException;
 import com.sesnu.orion.dao.UserDAO;
 import com.sesnu.orion.web.model.TCPResponse;
 import com.sesnu.orion.web.model.User;
@@ -271,6 +275,17 @@ public class Util {
 	
 	public User getDevUser(UserDAO userDao){
 		return userDao.getUserByEmail(conf.getProp().get("devEmail").toString());
+	}
+	
+	public String convertToPdf(String html) throws DocumentException, IOException{
+		ITextRenderer renderer = new ITextRenderer();
+		renderer.setDocumentFromString(html);
+		renderer.layout();
+		String fileNameWithPath = "/tmp/report_" + generateString(10) + "_" + getTime().toString() + ".pdf";
+		FileOutputStream fos = new FileOutputStream( fileNameWithPath );
+		renderer.createPDF( fos );
+		fos.close();
+		return fileNameWithPath;
 	}
 }
 

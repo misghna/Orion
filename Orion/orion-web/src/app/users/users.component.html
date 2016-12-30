@@ -18,11 +18,12 @@
         <td class="text-left">{{user.email}}</td>
         <td class="text-left">{{user.phone}}</td>
         <td class="text-left">{{user.department}}</td>
-        <!--<td class="text-left">{{user.approver}}</td>-->
-        <td  *ngIf="user.approver==true">
+
+        <td  *ngIf="user.approver!=null && user.approver.length > 2 ">
             <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
         </td>
-        <td  *ngIf="user.approver==false"></td>
+        <td  *ngIf="user.approver==null || user.approver.length < 3"></td>
+
         <td class="text-left">{{user.role}}</td>
         <td class="text-left">{{user.status}}</td>
         <td class="text-center" >
@@ -61,19 +62,19 @@
                 <li><a (click)="userData.department = 'Finance'">Finance</a></li>
                 <li><a (click)="userData.department = 'Import'">Import</a></li>
                 <li><a (click)="userData.department = 'Manager'">Manager</a></li>
+                <li><a (click)="userData.department = 'Manager'">CEO</a></li>
             </ul>
             </div>
         </td>
         <td>
-            <div class="btn-group ">
-            <button type="button" class="btn btn-default dropdown-toggle editFormMargin noBorder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                {{userData.approver==true? 'Yes':'No'}} <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu">
-                <li><a (click)="userData.approver=true">Yes</a></li>
-                <li><a (click)="userData.approver=false">No</a></li>
-            </ul>
-            </div>
+             <div class="dropdown">
+                <textarea id="bill" #bill class="dropdown-toggle form-control txt-flat" data-toggle="dropdown" rows="2"  
+                    placeholder="can approve.." (click) = "getApprovalList(userData.approver)" readonly
+                    [(ngModel)]="userData.approver" [ngModelOptions]="{standalone: true}"></textarea>              
+                <ul class="dropdown-menu item-name">
+                <li *ngFor ="let aprv of approvalList"> <input type="checkbox" class="approveList" [(ngModel)]="aprv.selected" (click)="updateApproval()"/>{{aprv.type}}</li>                      
+                </ul>           
+            </div> 
         </td>
         <td>
             <div class="btn-group  ">

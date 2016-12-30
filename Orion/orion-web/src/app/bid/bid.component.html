@@ -102,8 +102,8 @@
                 <li><a #deleteitem (click)="triggerDelModal($event)">Delete</a></li>
                 <li *ngIf = "item.selected == true"><a (click)="diselectSupplier($event)"> Diselect Winner</a></li>
                 <li *ngIf = "item.selected == false"><a (click)="selectSupplier($event)"> Select Winner</a></li>
-                <li><a (click)="reqApproval($event)">Request Approval</a></li>
-                <li><a (click)="approve($event)">Approve</a></li>
+                <li><a  #apprv id="{{item}}" data-toggle="modal" data-target="#approveModal" (click)="getOrderApprovers();itemDetail= item">Request Approval</a></li>
+                <li><a  (click)="approve($event,apprv.id)">Approve</a></li>
             </ul>
             </div>
         </td>
@@ -119,7 +119,8 @@
         <td><textarea #unit class="form-control txt-flat middletext" rows="2" digitsonly placeholder="CIF" required [(ngModel)]="itemDetail.cifCnf" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td><textarea #unit class="form-control txt-flat middletext" rows="2" digitsonly placeholder="Total Bid Amount" required [(ngModel)]="itemDetail.totalBid" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td><textarea #itemOrigin class="form-control txt-flat middletext" rows="2"  placeholder="Payment Method" required [(ngModel)]="itemDetail.paymentMethod" [ngModelOptions]="{standalone: true}"></textarea></td>
-        <td><textarea #destinationPort class="form-control txt-flat middletext" rows="2" readonly placeholder="Status" [(ngModel)]="itemDetail.status" [ngModelOptions]="{standalone: true}"></textarea></td>
+        <td><textarea #destinationPort class="form-control txt-flat middletext" rows="2" readonly placeholder="Auto" [(ngModel)]="itemDetail.status" [ngModelOptions]="{standalone: true}"></textarea></td>
+        <td><textarea #destinationPort class="form-control txt-flat middletext" rows="2" readonly placeholder="Auto" [(ngModel)]="itemDetail.approval" [ngModelOptions]="{standalone: true}"></textarea></td>
         <td><textarea #updatedOn class="form-control txt-flat middletext" readonly rows="2"  placeholder="auto">{{todayDate}}</textarea></td> 
         <td class="text-left" ><input type="submit" class="btn btn-success" value="{{taskType}}"/></td>
       </tr>      
@@ -132,5 +133,37 @@
 </table>
 
 </form>
+
+
+  <!-- Modal -->
+  <div class="modal fade" id="approveModal" role="dialog">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Approval</h4>
+        </div>
+        <div class="modal-body">
+          <p>Approval request for 'Order Authorizition'</p>
+          <div class="dropdown">
+                <textarea id="bill" #bill class="dropdown-toggle form-control txt-flat2 middletext" data-toggle="dropdown" rows="2"  
+                    placeholder="{{approversPlaceHolder}}" readonly
+                    [(ngModel)]="itemDetail.approver" [ngModelOptions]="{standalone: true}"></textarea>              
+                <ul class="dropdown-menu item-name">
+                <li *ngFor ="let aprv of approversList" (click)="itemDetail.approver=aprv"><a> {{aprv}}</a></li>                      
+                </ul>           
+            </div> 
+        </div>
+        <div class="alert alert-danger" [class.hidden]="approvalAlert.hidden">
+          <strong>Danger!</strong> {{approvalAlert.content}}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" (click)="reqApproval($event)">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button type="button" #mdlCloseBtn  data-toggle="modal" data-target="#approveModal" hidden></button>
 
 

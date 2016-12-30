@@ -17,5 +17,7 @@ public interface UserDAO {
 	
 	public void delete(long id);
 	
-	public List<User> getApprovers();
+	public List<String> getApprovers(String type);
+	
+	
 }

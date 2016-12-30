@@ -1,5 +1,5 @@
 .sidenav {
-    height: 100%; /* 100% Full-height */
+    height: calc(100% - 60px);; /* 100% Full-height */
     width: 0; /* 0 width - change this with JavaScript */
     position: fixed; /* Stay in place */
     z-index: 1; /* Stay on top */
@@ -69,13 +69,13 @@
     width: 200px;
     height: 95px;
     background-color: #F7F7F7;
-     box-shadow:1px 1px 1px 1px #C9C9C9;
- 	-webkit-box-shadow:1px 1px 1px 1px #C9C9C9;
-	 -moz-box-shadow:1px 1px 1px 1px #C9C9C9;
-     border-radius: 5px;
+     box-shadow:0.2px 0.2px 0.2px 0.2px #C9C9C9;
+ 	-webkit-box-shadow:0.2px 0.2px 0.2px 0.2px #C9C9C9;
+	 -moz-box-shadow:0.2px 0.2px 0.2px 0.2px #C9C9C9;
+     border-radius: 10px;
       margin: auto; 
+      cursor: pointer; 
      
-
 }
 .meterNumber{
     color : gray;

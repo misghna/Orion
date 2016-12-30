@@ -1,5 +1,7 @@
 package com.sesnu.orion.dao.impl;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -48,6 +50,15 @@ public class OrderDAOImpl implements OrderDAO {
 		return (List<OrderView>) query.list();
 
 	}	
+	
+	public List<OrderView> listByIdList(List<BigInteger> ids){
+		if(ids==null){
+			return new ArrayList<OrderView>();
+		}
+		String hql = "from OrderView where id in " + ids.toString().replace("[", "(").replace("]", ")");
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		return (List<OrderView>) query.list();
+	}
 	
 	@Override
 	public List<OrderView> getOrdersByInvNo(String invNo) {
@@ -117,6 +128,17 @@ public class OrderDAOImpl implements OrderDAO {
 		.setMaxResults(1);
 		if(query.list().size()>0){
 			return (String) query.list().get(0);
+		}
+		return null;
+	}
+
+	
+	@Override
+	public List<BigInteger> newOrdersList() {
+		String sql = "select id from orders where id not in (select order_ref from shipping)";
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		if(query.list().size()>0){
+			return (List<BigInteger>) query.list();
 		}
 		return null;
 	}

@@ -21,23 +21,30 @@ export class ShippingService {
       .map(res => res.json());
   }
 
-  add(body){
-    console.log(body);
+
+
+  getAllAgency() {
+    var url = this.baseUrl + 'api/user/agency';
+    return this.http.get(url,[{ withCredentials: true }])
+      .map(res => res.json());
+  }
+
+  add(body,state){
     let headerContent = new Headers();
     headerContent.append("Content-Type", "application/json");
-    return this.http.post(this.baseUrl + 'api/user/ship', body, { headers: headerContent })
+    return this.http.post(this.baseUrl + 'api/user/ship/'+ state, body, { headers: headerContent })
             .map(res => res.json());
   }
 
-  update(body){
+  update(body,state){
     let headerContent = new Headers();
     headerContent.append("Content-Type", "application/json");
-    return this.http.put(this.baseUrl + 'api/user/ship', body, { headers: headerContent })
+    return this.http.put(this.baseUrl + 'api/user/ship/' + state, body, { headers: headerContent })
             .map(res => res.json());
   }
  
-  deleteById(id) {
-    return this.http.delete(this.baseUrl + 'api/user/ship/' + id)
+  deleteById(id,state) {
+    return this.http.delete(this.baseUrl + 'api/user/ship/' + id + "/" + state)
       .map(res => res.json());
   }
 

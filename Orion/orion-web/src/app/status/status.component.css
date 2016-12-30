@@ -1,0 +1,69 @@
+.statusBox {
+    width: 400px;
+    height: 350px;
+    background-color: #F7F7F7;
+     box-shadow:0.2px 0.2px 0.2px 0.2px #C9C9C9;
+ 	-webkit-box-shadow:0.2px 0.2px 0.2px 0.2px #C9C9C9;
+	 -moz-box-shadow:0.2px 0.2px 0.2px 0.2px #C9C9C9;
+     border-radius: 10px;
+      margin: auto; 
+      cursor: pointer; 
+     
+}
+
+.statusBox2 {
+    width: 400px;
+    height: 730px;
+    background-color: #F7F7F7;
+     box-shadow:0.2px 0.2px 0.2px 0.2px #C9C9C9;
+ 	-webkit-box-shadow:0.2px 0.2px 0.2px 0.2px #C9C9C9;
+	 -moz-box-shadow:0.2px 0.2px 0.2px 0.2px #C9C9C9;
+     border-radius: 10px;
+      margin: auto; 
+      cursor: pointer;    
+}
+
+.statusTitle{
+    color : #818181;
+	font-size:30px;
+    font-family:"Comic Sans MS";
+    width: 100%;
+    margin: 0 auto; 
+    margin-top:20px;
+    text-align: center;
+}
+
+.statusContent{
+    
+    width: 100%;
+    margin-left: 20px; 
+    margin-top:20px;
+    text-align: left;
+}
+
+.cntStyle{
+	color : black;
+	font-size:25px;
+    font-family:"serif";
+}
+
+.big-checkbox {width: 30px; height: 30px;}
+
+.spPad{
+	padding-bottom : 10px;
+}
+
+.progress{width:360px}
+
+.statusContainer{
+    height : calc(100% - 100px);
+    width :100%;
+}
+
+.sideMenu{
+    border : 0px solid gray;
+    height : calc(100% - 100px);
+    width:100%;
+    margin-top:20px;
+    margin-left:10px;
+}

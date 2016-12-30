@@ -30,12 +30,12 @@ export class ShippingComponent implements OnInit {
   headers = [];
   filterQuery = "";
   bntOption = "Search";
-  selectedDate;activeShippingId;
-  activeOrder= {}; filteredSalesPlanList=[]; allOrders;
+  selectedDate;activeShippingId;allAgencies;
+  activeOrder= {}; filteredSalesPlanList=[]; allOrders;ordersList;
 
   constructor(private utilService :UtilService,private shipService:ShippingService, private el: ElementRef,
               private orderService:OrdersService ,public route: ActivatedRoute,public router:Router) {
-
+    utilService.currentdelItem$.subscribe(opt => { this.delete();}); 
     this.optionsList = [{'name':'Add Shipping','value':'addNew'}];
     this.utilService.setToolsContent(this.optionsList);
     
@@ -88,6 +88,7 @@ export class ShippingComponent implements OnInit {
         this.loadAll(this.activeShippingId);
         this.populateYear();
         this.getActiveOrder();
+        this.getAllShippingAgency();
 
         jQuery(this.el.nativeElement).find('#monthSelector li').on('click',function(){  
           jQuery('#monthBtn').html(jQuery(this).text().trim()); 
@@ -115,33 +116,46 @@ updateNameBrand(nameBrand){
 
 getActiveOrder(){
     var setRev :boolean;
-    if(this.activeShippingId=='all'){
-      this.orderService.getAllOrders() 
+    // if(this.activeShippingId=='all'){
+      this.orderService.getAllOrders('all') 
       .subscribe(
           response => {
               this.allOrders = response; 
+              this.ordersList = response;
           },
           error => {
                console.error("order not found!");          
           }
         );
-    }else{
-     this.orderService.getOrderById(this.activeShippingId) 
+    // }else{
+    //  this.orderService.getOrderById(this.activeShippingId) 
+    //   .subscribe(
+    //       response => {
+    //           this.activeOrder = response; 
+    //       },
+    //       error => {
+    //            console.error("order not found!");          
+    //       }
+    //     );
+    // }
+}
+
+getAllShippingAgency(){
+        this.shipService.getAllAgency()
       .subscribe(
           response => {
-              this.activeOrder = response; 
+              this.allAgencies = response; 
           },
           error => {
                console.error("order not found!");          
           }
         );
-    }
 }
 
 triggerDelModal(event){
     event.preventDefault();
     console.log("triigered");
-    var modalInfo = {"title" : "Order", "msg" : this.activeProductHeader.split('-')[1],"task" :"myTask"};
+    var modalInfo = {"title" : "Order", "msg" : 'Shipment with Bill of loading '+ this.activeProductHeader.split('-')[1],"task" :"myTask"};
     this.utilService.showModalState(modalInfo);
 }
 
@@ -159,18 +173,6 @@ updateBaseUnit(unit){
   //  this.loadAll(year,month);
   }
 
-  toggleRangeSelector(){
-    this.bntOption = "Search";
-    this.rangeSelectorHidden = !this.rangeSelectorHidden;
-  }
-
-  execute(task){
-    if(task =="Search"){
-    //  this.loadAll(this.selectedYear,this.selectedMonth);
-    }
-  }
-
-
   loadAll(orderId){
 
     var setRev :boolean;
@@ -181,7 +183,7 @@ updateBaseUnit(unit){
           },
           error => {
             if(error.status==404){
-               this.popAlert("Info","Info","Payment is not yet added for this order!");          
+               this.popAlert("Info","Info","Shipping Details is not yet added for this order!");          
             }else{
                this.popAlert("Error","danger","Something went wrong, please try again later!");          
             }
@@ -210,17 +212,32 @@ updateBaseUnit(unit){
 
     addUpdate(event){
       event.preventDefault();
-      this.itemDetail['orderRef'] = this.activeShippingId;
+        if(this.itemDetail['shipAgency']=='Select Agency'){
+           this.popAlert("Error","danger","Please select Agency!");
+          return;
+        }
+        var checkInv = this.allOrders.filter(item => (
+            (item.invNo.toLowerCase() == this.itemDetail['invNo'])));
+            console.log("checkInv"  + checkInv);
+        if(checkInv==null){
+          this.popAlert("Info","success","Please select Inv No from the list!");
+          return;
+        }
+
         if (this.taskType=="Add"){
-            this.shipService.add(this.itemDetail)
+            this.shipService.add(this.itemDetail,this.activeShippingId)
             .subscribe(
                 response => {
-                    this.popAlert("Info","success","Payment successfully added!");
+                    this.popAlert("Info","success","Shipping Info successfully added!");
                     this.setData(response);  
                     this.hideAddNewForm = true;  
                 },
                 error => {
-                    this.popAlert("Error","danger","Something went wrong, please try again later!");
+                    if(error.status==500){
+                       this.popAlert("Error","danger","Something went wrong, please try again later!");
+                    }else{
+                       this.popAlert("Error","danger",this.utilService.getErrorMsg(error));
+                    }
                 }
               );
         }else if(this.taskType=="Update"){
@@ -242,6 +259,7 @@ updateBaseUnit(unit){
       this.itemDetail={};
       var today = new Date();
       this.itemDetail['year'] = today.getFullYear();
+      this.itemDetail['shipAgency'] ='Select Agency';
     }
 
     popAlert(type,label,msg){
@@ -251,17 +269,20 @@ updateBaseUnit(unit){
           this.itemMsg= msg;
     }
 
-    delete(event){
-
+    delete(){
       var id = this.activeProductHeader.split('-')[0];
-      this.shipService.deleteById(id)
+      this.shipService.deleteById(id,this.activeShippingId)
       .subscribe(
           response => {
               this.setData(response);  
-              this.popAlert("Info","success","Payment successfully deteled!"); 
+              this.popAlert("Info","success","Shipping successfully deteled!"); 
           },
           error => {
-              this.popAlert("Error","danger","Something went wrong, please try again later!");
+              if(error.status==500){
+                  this.popAlert("Error","danger","Something went wrong, please try again later!");
+              }else{
+                  this.popAlert("Error","danger",this.utilService.getErrorMsg(error));
+              }
           }
         );
     }
@@ -276,8 +297,7 @@ updateBaseUnit(unit){
     }
 
     update(){
-          console.log(this.itemDetail['id']);
-            this.shipService.update(this.itemDetail)
+            this.shipService.update(this.itemDetail,this.activeShippingId)
             .subscribe(
                 response => {
                     this.hideAddNewForm = true;
@@ -285,8 +305,11 @@ updateBaseUnit(unit){
                     this.setData(response);     
                 },
                 error => {      
-                    this.popAlert("Error","danger","Something went wrong, please try again later!");
-                }
+                    if(error.status==500){
+                       this.popAlert("Error","danger","Something went wrong, please try again later!");
+                    }else{
+                       this.popAlert("Error","danger",this.utilService.getErrorMsg(error));
+                    }                }
               );
     }
 
@@ -302,6 +325,15 @@ updateBaseUnit(unit){
         });
     }
 
+
+
+    filterOrderByInvNo(invNo){
+        if(invNo.length<1){
+          return this.allOrders;
+        }
+        this.ordersList = this.allOrders.filter(item => (
+            (item.invNo.toLowerCase().indexOf(invNo.toLowerCase()) !== -1) ));
+    }
 
 
     search(searchObj){

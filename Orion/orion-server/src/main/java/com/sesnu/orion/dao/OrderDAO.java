@@ -1,5 +1,6 @@
 package com.sesnu.orion.dao;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import com.sesnu.orion.web.model.Item;
@@ -16,12 +17,15 @@ public interface OrderDAO {
 	
 	public List<OrderView> list(int year,int month);
 	
+	public List<OrderView> listByIdList(List<BigInteger> ids);
+	
 	public List<OrderView> getOrderByTime(int year,String month);
 	
 	public List<OrderView> getOrdersByInvNo(String invNo);
 	
 	public List<OrderView> listAll() ;
 		
+	public List<BigInteger> newOrdersList();
 	
 	public OrderView get(long id);
 

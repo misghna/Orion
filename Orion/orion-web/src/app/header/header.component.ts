@@ -4,6 +4,8 @@ import { Http,Headers } from '@angular/http';
 import { UserService } from '../users/users.service';
 import { UtilService } from '../service/util.service';
 import {Observable} from 'rxjs/Observable';
+import { Router,ActivatedRoute, Params } from '@angular/router';
+
 
 declare var $: any;
 
@@ -27,7 +29,7 @@ export class HeaderComponent implements OnInit {
   delTask;title;toolsList;buildNo;
 
   constructor(private http:Http, private userService:UserService, 
-              private utilService:UtilService,private rd: Renderer,private el: ElementRef) {
+              private utilService:UtilService,private rd: Renderer,private el: ElementRef, public router : Router) {
     this.navHidden = false;
     this.regUser = true;
     this.subscription = utilService.currentHeaderState$.subscribe(
@@ -55,19 +57,34 @@ export class HeaderComponent implements OnInit {
           this.modalInput.nativeElement, 'dispatchEvent', [event]);
     });
 
-
        $(this.el.nativeElement).on('click','.dropdown-menu li',function(){
           if($(this).parent().parent().html().indexOf('Tools')==-1){
             $(this).parent().parent().parent().find(".active").removeClass("active");
             $(this).parent().parent().addClass("active"); 
           }     
         });
+        // home separate since it doesnt have drop down
+        $(this.el.nativeElement).on('click','.navbar-nav li',function(){
+          if($(this).html().indexOf('Home')>-1 || $(this).html().indexOf('Status')>-1){
+            $(this).parent().find(".active").removeClass("active");
+            $(this).addClass("active"); 
+          }     
+        });
+
+
    }
 
   ngOnInit() {
       var access = JSON.parse(localStorage.getItem('accessDetail'));
       if(access!=null && access['buildTime']!=null && access['buildTime']!=''){
        this.buildNo = access['buildTime'].replace("d-Time","t@").replace(/\-/g,'/')
+      }
+
+      var currentRoute = window.location.toString().split("/")[3];
+      if(currentRoute==''){
+         $(this.el.nativeElement).find("#homeMenu").addClass("active");
+      }else{
+         $(this.el.nativeElement).find("#" + currentRoute+ "Menu").addClass("active");
       }
   }
 

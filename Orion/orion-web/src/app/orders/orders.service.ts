@@ -22,8 +22,8 @@ export class OrdersService {
       .map(res => res.json());
   }
 
-    getAllOrders() {
-    var url = this.baseUrl + 'api/user/orders';
+  getAllOrders(state) {
+    var url = this.baseUrl + 'api/user/orders/' + state;
     return this.http.get(url,[{ withCredentials: true }])
       .map(res => res.json());
   }

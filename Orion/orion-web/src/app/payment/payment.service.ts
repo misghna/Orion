@@ -40,6 +40,11 @@ export class PaymentService {
       .map(res => res.json());
   }
 
-  
+
+
+  getPaymentList(){
+      return ['Frwd. Agent Fee','Bromangol','Customs','Port','Seller','Terminal','Transport'];
+  }
+
   
 }

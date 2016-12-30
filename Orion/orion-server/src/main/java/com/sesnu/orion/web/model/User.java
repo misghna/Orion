@@ -23,10 +23,13 @@ public class User {
 	private String fullname;
 	private String status;
 	private String department;
-	private boolean approver;
+	private String approver;
 	
 	@Column(name="home_headers")
 	private String homeHeaders;
+	
+	@Column(name="home_color")
+	private String homeColor;
 	
 	
 	public long getId() {
@@ -95,11 +98,11 @@ public class User {
 		this.department = department;
 	}
 
-	public boolean getApprover() {
+	public String getApprover() {
 		return approver;
 	}
 
-	public void setApprover(boolean approver) {
+	public void setApprover(String approver) {
 		this.approver = approver;
 	}
 
@@ -111,6 +114,13 @@ public class User {
 		this.homeHeaders = homeHeaders;
 	}
 
+	public String getHomeColor() {
+		return homeColor;
+	}
+
+	public void setHomeColor(String homeColor) {
+		this.homeColor = homeColor;
+	}
 
 
 

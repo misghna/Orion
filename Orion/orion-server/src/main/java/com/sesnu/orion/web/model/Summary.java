@@ -1,8 +1,6 @@
 package com.sesnu.orion.web.model;
 
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,10 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.NamedNativeQuery;
-
 @Entity
-@Table(name = "ORDERS")
+@Table(name = "SUMMARY_VIEW")
 public class Summary {
 	
 	@Id
@@ -28,9 +24,6 @@ public class Summary {
 	
 	@Column(name = "brand")
 	private String brand;
-		
-	@Column(name = "budget_ref")
-	private String budgetRef;
 	
 	@Column(name = "base_size")
 	private int baseSize;
@@ -50,9 +43,6 @@ public class Summary {
 	@Column(name = "cont_qnt")
 	private int contQnt;
 	
-	@Column(name = "latest_eta")
-	private Date latestETA;
-	
 	@Column(name = "importer")
 	private String importer;
 	
@@ -65,8 +55,26 @@ public class Summary {
 	@Column(name = "inv_no")
 	private String invNo;
 	
-	@Column(name = "created_on")
-	private Date createdOn;
+	@Column(name = "bl")
+	private String bl;
+	
+	@Column(name = "item_origin")
+	private String itemOrigin;
+
+	@Column(name = "etd")
+	private String etd;
+	
+	@Column(name = "eta")
+	private String eta;
+	
+	@Column(name = "ata")
+	private String ata;
+	
+	@Column(name = "ship_agency")
+	private String ShippingAgency;
+	
+	@Column(name = "free_days")
+	private String freeDaysLeft;
 	
 	@Column(name = "updated_on")
 	private String updatedOn;
@@ -83,8 +91,8 @@ public class Summary {
 		return item;
 	}
 
-	public void setItem(String name) {
-		this.item = name;
+	public void setItem(String item) {
+		this.item = item;
 	}
 
 	public String getBrand() {
@@ -93,16 +101,6 @@ public class Summary {
 
 	public void setBrand(String brand) {
 		this.brand = brand;
-	}
-
-
-
-	public String getBudgetRef() {
-		return budgetRef;
-	}
-
-	public void setBudgetRef(String budgetRef) {
-		this.budgetRef = budgetRef;
 	}
 
 	public int getBaseSize() {
@@ -153,6 +151,13 @@ public class Summary {
 		this.contQnt = contQnt;
 	}
 
+	public String getImporter() {
+		return importer;
+	}
+
+	public void setImporter(String importer) {
+		this.importer = importer;
+	}
 
 	public String getDestinationPort() {
 		return destinationPort;
@@ -160,22 +165,6 @@ public class Summary {
 
 	public void setDestinationPort(String destinationPort) {
 		this.destinationPort = destinationPort;
-	}
-
-	public String getUpdatedOn() {
-		return updatedOn;
-	}
-
-	public void setUpdatedOn(String updatedOn) {
-		this.updatedOn = updatedOn;
-	}
-
-	public Date getLatestETA() {
-		return latestETA;
-	}
-
-	public void setLatestETA(Date latestETA) {
-		this.latestETA = latestETA;
 	}
 
 	public String getOrderedBy() {
@@ -186,15 +175,6 @@ public class Summary {
 		this.orderedBy = orderedBy;
 	}
 
-
-	public Date getCreatedOn() {
-		return createdOn;
-	}
-
-	public void setCreatedOn(Date createdOn) {
-		this.createdOn = createdOn;
-	}
-
 	public String getInvNo() {
 		return invNo;
 	}
@@ -203,18 +183,70 @@ public class Summary {
 		this.invNo = invNo;
 	}
 
-	public String getImporter() {
-		return importer;
+	public String getBl() {
+		return bl;
 	}
 
-	public void setImporter(String importer) {
-		this.importer = importer;
+	public void setBl(String bl) {
+		this.bl = bl;
 	}
 
+	public String getItemOrigin() {
+		return itemOrigin;
+	}
 
-	
-	
-	
+	public void setItemOrigin(String itemOrigin) {
+		this.itemOrigin = itemOrigin;
+	}
+
+	public String getEtd() {
+		return etd;
+	}
+
+	public void setEtd(String etd) {
+		this.etd = etd;
+	}
+
+	public String getEta() {
+		return eta;
+	}
+
+	public void setEta(String eta) {
+		this.eta = eta;
+	}
+
+	public String getAta() {
+		return ata;
+	}
+
+	public void setAta(String ata) {
+		this.ata = ata;
+	}
+
+	public String getShippingAgency() {
+		return ShippingAgency;
+	}
+
+	public void setShippingAgency(String shippingAgency) {
+		ShippingAgency = shippingAgency;
+	}
+
+	public String getUpdatedOn() {
+		return updatedOn;
+	}
+
+	public void setUpdatedOn(String updatedOn) {
+		this.updatedOn = updatedOn;
+	}
+
+	public String getFreeDaysLeft() {
+		return freeDaysLeft;
+	}
+
+	public void setFreeDaysLeft(String freeDaysLeft) {
+		this.freeDaysLeft = freeDaysLeft;
+	}
+
 	
 	
 }

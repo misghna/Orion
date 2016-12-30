@@ -38,34 +38,35 @@ export class OrdersComponent implements OnInit {
   constructor(private utilService :UtilService,private orderService:OrdersService, private el: ElementRef,
               private miscService:MiscService, private salesService:SalesPlanService,public router: Router ,public route: ActivatedRoute) {
 
-    this.subscription = utilService.currentSearchTxt$.subscribe(txt => {this.search(txt);});
-    this.activeOrderId = this.route.snapshot.params['id'];
-    this.optionsList = [{'name':'Add New Order','value':'addNew'}];
-    this.utilService.setToolsContent(this.optionsList);
+          this.subscription = utilService.currentSearchTxt$.subscribe(txt => {this.search(txt);});
+          this.activeOrderId = this.route.snapshot.params['id'];
+          this.optionsList = [{'name':'Add New Order','value':'addNew'}];
+          this.utilService.setToolsContent(this.optionsList);
 
-    // tools listener
-    utilService.currentToolsOptCont$.subscribe(
-      opt => { 
-        console.log(opt);
-        this.option(opt);
-    }); 
+          // tools listener
+          utilService.currentToolsOptCont$.subscribe(opt => { this.option(opt);}); 
 
-    utilService.currentdelItem$.subscribe(
-      opt => { 
-        this.delete();
-    }); 
+          utilService.currentdelItem$.subscribe(opt => { this.delete();}); 
 
-    this.monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN","JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
-    
-    this.pageName;
-    this.hideLoader=true;
-    this.alertHidden=true;  
-    this.hideAddNewForm=true;
-    this.rangeSelectorHidden=true;
-    this.selectedMonth = "Select Month";
-    this.selectedYear = "Select Year";
-    this.years = [];
-    this.todayDate = this.getDate(new Date());
+          this.monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN","JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+          
+          this.pageName;
+          this.hideLoader=true;
+          this.alertHidden=true;  
+          this.hideAddNewForm=true;
+          this.rangeSelectorHidden=true;
+          this.selectedMonth = "Select Month";
+          this.selectedYear = "Select Year";
+          this.years = [];
+          this.todayDate = this.getDate(new Date());
+
+          router.events.subscribe((val) => {
+            var newRouteParam = this.route.snapshot.params['id'];
+            if(this.activeOrderId != newRouteParam){
+              this.activeOrderId = newRouteParam;
+                this.loadData();
+            }       
+          });
    }
 
   ngOnInit() {
@@ -78,14 +79,11 @@ export class OrdersComponent implements OnInit {
                       {'name':'Latest ETA','value':'latestETA','j':'c'},{'name':'Inv. No.','value':'invNo','j':'c'},
                       {'name':'OrderedBy','value':'orderedBy','j':'c'}, {'name':'Updated On','value':'updatedOn','j':'l'}];
       
-       if(this.activeOrderId=="all"){
-         this.loadAll(2000,'latest');
-       }else{
-         this.getOrderById(this.activeOrderId);
-       }
+
         this.getItemNameBrandList();
         this.populateYear();
         this.getSalesPlan();
+        this.loadData();
 
         jQuery(this.el.nativeElement).find('#monthSelector li').on('click',function(){  
           jQuery('#monthBtn').html(jQuery(this).text().trim()); 
@@ -94,6 +92,19 @@ export class OrdersComponent implements OnInit {
 
   } 
   
+
+loadData(){
+      if(this.activeOrderId=="all"){
+        this.loadAll(2000,'latest');
+      }else if(this.activeOrderId=="new" || this.activeOrderId=="inTransit" || 
+              this.activeOrderId=="inPort" || this.activeOrderId=="inTerminal"){
+        this.getCustomOrder(this.activeOrderId);
+      }else{
+        this.getOrderById(this.activeOrderId);
+      }
+}
+
+
 populateYear() {
    var d = new Date();
    var cYear= d.getFullYear();
@@ -196,6 +207,22 @@ updateBaseUnit(unit){
           }
         );
   }
+
+getCustomOrder(state){
+       this.orderService.getAllOrders(state)
+      .subscribe(
+          response => {
+              this.setData(response);    
+          },
+          error => {
+            if(error.status==404){
+               this.popAlert("Info","Info","Order for this time range not found!");          
+            }else{
+               this.popAlert("Error","danger","Something went wrong, please try again later!");          
+            }
+          }
+        );
+}
 
   getOrderById(id){
       this.orderService.getOrderById(id)
@@ -346,7 +373,7 @@ updateBaseUnit(unit){
     }
 
     drillDown(type,refId){
-      this.router.navigate(['/import/' + type +  '/' + refId]);
+      this.router.navigate([type +  '/' + refId]);
     }
 
     delete(){

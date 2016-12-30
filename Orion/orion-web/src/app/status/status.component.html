@@ -1,0 +1,140 @@
+
+
+
+<div style="width:100%">
+<table border="0px" style="width:100%">
+  <tr>
+    <td rowspan="3" style ="width:300px;vertical-align:top">
+
+      <div class="sideMenu" >
+          Select Invoice No or Bill Of Loading
+          <br><br>
+          <div class="dropdown">
+          <textarea id="invNo" #invNo class="dropdown-toggle form-control txt-flat" data-toggle="dropdown" rows="2" required
+                placeholder="Invoice Number" (keyup)="filterShipByBl(invNo.value);" 
+                [(ngModel)]="itemDetail.invNo" [ngModelOptions]="{standalone: true}"></textarea> 
+            <ul class="dropdown-menu item-name">
+              <li *ngFor="let ship of shippingList">
+                   <a >{{ship.bl}}</a>
+              </li>                         
+            </ul>        
+          </div>  
+          <br>
+          <div class="dropdown">
+          <textarea id="bl" #bl class="dropdown-toggle form-control txt-flat" data-toggle="dropdown" rows="2" required
+                placeholder="Bill Of Loading" (keyup)="filterShipByBl(bl.value);" 
+                [(ngModel)]="itemDetail.bl" [ngModelOptions]="{standalone: true}"></textarea> 
+            <ul class="dropdown-menu item-name">
+              <li *ngFor="let ship of shippingList">
+                   <a (click)="itemDetail.bl=ship.bl;itemDetail.orderRef=ship.orderRef">{{ship.bl}}</a>
+              </li>                         
+            </ul>        
+          </div>  
+          <br><br>
+          <button class="btn btn-info btn-block">Open Status</button>
+
+          <br><br><br><br><br><br>
+          <div class="js-gauge demo gauge"></div>
+
+      </div>
+    </td>
+   
+   <td colspan="2" style ="width:300px;vertical-align:top">
+     </td>
+  </tr>
+
+  <tr>
+     <td>
+        <div class="statusBox">
+        <div class="statusTitle">Order</div>
+        <div class="statusContent">
+        <div class="checkbox">
+            <div *ngFor ="let order of orders">
+               <span *ngIf="order.done=='yes'" class="glyphicon glyphicon glyphicon-ok spPad" aria-hidden="true">&nbsp;
+                 <span class="cntStyle">{{order.type}}</span>
+               </span>
+               <span *ngIf="order.done!='yes'" class="glyphicon glyphicon glyphicon-remove spPad" aria-hidden="true">&nbsp;
+                 <span class="cntStyle">{{order.type}}</span>
+               </span>
+            </div>
+        </div>
+
+          <br><br>
+          <div class="progress">
+              <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" [attr.aria-valuenow]="orderPercent"
+                    aria-valuemin="0" aria-valuemax="100" [style.width]="orderPercent + '%'">
+                    {{orderPercent}}% Complete
+              </div>
+          </div>
+
+        </div>
+        </div>
+    </td>
+
+    
+
+    <td rowspan="2">
+        <div class="statusBox2">
+        <div class="statusTitle">Documents</div>
+        <div class="statusContent">
+        <div class="checkbox">
+              <div *ngFor ="let doc of documents">
+               <span *ngIf="doc.done=='yes'" title="uploaded" class="glyphicon glyphicon glyphicon-ok spPad" aria-hidden="true">&nbsp;
+                 <span class="cntStyle">{{doc.type}}</span>
+               </span>
+               <span *ngIf="doc.done=='no'" title ="not yet uploaded"  class="glyphicon glyphicon glyphicon-remove spPad" aria-hidden="true">&nbsp;
+                 <span class="cntStyle">{{doc.type}}</span>
+               </span>
+               <span *ngIf="doc.done=='nrlv'" title ="not required" class="glyphicon glyphicon glyphicon-record spPad" aria-hidden="true">&nbsp;
+                 <span class="cntStyle">{{doc.type}}</span>  
+                 </span>          
+            </div>
+            <br><br><br><br><br>
+        </div>
+
+          <br><br>
+          <div class="progress">
+              <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" [attr.aria-valuenow]="orderPercent"
+                    aria-valuemin="0" aria-valuemax="100" [style.width]="orderPercent + '%'">
+                    {{docPercent}}% Complete
+              </div>
+          </div>
+
+        </div>
+        </div>
+    </td>
+  </tr>
+
+    <tr>
+    <td>
+        <div class="statusBox">
+        <div class="statusTitle">Payments</div>
+        <div class="statusContent">
+        <div class="checkbox">
+            <div *ngFor ="let payment of payments">
+               <span *ngIf="payment.done=='yes'" class="glyphicon glyphicon glyphicon-ok spPad" aria-hidden="true">&nbsp;
+                 <span class="cntStyle">{{payment.type}}</span>
+               </span>
+               <span *ngIf="payment.done!='yes'" class="glyphicon glyphicon glyphicon-remove spPad" aria-hidden="true">&nbsp;
+                 <span class="cntStyle">{{payment.type}}</span>
+               </span>
+            </div>
+        </div>
+
+          <br><br>
+          <div class="progress">
+              <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" [attr.aria-valuenow]="payPercent"
+                    aria-valuemin="0" aria-valuemax="100" [style.width]="payPercent + '%'">
+                    {{payPercent}}% Complete
+              </div>
+          </div>
+
+        </div>
+        </div>
+    </td>
+
+  </tr>
+
+</table>
+</div>
+

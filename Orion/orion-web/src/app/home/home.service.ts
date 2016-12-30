@@ -21,6 +21,29 @@ export class HomeService {
       .map(res => res.json());
   }
 
+  getNewOrder() {
+    var url = this.baseUrl + 'api/user/newOrder';
+    return this.http.get(url,[{ withCredentials: true }])
+      .map(res => res.json());
+  }
+
+  getInTransit() {
+    var url = this.baseUrl + 'api/user/inTransit';
+    return this.http.get(url,[{ withCredentials: true }])
+      .map(res => res.json());
+  }
+
+  getInPort() {
+    var url = this.baseUrl + 'api/user/inPort';
+    return this.http.get(url,[{ withCredentials: true }])
+      .map(res => res.json());
+  }
+
+  getInTerminal() {
+    var url = this.baseUrl + 'api/user/inTerminal';
+    return this.http.get(url,[{ withCredentials: true }])
+      .map(res => res.json());
+  }
 
   updateUserHeader(body){
     let headerContent = new Headers();
@@ -29,6 +52,12 @@ export class HomeService {
             .map(res => res.json());
   }
 
+  updateHomeColor(body){
+    let headerContent = new Headers();
+    headerContent.append("Content-Type", "application/json");
+    return this.http.put(this.baseUrl + 'api/user/homeColor', body, { headers: headerContent })
+            .map(res => res.json());
+  }
   
   
 }

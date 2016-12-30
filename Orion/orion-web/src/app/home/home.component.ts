@@ -1,4 +1,4 @@
-import { Component, OnInit,ElementRef } from '@angular/core';
+import { Component, OnInit,ElementRef,Renderer,ViewChild } from '@angular/core';
 import { Http} from '@angular/http';
 import { UtilService } from '../service/util.service';
 import Utils from '../service/utility';
@@ -18,18 +18,36 @@ declare var jQuery : any;
 
 export class HomeComponent implements OnInit {
 
-  optionsList;data;selectedHeaders =[];allHeaders;
+ @ViewChild('myModalBtn2') modalInput:ElementRef;
+
+  optionsList;data;selectedHeaders =[];allHeaders;colorSettings =[];
+  newOrders;inTransitOrders;inPortOrders; inTerminalOrders;
+ 
+  colors = ['silver','gray','Black','Red','maroon','yellow','Olive','Lime','Green','Aqua','Teal','Blue','Navy','Fuchsia','Purple','White'];
+  
+  coloredColumns = [{'name':'Base Size','value':'baseSize'},{'value':'qtyPerPack','name':'Qty Per Pack'},
+                    {'value':'pclPerCont','name':'Pck Per Cont'},{'value':'contSize','name':'Cont Size'},
+                    {'value':'contQnt','name':'Cont Qty'}];
+
+  colorConfig = {'colValue':'Select','colName':'Select','bckColor':'Select','txtColor':'Select','less':'','greater':''};
 
   constructor(private utilService:UtilService, private http:Http,
-               private el: ElementRef,private homeService : HomeService) {  
+               private el: ElementRef,private homeService : HomeService,private rd: Renderer) {  
 
-        this.optionsList = [{'name':'Add/Remove Column','value':'addRemoveCol'}];
+        this.optionsList = [{'name':'Add/Remove Column','value':'addRemoveCol'},
+                            {'name':'Edit notification color','value':'notifColor'}];
 
         this.utilService.setToolsContent(this.optionsList);
 
         utilService.currentToolsOptCont$.subscribe(
           opt => {  
-            jQuery('#mySidenav').width(150);
+            if(opt['optionName'] == 'addRemoveCol'){
+              jQuery('#mySidenav').width(150);
+            }else if(opt['optionName'] == 'notifColor'){
+               let event = new MouseEvent('click', {bubbles: true});
+                this.rd.invokeElementMethod(
+                this.modalInput.nativeElement, 'dispatchEvent', [event]);
+            }
         });
 
         jQuery(this.el.nativeElement).on('click','#sideMenuClose',function(){
@@ -46,13 +64,37 @@ export class HomeComponent implements OnInit {
   }
   
 
+  addColorSetting(){
+    for(var key in this.colorConfig){
+      if(this.colorConfig[key] == 'Select' || this.colorConfig[key] == ''){
+        alert("Set all fields and try again");
+        return;
+      }
+    }
+    if(this.colorSettings==null)this.colorSettings=[];
+    this.colorSettings.push(this.colorConfig);
+    this.homeService.updateHomeColor(JSON.stringify(this.colorSettings))
+      .subscribe(
+          response => {
+               
+          },
+          error => {
+            alert("error when adding new settings");         
+          }
+        );
+  }
+
+  reloadData(){
+    this.getAllData();
+  }
+
   getAllData(){
 
     this.homeService.getAll()
       .subscribe(
           response => {
               this.generateHeaders(response);
-              this.data = response; 
+              this.data = this.addColor(response);
           },
           error => {
           //  this.popAlert("Info","danger","Something went wrong when load item list, please try again later!");          
@@ -61,6 +103,58 @@ export class HomeComponent implements OnInit {
   }
 
 
+addColor(data){
+   var newData = []
+    data.forEach(item => {
+       item['txtColor']= this.setTxtColor(item);
+       item['bckColor']= this.setBckGraColor(item);
+       newData.push(item);
+    });
+    return newData;
+}
+
+setTxtColor(item){
+   var txtColor;
+    this.colorSettings.forEach(color => {
+        if(item[color.colValue] > color.greater && item[color.colValue]< color.less){        
+          txtColor= color.txtColor;
+        }
+    });
+    return txtColor;
+}
+
+setBckGraColor(item){
+    var bckColor;
+    this.colorSettings.forEach(color => {
+        if(item[color.colValue]>color.greater && item[color.colValue]< color.less){
+          bckColor= color.bckColor;
+        }
+    });
+    return bckColor;
+}
+
+deleteColor(colorSet){
+  var i=-1;
+  for(var j=0; j<this.colorSettings.length; j++){
+    if(JSON.stringify(this.colorSettings[j])==JSON.stringify(colorSet)){
+      i=j;break;
+    }
+  }
+
+if(i>-1){
+  this.colorSettings.splice(i,1);
+  this.homeService.updateHomeColor(this.colorSettings)
+     .subscribe(
+          response => {
+              localStorage.setItem('homeColor',JSON.stringify(this.colorSettings));
+          },
+          error => {
+              alert("error when adding new settings");            
+            }
+        );
+}
+
+}
   generateHeaders(response){
       var headArray =[];
       if(response.length>0){
@@ -77,7 +171,7 @@ export class HomeComponent implements OnInit {
           }
         }
         var activeHeaderVals;
-        if(localStorage.getItem('homeHeaders')!=null){
+        if(localStorage.getItem('homeHeaders')!=null || localStorage.getItem('homeHeaders')!='undefined'){
           activeHeaderVals = JSON.parse(localStorage.getItem('homeHeaders'));
         }else{
           activeHeaderVals = ['item','brand','contSize','contQty'];
@@ -122,9 +216,43 @@ export class HomeComponent implements OnInit {
 
 
   ngOnInit() {
+      if(localStorage.getItem('homeColor')!='undefined'){
+        this.colorSettings = JSON.parse(localStorage.getItem('homeColor'));
+      }
      this.getAllData();
+     this.getOrderStat();
   }
 
+ getOrderStat(){
+   // get new orders
+     this.homeService.getNewOrder()
+      .subscribe(response => {
+            this.newOrders= response.length;
+          },
+          error => {  } );
+
+    // get In Transit orders
+     this.homeService.getInTransit()
+      .subscribe(response => {
+            this.inTransitOrders= response.length;
+          },
+          error => {  } );
+
+   // get In Port orders
+     this.homeService.getInPort()
+      .subscribe(response => {
+            this.inPortOrders= response.length;
+          },
+          error => {  } );       
+
+   // get In Terminal orders
+     this.homeService.getInTerminal()
+      .subscribe(response => {
+            this.inTerminalOrders= response.length;
+          },
+          error => {  } );    
+ }
+   
 
 
 

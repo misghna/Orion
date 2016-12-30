@@ -38,6 +38,12 @@ getUser() {
       .map(res => res.json());
   }
 
+  getApprovers(type) {
+    var url = this.baseUrl + 'api/user/approvers/' + type;
+    return this.http.get(url,[{ withCredentials: true }])
+      .map(res => res.json());
+  }
+
   check() {
     let headerContent = new Headers();
     let options = new RequestOptions({ headers: headerContent });

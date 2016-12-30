@@ -10,8 +10,13 @@ import { OrdersComponent } from './orders/orders.component';
 import { BidComponent } from './bid/bid.component';
 import { PaymentComponent } from './payment/payment.component';
 import { ShippingComponent } from './shipping/shipping.component';
+import { ContainerComponent } from './container/container.component';
 import { FileUploadComponent } from './file-upload/file-upload.component';
 import { DocumentComponent } from './document/document.component';
+import { PortFeeComponent } from './port-fee/port-fee.component';
+import { StatusComponent } from './status/status.component';
+import { ApprovalComponent } from './approval/approval.component';
+
 
 import { AuthGuard } from './service/auth.guard';
 import { ChangePasswordComponent } from './change-password/change-password.component';
@@ -26,10 +31,13 @@ export const routes: Routes = [
   { path: 'setting/items',  component: ItemsComponent },
   { path: 'setting/users',  component: UsersComponent },
   { path: 'setting/salesPlan',  component: SalesPlanComponent },
-
+  { path: 'setting/legalization',  component: PortFeeComponent },
+  { path: 'status',  component: StatusComponent },
+  { path: 'finance/approval/:id',  component: ApprovalComponent },
   { path: 'import/order/:id',  component: OrdersComponent },
-  { path: 'import/payment/:id',  component: PaymentComponent },
+  { path: 'finance/payment/:id',  component: PaymentComponent },
   { path: 'import/shipping/:id',  component: ShippingComponent },
+  { path: 'import/container/:id',  component: ContainerComponent },
   { path: 'import/bid/:id',  component: BidComponent },
   
   // { path: 'fileUpload',  component: FileUploadComponent },

@@ -36,4 +36,18 @@
     padding-right: 0px;
 }
 
+.txt-flat2 {
+    overflow:hidden;
+    min-width: 100%;
+    resize: none;
+    outline: none;
+
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
 /*.alert-auto {display:inline-block;}*/

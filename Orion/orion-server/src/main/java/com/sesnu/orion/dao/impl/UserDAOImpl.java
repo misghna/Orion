@@ -34,14 +34,13 @@ public class UserDAOImpl implements UserDAO {
 
 	@Override
 	@Transactional
-	public List<User> getApprovers() {
-		String hql = "from User where approver=true";
-		Query query = sessionFactory.getCurrentSession().createQuery(hql);
-		
-		List<?> list = query.list();
-		
+	public List<String> getApprovers(String type) {
+		String hql = "select fullname from User where approver like :type";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql)
+				.setString("type", "%" + type + "%");		
+		List<?> list = query.list();		
 		if (list != null && !list.isEmpty()) {
-			return (List<User>) list;
+			return (List<String>) list;
 		}		
 		return null;
 	}

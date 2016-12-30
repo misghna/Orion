@@ -21,6 +21,8 @@ public interface BidDAO {
 	
 	public void delete(Bid bid);
 
+	public List<Bid> listAll();
+
 
 
 	

@@ -1,8 +1,6 @@
 package com.sesnu.orion.web.model;
 
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,26 +10,23 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "SHIPPING")
+@Table(name = "PORT_FEES")
 public class PortFee {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="item_seq")
 	@SequenceGenerator(name="item_seq",sequenceName="item_seq",allocationSize=20)
 	@Column(name = "id")
-	private long id;
-
-	@Column(name = "name")
-	private String name;
+	private Long id;
 	
-	@Column(name = "freight_rate")
-	private double freightRate;
+	@Column(name = "agency")
+	private String agency;
 	
-	@Column(name = "cont_lift_rate20")
-	private double contLiftRate20;
+	@Column(name = "legalization_fee")
+	private double legalizationFee;
 	
-	@Column(name = "cont_lift_rate40")
-	private double contLiftRate40;
+	@Column(name = "cont_lift_fee")
+	private double contLiftFee;
 	
 	@Column(name="deposit_cont20")	
 	private double depositCont20;
@@ -52,51 +47,31 @@ public class PortFee {
 	private double exchangeRate;
 	
 	@Column(name = "updated_on")
-	private double updatedOn;
-	
-	@Column(name = "revision")
-	private Date revision;
-
+	private String updatedOn;
 	
 	
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public double getLegalizationFee() {
+		return legalizationFee;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setLegalizationFee(double legalizationFee) {
+		this.legalizationFee = legalizationFee;
 	}
 
-	public double getFreightRate() {
-		return freightRate;
+	public double getContLiftFee() {
+		return contLiftFee;
 	}
 
-	public void setFreightRate(double freightRate) {
-		this.freightRate = freightRate;
-	}
-
-	public double getContLiftRate20() {
-		return contLiftRate20;
-	}
-
-	public void setContLiftRate20(double contLiftRate20) {
-		this.contLiftRate20 = contLiftRate20;
-	}
-
-	public double getContLiftRate40() {
-		return contLiftRate40;
-	}
-
-	public void setContLiftRate40(double contLiftRate40) {
-		this.contLiftRate40 = contLiftRate40;
+	public void setContLiftFee(double contListFee) {
+		this.contLiftFee = contListFee;
 	}
 
 	public double getDepositCont20() {
@@ -147,24 +122,22 @@ public class PortFee {
 		this.exchangeRate = exchangeRate;
 	}
 
-	public double getUpdatedOn() {
+	public String getUpdatedOn() {
 		return updatedOn;
 	}
 
-	public void setUpdatedOn(double updatedOn) {
+	public void setUpdatedOn(String updatedOn) {
 		this.updatedOn = updatedOn;
 	}
 
-	public Date getRevision() {
-		return revision;
+	public String getAgency() {
+		return agency;
 	}
 
-	public void setRevision(Date revision) {
-		this.revision = revision;
+	public void setAgency(String agency) {
+		this.agency = agency;
 	}
-	
-	
-	
+
 
 	
 }

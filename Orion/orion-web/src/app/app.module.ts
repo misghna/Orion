@@ -41,6 +41,15 @@ import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-u
 import { DocumentComponent } from './document/document.component';
 import { DigitsOnly } from './service/digitsOnly.directive';
 import { NumberOnly } from './service/numberOnly.directive';
+import { ContainerComponent } from './container/container.component';
+import { ContainerService } from './container/container.service';
+import { PortFeeComponent } from './port-fee/port-fee.component';
+import { PortFeeService } from './port-fee/port-fee.service';
+import { StatusComponent } from './status/status.component';
+import { ApprovalComponent } from './approval/approval.component';
+import { ApprovalService } from './approval/approval.service';
+
+
 
 
 
@@ -61,11 +70,13 @@ import { NumberOnly } from './service/numberOnly.directive';
                 ChangePasswordComponent,
                 ItemsComponent,FilterNamePipe, SalesPlanComponent, OrdersComponent, FileUploadComponent,
                 BidComponent, PaymentComponent, ShippingComponent,
-                FileSelectDirective, FileDropDirective, DocumentComponent,DigitsOnly,NumberOnly
+                FileSelectDirective, FileDropDirective, DocumentComponent,DigitsOnly,NumberOnly, ContainerComponent,
+                PortFeeComponent, StatusComponent, ApprovalComponent
                  ],
   providers:[AuthGuard,UtilService,UserService,AppSettings,MiscService,
             SalesPlanService,OrdersService,DocumentService,
             BidService,PaymentService,ShippingService,HomeService,
+            ContainerService,PortFeeService,ApprovalService,
         {
           provide: Http,
           useFactory: (backend: XHRBackend, defaultOptions: RequestOptions, utilService:UtilService) => {

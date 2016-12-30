@@ -19,36 +19,34 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li class="active"><a routerLink="/" routerLinkActive="active" >Home <span class="sr-only">(current)</span></a></li>
+        <li id="homeMenu"><a routerLink="/" routerLinkActive="active" >Home <span class="sr-only">(current)</span></a></li>
+         <li id="statusMenu"><a routerLink="/status" routerLinkActive="active" >Status <span class="sr-only">(current)</span></a></li>
        
-        <li class="dropdown">
+        <li class="dropdown" id="importMenu">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Import <span class="caret"></span></a>
           <ul class="dropdown-menu">           
-            <li><a routerLink="/import/order/all" routerLinkActive="active" >Orders</a></li> 
-            <li><a routerLink="/import/shipping/all" routerLinkActive="active" >Shipments</a></li>        
+            <li><a routerLink="/import/order/all" routerLinkActive="active" >All Orders</a></li> 
+            <li><a routerLink="/import/order/new" routerLinkActive="active" >New Orders</a></li>
+            <li><a routerLink="/import/order/inTransit" routerLinkActive="active" >Orders In Transit</a></li> 
+            <li><a routerLink="/import/order/inPort" routerLinkActive="active" >Orders In Port</a></li> 
+            <li><a routerLink="/import/order/inTerminal" routerLinkActive="active" >Orders In Terminal</a></li> 
+            <li role="separator" class="divider"></li>
+            <li><a routerLink="/import/bid/all" routerLinkActive="active" >All Bid</a></li>
+            <li><a routerLink="/import/shipping/all" routerLinkActive="active" >All Shipments</a></li>
+            <li><a routerLink="/import/container/all" routerLinkActive="active" >All Containers</a></li>       
           </ul>
         </li>
 
-        <li class="dropdown">
+        <li id="financeMenu" class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Finance <span class="caret"></span></a>
           <ul class="dropdown-menu">           
-            <li><a routerLink="/import/payment/all" routerLinkActive="active" >Payments</a></li> 
-            <li><a  >Approvals</a></li>
+            <li><a routerLink="/finance/payment/all" routerLinkActive="active" >All Payments</a></li> 
+            <li><a routerLink="/finance/approval/all" routerLinkActive="active" > All Approvals</a></li>
             <li><a href="#">Budget</a></li>
           </ul>
         </li>
 
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Clearing <span class="caret"></span></a>
-          <ul class="dropdown-menu">           
-            <li><a >Port</a></li> 
-            <li><a href="#">Terminal</a></li>
-            <li><a href="#">Transit</a></li>
-            <li><a href="#">Store</a></li>
-          </ul>
-        </li>
-
-        <li class="dropdown">
+        <li id="documentsMenu" class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Documents <span class="caret"></span></a>
           <ul class="dropdown-menu">   
             <li><a routerLink="/document/Bill_of_Loading" routerLinkActive="active" >Bill of Loading</a></li>               
@@ -64,12 +62,13 @@
             <li><a routerLink="/document/Inspection" routerLinkActive="active" >Inspection </a></li>
             <li><a routerLink="/document/Local_Phytosanitary" routerLinkActive="active" >Local Phytosanitary </a></li>
             <li><a routerLink="/document/Packing_List" routerLinkActive="active" >Packing List </a></li>
-            <li><a routerLink="/document/Proforma_Invoice" routerLinkActive="active" >Proforma Invoice</a></li> 
+            <li><a routerLink="/document/Proforma_Invoice" routerLinkActive="active" >Proforma Invoice</a></li>
+            <li><a routerLink="/document/Order_Authorization" routerLinkActive="active" >Order Authorization</a></li>         
             <li><a routerLink="/document/Other" routerLinkActive="active" >Other</a></li>
           </ul>
         </li>
 
-        <li class="dropdown">
+        <li id="reportMenu" class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Report <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a href="#">Report 1</a></li>
@@ -91,12 +90,14 @@
           </ul>
         </li>
 
-        <li class="dropdown" [class.hidden]="regUser">
+        <li id="settingsMenu" class="dropdown" [class.hidden]="regUser">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Settings <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a routerLink="/setting/salesPlan" routerLinkActive="active" (click)="activePageName='Items'" >Sales Plan</a></li>
             <li><a routerLink="/setting/users" routerLinkActive="active" (click)="activePageName='Users'" >Users</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a routerLink="/setting/salesPlan" routerLinkActive="active" (click)="activePageName='Sales Plan'" >Sales Plan</a></li>         
             <li><a routerLink="/setting/items" routerLinkActive="active" (click)="activePageName='Items'" >Items/Fees</a></li>
+            <li><a routerLink="/setting/legalization" routerLinkActive="active" (click)="activePageName='Legalization/offload'" >Shipping Agency</a></li>
           </ul>
         </li>
       </ul>

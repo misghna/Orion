@@ -65,6 +65,14 @@ public class BidDAOImpl implements BidDAO {
 	public List<Bid> setBidWinner(long bidId) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+
+	@Override
+	public List<Bid> listAll() {
+		String hql = "from Bid";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		return (List<Bid>) query.list();
 	}	
 	
 	

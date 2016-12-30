@@ -1,6 +1,8 @@
 import { Component, OnInit,Output,EventEmitter } from '@angular/core';
 import { UserService } from '../users/users.service';
 import { UtilService } from '../service/util.service';
+import { PaymentService } from '../payment/payment.service';
+
 
 
 
@@ -16,9 +18,8 @@ export class UsersComponent implements OnInit {
   userIdDelete;
   pageName;optionsList;
   hideEditForm;
-  userData;headerNames;allUsersResponse;
-
-    constructor(private userService: UserService,private utilService: UtilService) {
+  userData;headerNames;allUsersResponse;approvalList =[];
+    constructor(private userService: UserService,private utilService: UtilService,private payService: PaymentService) {
         this.hideEditForm = true;
        utilService.currentSearchTxt$.subscribe(txt => {this.search(txt);});
 
@@ -48,8 +49,26 @@ export class UsersComponent implements OnInit {
           return {};
         }
       );
+
   }
 
+
+  getApprovalList(approved){
+
+      var allowedList = JSON.parse(approved);
+      var allList = JSON.parse(JSON.stringify(this.payService.getPaymentList()));
+      allList.push("Order Authorization");
+      this.approvalList =[];
+      allList.forEach(el => {
+            if(approved!=null && allowedList.indexOf(el)>-1){
+              this.approvalList.push({'type' :el, 'selected' : true});
+            }else{
+              this.approvalList.push({'type' :el, 'selected' : false});
+            }
+      });
+
+    
+  }
 
    search(searchObj){
      if(searchObj.searchTxt==null) return this.allUsersResponse;
@@ -66,7 +85,19 @@ export class UsersComponent implements OnInit {
       this.hideEditForm = false;
   }
 
+
+  updateApproval(){
+    var newApproval = [];
+    this.approvalList.forEach(el =>{
+      if(el.selected){
+        newApproval.push(el.type);
+      }
+    });
+    this.userData['approver'] =  JSON.stringify(newApproval);
+  }
+
   update(){
+    this.updateApproval();
     this.userService.update(this.userData)
     .subscribe(
         response => {
@@ -79,13 +110,12 @@ export class UsersComponent implements OnInit {
         }
       );
   }
+
   getUser(userId){
         return this.allUsers.filter(user => {
           if(user.id== userId) return user;
       });
   }
-
-
 
   transferDetail(userHeader){
     var userH : string[] = userHeader.split("-");

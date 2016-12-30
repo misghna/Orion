@@ -45,10 +45,14 @@ public class BidController {
 	
 
 	@RequestMapping(value = "/api/user/bid/{orderRef}", method = RequestMethod.GET)
-	public @ResponseBody List<Bid> items(@PathVariable("orderRef") long orderRef,
+	public @ResponseBody List<Bid> items(@PathVariable("orderRef") String orderRef,
 			HttpServletResponse response) throws IOException, InterruptedException {
-	//	Thread.sleep(2000);
-		List<Bid> bids = bidDao.list(orderRef);
+		List<Bid> bids=null;
+		if(orderRef.equals("all")){
+			bids = bidDao.listAll();
+		}else{
+			bids = bidDao.list(Long.parseLong(orderRef));
+		}
 		if(bids.size()>0){
 			return bids;
 		}
@@ -170,7 +174,7 @@ public class BidController {
 		
 		bid.setApproval("requested");
 		// send request to approvers
-		List<User> users = userDao.getApprovers();
+		List<User> users = null ;//userDao.getApprovers();
 		StringBuilder msg = new StringBuilder();
 		OrderView order = orderDao.get(bid.getOrderRef());
 		List<String> auth = new ArrayList<String>();

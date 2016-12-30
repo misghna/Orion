@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sesnu.orion.dao.ItemDAO;
 import com.sesnu.orion.dao.OrderDAO;
+import com.sesnu.orion.dao.ShippingDAO;
 import com.sesnu.orion.dao.OrderDAO;
 import com.sesnu.orion.web.model.Item;
 import com.sesnu.orion.web.model.Order;
@@ -34,6 +35,7 @@ public class OrderController {
 	@Autowired
 	OrderDAO orderDao;
 	@Autowired Util util;
+	@Autowired ShippingDAO shipDao;
 	
 
 	@RequestMapping(value = "/api/user/order/{id}", method = RequestMethod.GET)
@@ -48,11 +50,31 @@ public class OrderController {
 		return null;
 	}
 	
-	@RequestMapping(value = "/api/user/orders", method = RequestMethod.GET)
-	public @ResponseBody List<OrderView> getAll(
+	@RequestMapping(value = "/api/user/orders/{state}", method = RequestMethod.GET)
+	public @ResponseBody List<OrderView> getAll(@PathVariable("state") String state,
 				HttpServletResponse response) throws IOException {
-
-		List<OrderView> orders = orderDao.listAll();
+		List<OrderView> orders =null;
+		switch(state){
+			case "all" :
+				orders = orderDao.listAll();
+				break;
+			case "new" :
+				orders = orderDao.listByIdList(orderDao.newOrdersList());
+				break;
+			case "inTransit" :
+				orders = orderDao.listByIdList(shipDao.inTransitList());
+				break;
+			case "inPort" :
+				orders = orderDao.listByIdList(shipDao.inPortList());
+				break;
+			case "inTerminal" :
+				orders = orderDao.listByIdList(shipDao.inTerminalList());
+				break;
+			default:
+				response.sendError(400,Util.parseError("Invalid Order Param"));
+				return null;
+		}
+		
 		if(orders!=null){
 			return orders;
 		}

@@ -1,11 +1,13 @@
 
-import { Component, OnInit,ElementRef} from '@angular/core';
+import { Component, OnInit,ElementRef,Renderer,ViewChild} from '@angular/core';
 import { MiscService } from '../service/misc.service';
 import { FilterNamePipe } from '../pipes/pipe.filterName';
 import { BidService } from '../bid/bid.service';
 import { UtilService } from '../service/util.service';
 import { OrdersService } from '../orders/orders.service';
 import { Router,ActivatedRoute, Params } from '@angular/router';
+import { UserService } from '../users/users.service';
+import { ApprovalService } from '../approval/approval.service';
 
 declare var jQuery : any;
 
@@ -14,7 +16,13 @@ declare var jQuery : any;
   templateUrl: './bid.component.html',
   styleUrls: ['./bid.component.css']
 })
+
+
 export class BidComponent implements OnInit {
+
+  @ViewChild('mdlCloseBtn') modalInput:ElementRef;
+
+
   data;responseData;itemMsg;
   alertType;alertHidden;alertLabel;
   hideAddNewForm;  hideLoader;
@@ -35,10 +43,14 @@ export class BidComponent implements OnInit {
   bntOption = "Search";
   selectedDate;activeOrderId;
   activeOrder= {}; filteredSalesPlanList=[];
+  approvalAlert={};
+  approversList;
+  approversPlaceHolder = "Select an Approver";
 
-  constructor(private utilService :UtilService,private bidService:BidService, private el: ElementRef,
-              private orderService:OrdersService ,public route: ActivatedRoute) {
-
+  constructor(private utilService :UtilService,private bidService:BidService, private el: ElementRef,private rd: Renderer,
+              private orderService:OrdersService ,public route: ActivatedRoute,private userService : UserService,
+              public router: Router,private approvalService : ApprovalService) {
+    this.approvalAlert['hidden']=true;
     this.optionsList = [{'name':'Add New Bidder','value':'addNew'}];
     this.utilService.setToolsContent(this.optionsList);
     
@@ -59,12 +71,21 @@ export class BidComponent implements OnInit {
       opt => {  
         this.option(opt);
     });
+
+    router.events.subscribe((val) => {
+      var newRouteParam = this.route.snapshot.params['id'];
+      if(this.activeOrderId != newRouteParam){
+        this.activeOrderId = newRouteParam;
+          this.loadAll(this.activeOrderId);
+       //   this.setTitle();
+      }       
+    });
    }
 
   ngOnInit() {
       this.headers = [{'name':'No','value':'id','j':'x'},{'name':'Supplier','value':'supplier','j':'l'},
-                      {'name':'FOB','value':'fob','j':'c'},{'name':'CIF/CNF','value':'cifCnf','j':'c'},
-                      {'name':'Total Bid Amount', 'value':'totalBid','j':'c'}, 
+                      {'name':'FOB','value':'fob','j':'c'},{'name':'CIF','value':'cifCnf','j':'c'},
+                      {'name':'Total (CNF)', 'value':'totalBid','j':'c'}, 
                       {'name':'Payment Method','value':'paymentMethod','j':'c'},
                       {'name':'Selected','value':'selected','j':'c'},{'name':'Approval','value':'approval','j':'c'},
                       {'name':'Updated On','value':'updatedOn','j':'c'}];
@@ -79,7 +100,6 @@ export class BidComponent implements OnInit {
           jQuery('#monthBtn').attr('value',jQuery(this).text().trim());       
         });
 
-        console.log(this.route.snapshot.params['id']);
   } 
   
 populateYear() {
@@ -112,6 +132,23 @@ updateNameBrand(nameBrand){
   this.itemDetail['item'] = splited[1].split('[')[0];
   this.itemDetail['brand'] = splited[1].split('[')[1].split(']')[0];
 }
+
+
+getOrderApprovers(itemDetail){
+     this.itemDetail = itemDetail;
+     this.userService.getApprovers("Order Authorization")
+      .subscribe(
+          response => {
+              this.approversList = response; 
+              console.log("got response " + JSON.stringify(response));
+          },
+          error => {
+            console.log("approvers not found");
+               this.approversPlaceHolder = "Approvers not found" ;      
+          }
+        );
+}
+
 
 getActiveOrder(){
     var setRev :boolean;
@@ -227,15 +264,35 @@ updateBaseUnit(unit){
   
   reqApproval(event){
     event.preventDefault();
-      var id = this.activeProductHeader.split('-')[0];
-      this.bidService.reqApproval(id)
+    // console.log("value '" + orderRef + "'");
+      if(this.itemDetail['approver']=='' || this.itemDetail['approver']==null){
+        this.approvalAlert= {'hidden':false,'content':'Please select approver from list'};
+        return;
+      }
+      var body = {'forId':this.itemDetail['id'], 'type':'Order Authorization','forName':'Order Authorization',
+                  'orderRef':this.itemDetail['orderRef'],'approver':this.itemDetail['approver']};
+      this.approvalService.add(body)
       .subscribe(
           response => {
-              this.setData(response);  
-              this.popAlert("Info","success","Approval Request is sent to all Approvers!"); 
+              //close modal 
+             let event = new MouseEvent('click', {bubbles: true});
+             this.rd.invokeElementMethod(this.modalInput.nativeElement, 'dispatchEvent', [event]);
+           
+             // inform
+              this.loadAll(this.activeOrderId);
+              this.approvalAlert['hidden']= true;
+              this.popAlert("Info","success","Approval Request submited!");    
           },
-          error => {
+          error => { 
+            if(error.status = 'undefined'){
+              let event = new MouseEvent('click', {bubbles: true});
+              this.rd.invokeElementMethod(this.modalInput.nativeElement, 'dispatchEvent', [event]);
+              this.loadAll(this.activeOrderId);
+              this.approvalAlert['hidden']= true;
+              this.popAlert("Info","success","Approval Request submited!"); 
+            }else{
               this.popAlert("Error","danger",this.utilService.getErrorMsg(error));
+            }
           }
         );
   }

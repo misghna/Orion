@@ -35,8 +35,7 @@ import com.sesnu.orion.web.utility.Util;
 public class UserController {
 
 	
-	@Autowired
-	UserDAO userDao;
+	@Autowired UserDAO userDao;
 	@Autowired Util util;
 	@Autowired private ConfigFile conf;
 
@@ -45,13 +44,25 @@ public class UserController {
 		return "index";
 	}
 	
+	@RequestMapping(value = "/api/user/approvers/{type}", method = RequestMethod.GET)
+	public @ResponseBody  List<String> getApprovers(@PathVariable("type") String type,
+												HttpServletResponse response) throws IOException {
+		
+		List<String> approvers = userDao.getApprovers(type.trim());
+		if(approvers!=null){
+			return userDao.getApprovers(type.trim());
+		}else{
+			response.sendError(404, Util.parseError("Not found"));
+			return null;
+		}
+	}
 	
 	@RequestMapping(value = "/api/user/user", method = RequestMethod.GET)
 	public @ResponseBody JSONObject getUser(ModelMap model,HttpServletRequest request,HttpServletResponse response) {	
 		JSONObject jo = new JSONObject();	
 		try {
-			HttpSession session = request.getSession();
 			
+			HttpSession session = request.getSession();			
 		if(session.getAttribute("user")!=null){			
 			User user = (User) session.getAttribute("user");
 			if(!user.getStatus().equals("Active")){
@@ -91,6 +102,7 @@ public class UserController {
 		jo.put("email", user.getEmail());
 		jo.put("buildTime", Util.getBuildTime(context));
 		jo.put("homeHeaders", user.getHomeHeaders());
+		jo.put("homeColor", user.getHomeColor());
 		return jo;
 	}
 	
@@ -117,7 +129,7 @@ public class UserController {
 		
 		user.setPassphrase(Util.encodePassword(user.getPassphrase()));
 		user.setStatus("Inactive");
-		user.setApprover(false);
+		user.setApprover(null);
 		user.setRole("User");
 		userDao.saveOrUpdate(user);
 		StringBuilder msg = new StringBuilder();
@@ -295,8 +307,7 @@ public class UserController {
 			jo.put("phone", user.getPhone());
 			jo.put("department", user.getDepartment());
 			jo.put("approver", user.getApprover());
-			jo.put("header", user.getFullname() + "-" + user.getId());
-			jo.put("homeHeaders", user.getHomeHeaders());
+			jo.put("header", user.getFullname() + "-" + user.getId());			
 			users.add(jo);
 		}
 		

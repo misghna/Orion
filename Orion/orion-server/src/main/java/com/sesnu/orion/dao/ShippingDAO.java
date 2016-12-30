@@ -1,5 +1,6 @@
 package com.sesnu.orion.dao;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import com.sesnu.orion.web.model.Shipping;
@@ -12,6 +13,14 @@ public interface ShippingDAO {
 	public List<ShippingView> listByOrderId(long orderRef);
 	
 	public List<ShippingView> listAll();
+	
+	public List<ShippingView> listByBL(String bl);
+
+	public List<BigInteger> inTransitList();
+	
+	public List<BigInteger> inPortList();
+	
+	public List<BigInteger> inTerminalList();
 	
 	public void saveOrUpdate(Shipping ship);
 

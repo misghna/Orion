@@ -32,7 +32,16 @@ export class AppComponent implements OnInit{
   }
 
 ngOnInit() {
-     var url = window.location.href;
+    var browser = this.getBrowser().split(" ");   
+    if(browser[0]=="Chrome" && browser[1] < 55){
+      alert("For optimal performance, please use latest Chrome or Firefox");
+    }
+  
+    if(browser[0]=="Firefox" && browser[1] < 50){
+       window.alert("For optimal performance, please use latest Chrome or Firefox");
+    }
+
+    var url = window.location.href;
     if(url.indexOf("open")<0){
       this.userService.getUser()
           .subscribe(
@@ -40,6 +49,7 @@ ngOnInit() {
                     localStorage.setItem('accessDetail', JSON.stringify(response));
                     localStorage.setItem('sid',"JSESSIONID=" + response['sId']);
                     localStorage.setItem('homeHeaders',response['homeHeaders']);
+                    localStorage.setItem('homeColor',response['homeColor']);                   
                     if(response['role'] =='Admin'){
                       this.utilService.setAdminState(true);
                     }
@@ -51,6 +61,22 @@ ngOnInit() {
             );
     }
 }
+
+getBrowser(){
+    var ua= navigator.userAgent, tem,
+    M= ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+    if(/trident/i.test(M[1])){
+        tem=  /\brv[ :]+(\d+)/g.exec(ua) || [];
+        return 'IE '+(tem[1] || '');
+    }
+    if(M[1]=== 'Chrome'){
+        tem= ua.match(/\b(OPR|Edge)\/(\d+)/);
+        if(tem!= null) return tem.slice(1).join(' ').replace('OPR', 'Opera');
+    }
+    M= M[2]? [M[1], M[2]]: [navigator.appName, navigator.appVersion, '-?'];
+    if((tem= ua.match(/version\/(\d+)/i))!= null) M.splice(1, 1, tem[1]);
+    return M.join(' ');
+};
 
 
 }
