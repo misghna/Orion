@@ -97,7 +97,9 @@
             <li role="separator" class="divider"></li>
             <li><a routerLink="/setting/salesPlan" routerLinkActive="active" (click)="activePageName='Sales Plan'" >Sales Plan</a></li>         
             <li><a routerLink="/setting/items" routerLinkActive="active" (click)="activePageName='Items'" >Items/Fees</a></li>
-            <li><a routerLink="/setting/legalization" routerLinkActive="active" (click)="activePageName='Legalization/offload'" >Shipping Agency</a></li>
+            <li><a routerLink="/setting/legalization" routerLinkActive="active" (click)="activePageName='Legalization/offload'">Shipping Agency</a></li>
+            <li><a routerLink="/setting/currency" routerLinkActive="active" (click)="activePageName='Currency Exchange'">Currency Exchange</a></li>
+            <li><a routerLink="/setting/misc" routerLinkActive="active" (click)="activePageName='Misc Settings'">Others</a></li>
           </ul>
         </li>
       </ul>
@@ -117,7 +119,6 @@
           <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
            <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="#">Setting</a></li>
             <li><a routerLink="/changePassowrd" routerLinkActive="active">Change Password</a></li>  
             <li role="separator" class="divider"></li>
             <li><a>{{buildNo}}</a></li>

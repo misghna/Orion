@@ -37,6 +37,8 @@ public class Bid {
 	@Column(name="payment_method")
 	private String paymentMethod;
 
+	@Column(name="currency")
+	private String currency;
 	
 	@Column(name = "updated_on")
 	private String updatedOn;
@@ -172,6 +174,14 @@ public class Bid {
 
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+
+	public String getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(String currency) {
+		this.currency = currency;
 	}
 
 	

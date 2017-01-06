@@ -202,7 +202,9 @@
             </ul>
             </div>
         </td>
+        <td><textarea #unit class="form-control txt-flat middletext" rows="2"  placeholder="Deposit" digitsonly required [(ngModel)]="itemDetail.deposit" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td><textarea #unit class="form-control txt-flat middletext" rows="2"  placeholder="Amount" digitsonly required [(ngModel)]="itemDetail.paymentAmount" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <td><textarea #unit class="form-control txt-flat middletext" rows="2"  placeholder="auto" digitsonly required [(ngModel)]="itemDetail.estimate" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td><input type="date" class="form-control txt-flat middletext"  [(ngModel)]="itemDetail.paymentDate" [ngModelOptions]="{standalone: true}"/></td>
         <td><textarea #destinationPort class="form-control txt-flat middletext" rows="2"  placeholder="Remark" [(ngModel)]="itemDetail.remark" [ngModelOptions]="{standalone: true}"></textarea></td>
         <td><textarea #destinationPort class="form-control txt-flat middletext" rows="2" readonly placeholder="Status" [(ngModel)]="itemDetail.status" [ngModelOptions]="{standalone: true}"></textarea></td>

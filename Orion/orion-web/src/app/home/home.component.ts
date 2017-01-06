@@ -21,7 +21,7 @@ export class HomeComponent implements OnInit {
  @ViewChild('myModalBtn2') modalInput:ElementRef;
 
   optionsList;data;selectedHeaders =[];allHeaders;colorSettings =[];
-  newOrders;inTransitOrders;inPortOrders; inTerminalOrders;
+  newOrders;inTransitOrders;inPortOrders; inTerminalOrders;listType ="active";responseData;
  
   colors = ['silver','gray','Black','Red','maroon','yellow','Olive','Lime','Green','Aqua','Teal','Blue','Navy','Fuchsia','Purple','White'];
   
@@ -35,10 +35,11 @@ export class HomeComponent implements OnInit {
                private el: ElementRef,private homeService : HomeService,private rd: Renderer) {  
 
         this.optionsList = [{'name':'Add/Remove Column','value':'addRemoveCol'},
-                            {'name':'Edit notification color','value':'notifColor'}];
+                            {'name':'Edit notification color','value':'notifColor'},
+                            {'name':'Show cleared Orders','value':'showCleared'}];
 
         this.utilService.setToolsContent(this.optionsList);
-
+        utilService.currentSearchTxt$.subscribe(txt => {this.search(txt);});
         utilService.currentToolsOptCont$.subscribe(
           opt => {  
             if(opt['optionName'] == 'addRemoveCol'){
@@ -47,6 +48,9 @@ export class HomeComponent implements OnInit {
                let event = new MouseEvent('click', {bubbles: true});
                 this.rd.invokeElementMethod(
                 this.modalInput.nativeElement, 'dispatchEvent', [event]);
+            }else if(opt['optionName'] == 'showCleared'){
+                this.listType = "all";
+                this.getAllData();
             }
         });
 
@@ -63,6 +67,8 @@ export class HomeComponent implements OnInit {
 
   }
   
+
+
 
   addColorSetting(){
     for(var key in this.colorConfig){
@@ -84,17 +90,13 @@ export class HomeComponent implements OnInit {
         );
   }
 
-  reloadData(){
-    this.getAllData();
-  }
-
   getAllData(){
-
-    this.homeService.getAll()
+    this.homeService.getAll(this.listType)
       .subscribe(
           response => {
               this.generateHeaders(response);
               this.data = this.addColor(response);
+              this.responseData= this.data;
           },
           error => {
           //  this.popAlert("Info","danger","Something went wrong when load item list, please try again later!");          
@@ -194,6 +196,18 @@ if(i>-1){
   }
 
 
+sorter(a, b){
+     var A = a.toLowerCase();
+     var B = b.toLowerCase();
+     if (A < B){
+        return -1;
+     }else if (A > B){
+       return  1;
+     }else{
+       return 0;
+     }
+}
+
   applyColSelection(event){
     event.preventDefault();
     var hdList=[];
@@ -254,6 +268,35 @@ if(i>-1){
  }
    
 
+    search(searchObj){
+      if(searchObj.searchTxt==null || searchObj.searchTxt==''){       
+        this.data = this.responseData; 
+        return;
+      }
 
+      var searchResult = [];
+      this.responseData.forEach(el => {
+          var rowAdded :boolean = false;
+          this.selectedHeaders.forEach(sel => {
+          if(!rowAdded && el[sel.value]!=null && el[sel.value].toString().toLowerCase().indexOf(searchObj.searchTxt.toLowerCase()) !== -1){
+            searchResult.push(el);
+            rowAdded = true;
+          }
+        });  
+      });
+      this.data = searchResult;
+
+    }
+
+
+    // proccessSearch(el,searchTxt){
+    //   this.selectedHeaders.forEach(sel => {
+    //       if(el[sel.value]!=null && el[sel.value].toString().toLowerCase().indexOf(searchTxt.toLowerCase()) !== -1){
+    //         console.log(el[sel.value]);
+    //         return true;
+    //       }
+    //   });        
+    //   return false;
+    // }
 
 }

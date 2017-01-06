@@ -114,11 +114,11 @@
                 <li><a #edit_item (click)="editItem(edit_item.parentElement.parentElement.id)">Edit</a></li>
                  <li role="separator" class="divider"></li>
                 <li><a #deleteitem (click)="triggerDelModal($event)">Delete</a></li>
-                <li><a routerLink="/finance/approval/{{item.id}}" routerLinkActive="active">Approvals</a></li>
-                <li><a (click)="drillDown('/import/bid',item.id)">Bids</a></li>
-                <li><a (click)="drillDown('/finance/payment',item.id)">Payments</a></li>
-                <li><a (click)="drillDown('/import/shipping',item.id)">Shipping</a></li>
-                <li><a routerLink="{{'/document/orderRef-'+item.id}}" routerLinkActive="active" >Document</a></li>
+                <li><a routerLink="/finance/approval/{{item.id}}" routerLinkActive="active">Open Approvals</a></li>
+                <li><a (click)="drillDown('/import/bid',item.id)">Open Bids</a></li>
+                <li><a (click)="drillDown('/finance/payment',item.id)">Open Payments</a></li>
+                <li><a (click)="drillDown('/import/shipping',item.id)">Open Shipping</a></li>
+                <li><a routerLink="{{'/document/orderRef-'+item.id}}" routerLinkActive="active" >Open Documents</a></li>
             </ul>
             </div>
         </td>

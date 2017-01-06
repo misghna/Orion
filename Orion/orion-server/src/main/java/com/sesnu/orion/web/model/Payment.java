@@ -39,6 +39,12 @@ public class Payment {
 	@Column(name = "payment_amount")
 	private double paymentAmount;
 	
+	@Column(name = "estimate")
+	private double estimate;
+	
+	@Column(name = "deposit")
+	private double deposit;
+	
 	@Column(name = "updated_on")
 	private String updatedOn;
 	
@@ -149,6 +155,22 @@ public class Payment {
 
 	public void setCurr(String curr) {
 		this.curr = curr;
+	}
+
+	public double getEstimate() {
+		return estimate;
+	}
+
+	public void setEstimate(double estimate) {
+		this.estimate = estimate;
+	}
+
+	public double getDeposit() {
+		return deposit;
+	}
+
+	public void setDeposit(double deposit) {
+		this.deposit = deposit;
 	}
 	
 	

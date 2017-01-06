@@ -76,6 +76,9 @@ public class Summary {
 	@Column(name = "free_days")
 	private String freeDaysLeft;
 	
+	@Column(name = "progress")
+	private Long progress;
+	
 	@Column(name = "updated_on")
 	private String updatedOn;
 
@@ -245,6 +248,14 @@ public class Summary {
 
 	public void setFreeDaysLeft(String freeDaysLeft) {
 		this.freeDaysLeft = freeDaysLeft;
+	}
+
+	public Long getProgress() {
+		return progress;
+	}
+
+	public void setProgress(Long progress) {
+		this.progress = progress;
 	}
 
 	

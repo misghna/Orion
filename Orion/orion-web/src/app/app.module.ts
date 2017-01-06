@@ -4,7 +4,6 @@ import {RouterModule } from '@angular/router';
 import { HttpModule, } from '@angular/http';
 import { FormsModule } from '@angular/forms';
 import { routes } from './app.routes';
-
 import { AppComponent }  from './app.component';
 import { HomeComponent }  from './home/home.component';
 import { AuthGuard } from './service/auth.guard';
@@ -49,8 +48,11 @@ import { StatusComponent } from './status/status.component';
 import { ApprovalComponent } from './approval/approval.component';
 import { ApprovalService } from './approval/approval.service';
 
-
-
+import { StatusService } from './status/status.service';
+import { MiscComponent } from './misc/misc.component';
+import { CurrencyComponent } from './currency/currency.component';
+import { MiscSettingService } from './misc/misc-service.service';
+import { CurrencyService } from './currency/currency.service';
 
 
 @NgModule({
@@ -71,12 +73,13 @@ import { ApprovalService } from './approval/approval.service';
                 ItemsComponent,FilterNamePipe, SalesPlanComponent, OrdersComponent, FileUploadComponent,
                 BidComponent, PaymentComponent, ShippingComponent,
                 FileSelectDirective, FileDropDirective, DocumentComponent,DigitsOnly,NumberOnly, ContainerComponent,
-                PortFeeComponent, StatusComponent, ApprovalComponent
+                PortFeeComponent, StatusComponent, ApprovalComponent, MiscComponent, CurrencyComponent
                  ],
   providers:[AuthGuard,UtilService,UserService,AppSettings,MiscService,
             SalesPlanService,OrdersService,DocumentService,
             BidService,PaymentService,ShippingService,HomeService,
-            ContainerService,PortFeeService,ApprovalService,
+            ContainerService,PortFeeService,ApprovalService,StatusService,
+            MiscSettingService,CurrencyService,
         {
           provide: Http,
           useFactory: (backend: XHRBackend, defaultOptions: RequestOptions, utilService:UtilService) => {

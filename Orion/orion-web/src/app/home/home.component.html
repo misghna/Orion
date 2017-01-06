@@ -1,3 +1,7 @@
+<!--<button class="btn" (click)="loadPage($event)">test </button>-->
+
+<!--<div id="myDiv"></div>-->
+
 <div id="mySidenav" class="sidenav">
   
   <div class="list-group mySidenav2" >
@@ -54,7 +58,9 @@
 
   </table>
  <hr> 
-<table  class="table table-striped tableFont" [mfData]="data" #mf="mfDataTable" [mfRowsOnPage]="20" >
+<table  class="table table-striped tableFont" [mfData]="data" #mf="mfDataTable" [mfRowsOnPage]="20" 
+    [class.hidden]="selectedHeaders.length<1"
+    >
     <thead>
     <tr>
         <th >Id</th>
@@ -63,10 +69,10 @@
             'text-center' : tableHeader.j=='c' || tableHeader.j=='x',
             'text-left' : tableHeader.j=='l'
             }"
+
          *ngFor="let tableHeader of selectedHeaders; let i = index"> 
             <mfDefaultSorter by="{{tableHeader.value}}"><font class ="tbl-header">{{tableHeader.name}}</font></mfDefaultSorter>
         </th>
-        <th style="width: 5%;" class ="tbl-header">Progress</th>
         <th style="width: 5%;" class ="tbl-header">Action</th>
     </tr>
     </thead>
@@ -85,17 +91,15 @@
             'hidden' : tableHeader.j=='x'
             }"
          *ngFor="let tableHeader of selectedHeaders; let i = index"> 
-             <div>{{item[tableHeader.value]}}</div>
-          </td>
-
-       <td>
-           <div class="progress" style="padding:0px;margin-bottom:0px">
-                <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40"
-                aria-valuemin="0" aria-valuemax="100" style="width:40%">
-                    40%
+             <div *ngIf ="tableHeader.value!='progress'">{{item[tableHeader.value]}}</div>
+             <div *ngIf ="tableHeader.value=='progress'" class="progress" style="padding:0px;margin-bottom:0px">
+                <div class="progress-bar progress-bar-success" role="progressbar" [attr.aria-valuenow]="item[tableHeader.value]"
+                aria-valuemin="0" aria-valuemax="100" [style.width] ="item[tableHeader.value] + '%'">
+                    <font color="black">{{item[tableHeader.value] + '%'}}</font>
                 </div>
            </div>
-       </td>
+          </td>
+
         <td class="text-center" >
             <div class="dropdown" style="border: 0">
             <button id= "{{item.id.toString() + '*' + item.name}}" #dropButton class="btn btn-default dropdown-toggle"
@@ -206,7 +210,7 @@
 </div>
             <div class="modal-footer">
             <!--<button type="button" class="btn btn-default" >Apply</button>-->
-            <button type="button" class="btn btn-default" data-dismiss="modal" (click)="reloadData()">Apply</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" (click)="getAllData()">Apply</button>
             </div>
       </div>
     </div>

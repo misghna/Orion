@@ -153,7 +153,7 @@ getSalesPlan(){
 
 triggerDelModal(event){
     event.preventDefault();
-    var modalInfo = {"title" : "Order", "msg" : this.activeProductHeader.split('-')[1],"task" :"myTask"};
+    var modalInfo = {"title" : "Order", "msg" : this.activeProductHeader.split('-')[1] + " and all related data to this order" ,"task" :"myTask"};
     this.utilService.showModalState(modalInfo);
 }
 
@@ -386,7 +386,11 @@ getCustomOrder(state){
           },
           error => {
               this.setData([]);
-              this.popAlert("Error","danger","Something went wrong, please try again later!");
+            if(error.status==404){
+               this.popAlert("Info","Info","Order for this time range not found!");          
+            }else{
+               this.popAlert("Error","danger","Something went wrong, please try again later!");          
+            }
           }
         );
     }

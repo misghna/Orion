@@ -48,11 +48,11 @@ public class SummaryController {
 
 
 	
-	@RequestMapping(value = "/api/user/summary", method = RequestMethod.GET)
-	public @ResponseBody List<Summary> getAll(
+	@RequestMapping(value = "/api/user/summary/{state}", method = RequestMethod.GET)
+	public @ResponseBody List<Summary> getAll(@PathVariable("state") String state,
 				HttpServletResponse response) throws IOException {
 
-		List<Summary> summary = summaryDao.listAll();
+		List<Summary> summary = summaryDao.listAll(state);
 		if(summary!=null){
 			return summary;
 		}

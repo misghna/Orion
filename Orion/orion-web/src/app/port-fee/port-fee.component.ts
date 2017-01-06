@@ -53,24 +53,7 @@ export class PortFeeComponent implements OnInit {
               this.option(opt);
           });
 
-          // router.events.subscribe((val) => {
-          //   var newRouteParam = this.route.snapshot.params['id'];
-          //   if(this.activeShippingId != newRouteParam){
-          //     this.activeShippingId = newRouteParam;
-          //       this.loadAll(this.activeShippingId);
-          //       this.setTitle();
-          //   }       
-          // });
-
-   }
-
-  //  setTitle(){
-  //         if(this.activeShippingId.indexOf("all")>=0){
-  //           this.activeOrder = null;        
-  //         }else{
-  //           this.getAllShiping()
-  //         }
-  //  }
+    }
 
   ngOnInit() {
       this.headers = [{'name':'No','value':'id','j':'x'},{'name':'Agency','value':'agency','j':'l'},
@@ -94,46 +77,12 @@ export class PortFeeComponent implements OnInit {
 
 
 
-updateNameBrand(nameBrand){
-  var splited = nameBrand.split('(')[1].split(')');
-  this.itemDetail['itemId'] = splited[0];
-  this.itemDetail['item'] = splited[1].split('[')[0];
-  this.itemDetail['brand'] = splited[1].split('[')[1].split(']')[0];
-}
-
-// getAllShiping(){
-//       this.portFeeService.get()
-//       .subscribe(
-//           response => {
-//               this.shippingList = response; 
-//               this.allShippingList=response;
-//           },
-//           error => {
-//                console.error("order not found!");          
-//           }
-//         );
-// }
-
 triggerDelModal(event){
     event.preventDefault();
     console.log("triigered");
     var modalInfo = {"title" : "Order", "msg" : "Agency " + this.activeProductHeader.split('-')[1],"task" :"myTask"};
     this.utilService.showModalState(modalInfo);
 }
-
-
-updateMonthName(month){
-  this.itemDetail['month'] = month;
-}
-
-updateBaseUnit(unit){
-  this.itemDetail['baseUnit'] = unit;
-}
-
-  loadSelected(event,year,month){
-    event.preventDefault();
-  //  this.loadAll(year,month);
-  }
 
 
   loadAll(){
@@ -146,22 +95,12 @@ updateBaseUnit(unit){
           },
           error => {
             if(error.status==404){
-               this.popAlert("Info","Info","Payment is not yet added for this order!");          
+               this.popAlert("Info","Info","Settings is not yet added!");          
             }else{
                this.popAlert("Error","danger","Something went wrong, please try again later!");          
             }
           }
         );
-  }
-
-  contains(myArray,str){
-    var i = myArray.length;
-    while (i--) {
-       if (myArray[i] === str) {
-           return true;
-       }
-    }
-    return false;
   }
 
 
@@ -177,7 +116,7 @@ updateBaseUnit(unit){
             this.portFeeService.add(this.itemDetail)
             .subscribe(
                 response => {
-                    this.popAlert("Info","success","Shipping Agency successfully added!");
+                    this.popAlert("Info","success","Setting successfully added!");
                     this.setData(response);  
                     this.hideAddNewForm = true;  
                 },
@@ -231,7 +170,7 @@ updateBaseUnit(unit){
       .subscribe(
           response => {
               this.setData(response);  
-              this.popAlert("Info","success","Shipping Agency successfully deteled!"); 
+              this.popAlert("Info","success","Setting Agency successfully deteled!"); 
           },
           error => {
               this.popAlert("Error","danger","Something went wrong, please try again later!");
@@ -255,7 +194,7 @@ updateBaseUnit(unit){
             .subscribe(
                 response => {
                     this.hideAddNewForm = true;
-                    this.popAlert("Info","success","Shipping Agency successfully updated!");
+                    this.popAlert("Info","success","Setting successfully updated!");
                     this.setData(response);     
                 },
                 error => {      

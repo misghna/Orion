@@ -17,7 +17,7 @@ public interface SummaryDAO {
 	
 	public List<Summary> getOrderByTime(int year,String month);
 	
-	public List<Summary> listAll() ;
+	public List<Summary> listAll(String state) ;
 		
 
 

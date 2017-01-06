@@ -102,8 +102,11 @@
                 <li><a #deleteitem (click)="triggerDelModal($event)">Delete</a></li>
                 <li *ngIf = "item.selected == true"><a (click)="diselectSupplier($event)"> Diselect Winner</a></li>
                 <li *ngIf = "item.selected == false"><a (click)="selectSupplier($event)"> Select Winner</a></li>
-                <li><a  #apprv id="{{item}}" data-toggle="modal" data-target="#approveModal" (click)="getOrderApprovers();itemDetail= item">Request Approval</a></li>
-                <li><a  (click)="approve($event,apprv.id)">Approve</a></li>
+                <li><a *ngIf = "item.selected == true" #apprv id="{{item}}" data-toggle="modal" data-target="#approveModal" (click)="getOrderApprovers();itemDetail= item">Request Approval</a></li>
+           
+                <!--<li *ngIf = "item.selected == true"><a (click)="approve($event,apprv.id)"> Approve this Order</a></li>
+                <li *ngIf = "item.selected == false"><a (click)="selectSupplier($event)"> Select Winner</a></li>
+                <li><a  (click)="approve($event,apprv.id)">Approve</a></li>-->
             </ul>
             </div>
         </td>

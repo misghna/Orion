@@ -80,13 +80,17 @@ public class ApprovalController {
 			throws Exception {
 		
 		if(aprv.getOrderRef()==0){
-			response.sendError(400, "bad data");
+			response.sendError(400, Util.parseError("bad data"));
 			return null;
 		}
 		
 		List<ApprovalView> aprvls = aprvDao.listByTypeId(aprv.getType(), aprv.getForId());
 		
-		if(aprvls.size()>0 && aprvls.get(0).getApprover().equals(aprv.getApprover())){
+		if(aprvls.size()>0 && aprvls.get(0).getStatus().equals("Approved")){
+			response.sendError(400, Util.parseError("Already Approved"));
+			return null;
+		}
+		else if(aprvls.size()>0 && aprvls.get(0).getApprover().equals(aprv.getApprover())){
 			response.sendError(400,Util.parseError("Approval request already exists"));
 			return null;
 		}
@@ -102,11 +106,13 @@ public class ApprovalController {
 			Bid bid = bidDao.get(aprv.getForId());
 			bid.setApproval("Pending Approval");
 			bidDao.saveOrUpdate(bid);
+			response.sendError(200,"ok");
 			return "success";
 		}else{
 			Payment pay = payDao.get(aprv.getForId());
 			pay.setStatus("Pending Approval");
 			payDao.saveOrUpdate(pay);
+			response.sendError(200,"ok");
 			return "success";
 		}
 

@@ -128,6 +128,12 @@ public class OrderController {
 		if(Orders.size()>0){
 			return Orders;
 		}
+		
+		Orders = orderDao.listAll();
+		if(Orders.size()>0){
+			return Orders;
+		}
+			
 		response.sendError(404);
 		return null;
 

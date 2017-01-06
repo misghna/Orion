@@ -16,6 +16,8 @@ import { DocumentComponent } from './document/document.component';
 import { PortFeeComponent } from './port-fee/port-fee.component';
 import { StatusComponent } from './status/status.component';
 import { ApprovalComponent } from './approval/approval.component';
+import { MiscComponent } from './misc/misc.component';
+import { CurrencyComponent } from './currency/currency.component';
 
 
 import { AuthGuard } from './service/auth.guard';
@@ -32,6 +34,8 @@ export const routes: Routes = [
   { path: 'setting/users',  component: UsersComponent },
   { path: 'setting/salesPlan',  component: SalesPlanComponent },
   { path: 'setting/legalization',  component: PortFeeComponent },
+  { path: 'setting/misc',  component: MiscComponent },
+  { path: 'setting/currency',  component: CurrencyComponent },
   { path: 'status',  component: StatusComponent },
   { path: 'finance/approval/:id',  component: ApprovalComponent },
   { path: 'import/order/:id',  component: OrdersComponent },

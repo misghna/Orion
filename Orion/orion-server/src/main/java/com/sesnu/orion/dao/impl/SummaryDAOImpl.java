@@ -27,8 +27,11 @@ public class SummaryDAOImpl implements SummaryDAO {
 
 	
 	@Override
-	public List<Summary> listAll() {	
+	public List<Summary> listAll(String state) {	
 		String hql = "from Summary";
+		if(state.equals("active")){
+			hql = hql + " where progress < 100";
+		}
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		return (List<Summary>) query.list();
 

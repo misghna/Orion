@@ -147,7 +147,8 @@ export class PaymentComponent implements OnInit {
 
       this.headers = [{'name':'No','value':'id','j':'x'},{'name':'Inv No','value':'invNo','j':'c'},{'name':'BL','value':'bl','j':'c'},
                       {'name':'Payed For','value':'name','j':'c'},{'name':'Payment Method','value':'paymentMethod','j':'l'},
-                      {'name':'Currency','value':'curr','j':'c'},{'name':'Payment Amount', 'value':'paymentAmount','j':'c'}, 
+                      {'name':'Currency','value':'curr','j':'c'},{'name':'Deposit', 'value':'deposit','j':'c'},
+                      {'name':'Estimated Amount', 'value':'estimate','j':'c'},{'name':'Actual Amount', 'value':'paymentAmount','j':'c'}, 
                       {'name':'Payment Date','value':'paymentDate','j':'c'},{'name':'Remakr','value':'remark','j':'c'},
                       {'name':'Status','value':'status','j':'c'},{'name':'Updated On','value':'updatedOn','j':'c'}];
       

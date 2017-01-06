@@ -2,6 +2,7 @@ package com.sesnu.orion.dao.impl;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -135,8 +136,9 @@ public class OrderDAOImpl implements OrderDAO {
 	
 	@Override
 	public List<BigInteger> newOrdersList() {
-		String sql = "select id from orders where id not in (select order_ref from shipping)";
-		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		String sql = "select id from orders where id not in (select order_ref from shipping where (ata is null and eta > :today) or (ata > :today))";
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql)
+				.setDate("today", new Date());
 		if(query.list().size()>0){
 			return (List<BigInteger>) query.list();
 		}

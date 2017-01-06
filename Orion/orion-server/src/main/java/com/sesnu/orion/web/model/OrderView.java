@@ -14,7 +14,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.NamedNativeQuery;
 
 @Entity
-@Table(name = "ORDERS_VIEW")
+@Table(name = "ORDER_VIEW")
 public class OrderView {
 	
 	@Id
@@ -22,6 +22,9 @@ public class OrderView {
 	@SequenceGenerator(name="order_seq",sequenceName="order_seq",allocationSize=20)
 	@Column(name = "id")
 	private Long id;
+	
+	@Column(name = "item_id")
+	private long itemId;
 	
 	@Column(name = "item")
 	private String item;
@@ -67,6 +70,9 @@ public class OrderView {
 	
 	@Column(name = "bl")
 	private String bl;
+	
+	@Column(name = "type")
+	private String itemType;
 	
 	@Column(name = "created_on")
 	private Date createdOn;
@@ -220,6 +226,22 @@ public class OrderView {
 
 	public void setBl(String bl) {
 		this.bl = bl;
+	}
+
+	public String getItemType() {
+		return itemType;
+	}
+
+	public void setItemType(String itemType) {
+		this.itemType = itemType;
+	}
+
+	public long getItemId() {
+		return itemId;
+	}
+
+	public void setItemId(long itemId) {
+		this.itemId = itemId;
 	}
 
 	

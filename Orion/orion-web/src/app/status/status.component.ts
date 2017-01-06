@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { StatusService } from './status.service';
+import { ShippingService } from '../shipping/shipping.service';
+import { OrdersService } from '../orders/orders.service';
+
 
 declare var $ :any;
 
@@ -9,83 +13,148 @@ declare var $ :any;
 })
 export class StatusComponent implements OnInit {
 
- payPercent; orderPercent; docPercent;
+ payPercent; orderPercent; docPercent;statusHidden;allOrdersResponse;allOrders;activeOrder;activeOrderId='';
+ payments;documents;orders;guageLoaded;
+ title = {display : true, value : 'Over all progress', fontFamily : 'Arial', fontColor : '#818181',  fontSize : 20, fontWeight : 'normal'};
+ valueLabel = {display : true, fontFamily : 'Arial', fontColor : '#000', fontSize : 20, fontWeight : 'normal'};
 
- payments = [{'type':'CNF','done':'yes'},{'type':'Bromangol','done':'yes'},{'type':'Legalization','done':'yes'},
-            {'type':'Customs','done':'yes'},{'type':'Port','done':'no'},{'type':'Terminal','done':'no'}]
-
- orders = [{'type':'Order Initiated','done':'yes'},{'type':'Proforma Invoice Received','done':'yes'},{'type':'Supplier Selected','done':'yes'},
-            {'type':'Commercial Invoice Received','done':'yes'},{'type':'Item Shipped','done':'no'}]
-
- documents = [{'type':'Proforma Invoice','done':'yes'},{'type':'Commerical Invoice','done':'yes'},
-              {'type':'Bill of Loading','done':'yes'},{'type':'CNCA','done':'yes'},
-            {'type':'Certificate of Health','done':'yes'},{'type':'Certificate of Origin','done':'no'},
-            {'type':'Certificate of Analise','done':'yes'},{'type':'Certificate of Fumigation','done':'nrlv'},
-            {'type':'Certificate of Quality','done':'yes'},{'type':'Certificate of Insurance','done':'nrlv'},
-            {'type':'Du License','done':'yes'},{'type':'Inspection','done':'no'},
-            {'type':'Local Phytosanitary','done':'yes'},{'type':'Packing List','done':'no'}]
-
- itemDetail = {'bl' :'test bl', 'invNo' : 'test inv no'};
-  constructor() { }
+  constructor(private ordersService: OrdersService,private statService :StatusService) {
+    this.statusHidden=true;
+   }
 
   ngOnInit() {
+      this.getOrderList();
+  }
 
-    this.payPercent = this.calcPercent(this.payments);
-    this.orderPercent = this.calcPercent(this.orders);
-    this.docPercent = this.calcPercent(this.documents);
- 
-    this.overAllProgress();
+  assignOrder(order){
+    this.activeOrder = order;
+    this.activeOrderId = '(invNo) ' + order.invNo
+    if(order.bl!=null){
+      this.activeOrderId = '(invNo) ' + order.invNo + " - (bl) " + order.bl; 
+    }
+  }
+
+  openStat(event){
+      event.preventDefault();
+      this.payments=null; this.orders=null; this.documents=null;
+      this.getPaymentStat();
+      this.getDocumentStat();
+      this.getOrderStat();
+  }
+
+  getPaymentStat(){
+    if(this.activeOrder==null){
+      return;
+    }  
+     this.statService.getPaymentStatus(this.activeOrder['id'])
+            .subscribe(
+                response => {
+                    this.payments =response;
+                    this.payPercent = this.calcPercent(this.payments);
+                    this.statusHidden = false;
+                    this.overAllProgress();
+                },
+                error => {      
+                    console.error("Something went wrong, please try again later!");
+                }
+      );
+  }
+
+ getDocumentStat(){
+
+    if(this.activeOrder==null){
+      return;
+    }  
+     this.statService.getDocStatus(this.activeOrder['id'])
+            .subscribe(
+                response => {
+                    this.documents =response;
+                    this.docPercent = this.calcPercent(this.documents);
+                    this.statusHidden = false;
+                    this.overAllProgress();
+                },
+                error => {      
+                    console.error("Something went wrong, please try again later!");
+                }
+      );
+  }
+
+   getOrderStat(){
+
+    if(this.activeOrder==null){
+      return;
+    }  
+     this.statService.getOrderStatus(this.activeOrder['id'])
+            .subscribe(
+                response => {
+                    this.orders =response;
+                    this.orderPercent = this.calcPercent(this.orders);
+                    this.statusHidden = false;
+                    this.overAllProgress();
+                },
+                error => {      
+                    console.error("Something went wrong, please try again later!");
+                }
+      );
+  }
+
+  getOrderList(){
+   
+     this.ordersService.getAllOrders('all')
+            .subscribe(
+                response => {
+                    this.allOrdersResponse =response;  
+                    this.allOrders =response;     
+                },
+                error => {      
+                    console.error("Something went wrong, please try again later!");
+                }
+      );
+  }
 
 
+  filterOrder(txt){
+      if(txt.length==0) {
+        this.allOrders = this.allOrdersResponse
+      }
+      this.allOrders = this.allOrdersResponse.filter(order => {
+        if(order!=null && ((order.bl!=null && order.bl.toLowerCase().indexOf(txt.toLowerCase())>-1) || 
+                            (order.invNo !=null &&  order.invNo.toLowerCase().indexOf(txt.toLowerCase()))>-1 ))
+            return order;
+      });
 
   }
 
 
 overAllProgress(){
+  if(this.payments==null || this.orders==null || this.documents==null){
+    return;
+  }
+  console.log("pay " + this.payments.length + " order " + this.orders.length + " doc " + this.documents.length);
   var mrg1 = JSON.parse(JSON.stringify(this.payments));
   Array.prototype.push.apply(mrg1,this.orders);
   Array.prototype.push.apply(mrg1,this.documents);
 
     var averAllProgress = this.calcPercent(mrg1);
 
-    $('.demo').kumaGauge({
-      value : averAllProgress,
-      radius : 140,
-      showNeedle : false,
-      min : 0,
-      max: 100,
-      valueLabel : {
-        display : true, 
-        fontFamily : 'Arial', 
-        fontColor : '#000', 
-        fontSize : 20, 
-        fontWeight : 'normal',
-        value:80
-      },
-      title : {
-        display : true, 
-        value : 'Over all progress', 
-        fontFamily : 'Arial', 
-        fontColor : '#818181', 
-        fontSize : 20, 
-        fontWeight : 'normal'
-      }
-    });
+      $('.pie_progress').asPieProgress({
+        namespace: 'pie_progress'
+      });
+        $('.pie_progress').asPieProgress('reset');
+        $('.pie_progress').asPieProgress('start');
+        $('.pie_progress').asPieProgress('go',averAllProgress);
+
 
 }
 
 calcPercent(status){
   var count=0; var nrlv=0;
   status.forEach(element => {
-    if(element['done']=='yes'){
+    if(element['done']==true){
       count = count +1;
     }
-    if(element['done']=='nrlv'){
-      nrlv = nrlv +1;
-    }
   });
-
-  return Math.round(count/(status.length-nrlv)*100);
+  return Math.round(count/(status.length)*100);
 }
 
 }

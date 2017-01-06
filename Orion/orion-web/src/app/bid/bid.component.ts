@@ -67,10 +67,8 @@ export class BidComponent implements OnInit {
     this.todayDate = this.getDate(new Date());
 
     // tools listener
-    utilService.currentToolsOptCont$.subscribe(
-      opt => {  
-        this.option(opt);
-    });
+    utilService.currentToolsOptCont$.subscribe(opt => { this.option(opt);});
+    utilService.currentdelItem$.subscribe(opt => { this.delete(opt);});
 
     router.events.subscribe((val) => {
       var newRouteParam = this.route.snapshot.params['id'];
@@ -84,6 +82,7 @@ export class BidComponent implements OnInit {
 
   ngOnInit() {
       this.headers = [{'name':'No','value':'id','j':'x'},{'name':'Supplier','value':'supplier','j':'l'},
+                      {'name':'Currency','value':'currency','j':'l'},
                       {'name':'FOB','value':'fob','j':'c'},{'name':'CIF','value':'cifCnf','j':'c'},
                       {'name':'Total (CNF)', 'value':'totalBid','j':'c'}, 
                       {'name':'Payment Method','value':'paymentMethod','j':'c'},
@@ -269,6 +268,7 @@ updateBaseUnit(unit){
         this.approvalAlert= {'hidden':false,'content':'Please select approver from list'};
         return;
       }
+      
       var body = {'forId':this.itemDetail['id'], 'type':'Order Authorization','forName':'Order Authorization',
                   'orderRef':this.itemDetail['orderRef'],'approver':this.itemDetail['approver']};
       this.approvalService.add(body)
@@ -284,7 +284,9 @@ updateBaseUnit(unit){
               this.popAlert("Info","success","Approval Request submited!");    
           },
           error => { 
-            if(error.status = 'undefined'){
+            console.log("status "+ JSON.stringify(error));
+            console.log("status code"+ error.status);
+            if(JSON.stringify(error) == '{}'){
               let event = new MouseEvent('click', {bubbles: true});
               this.rd.invokeElementMethod(this.modalInput.nativeElement, 'dispatchEvent', [event]);
               this.loadAll(this.activeOrderId);
@@ -292,6 +294,8 @@ updateBaseUnit(unit){
               this.popAlert("Info","success","Approval Request submited!"); 
             }else{
               this.popAlert("Error","danger",this.utilService.getErrorMsg(error));
+              let event = new MouseEvent('click', {bubbles: true});
+              this.rd.invokeElementMethod(this.modalInput.nativeElement, 'dispatchEvent', [event]);
             }
           }
         );
@@ -342,7 +346,7 @@ updateBaseUnit(unit){
     }
 
     delete(event){
-
+      console.log("deleting ...");
       var id = this.activeProductHeader.split('-')[0];
       this.bidService.deleteById(id)
       .subscribe(

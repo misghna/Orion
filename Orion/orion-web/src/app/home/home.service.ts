@@ -15,8 +15,8 @@ export class HomeService {
   }
 
 
-  getAll() {
-    var url = this.baseUrl + 'api/user/summary';
+  getAll(state) {
+    var url = this.baseUrl + 'api/user/summary/' + state;
     return this.http.get(url,[{ withCredentials: true }])
       .map(res => res.json());
   }
