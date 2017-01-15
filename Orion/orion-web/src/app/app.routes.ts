@@ -18,7 +18,10 @@ import { StatusComponent } from './status/status.component';
 import { ApprovalComponent } from './approval/approval.component';
 import { MiscComponent } from './misc/misc.component';
 import { CurrencyComponent } from './currency/currency.component';
+import { LicenseComponent } from './license/license.component';
+import { ClientComponent } from './client/client.component';
 
+import { BudgetComponent } from './budget/budget.component';
 
 import { AuthGuard } from './service/auth.guard';
 import { ChangePasswordComponent } from './change-password/change-password.component';
@@ -36,16 +39,21 @@ export const routes: Routes = [
   { path: 'setting/legalization',  component: PortFeeComponent },
   { path: 'setting/misc',  component: MiscComponent },
   { path: 'setting/currency',  component: CurrencyComponent },
-  { path: 'status',  component: StatusComponent },
+  { path: 'setting/clients',  component: ClientComponent },
+
+  { path: 'status/:id',  component: StatusComponent },
   { path: 'finance/approval/:id',  component: ApprovalComponent },
-  { path: 'import/order/:id',  component: OrdersComponent },
   { path: 'finance/payment/:id',  component: PaymentComponent },
+  { path: 'budget/:id',  component: BudgetComponent },
+  
+  
+  { path: 'import/order/:id',  component: OrdersComponent },
   { path: 'import/shipping/:id',  component: ShippingComponent },
   { path: 'import/container/:id',  component: ContainerComponent },
   { path: 'import/bid/:id',  component: BidComponent },
   
-  // { path: 'fileUpload',  component: FileUploadComponent },
-  { path: 'document/:id',  component: DocumentComponent },
+  { path: 'document/license/:id',  component: LicenseComponent },
+  { path: 'document/uploaded/:id',  component: DocumentComponent },
 
   { path: 'open/register',  component: RegisterComponent },
   { path: 'open/passrenew',  component: PassRenewComponent },

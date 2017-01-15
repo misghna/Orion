@@ -43,11 +43,8 @@ public class Bid {
 	@Column(name = "updated_on")
 	private String updatedOn;
 	
-	@Column(name = "first_approver")
-	private String firstApprover;
-	
-	@Column(name = "second_approver")
-	private String secondApprover;
+	@Column(name = "est_transit_days")
+	private Integer estTransitDays;
 	
 	@Column(name = "approval")
 	private String approval;
@@ -128,12 +125,13 @@ public class Bid {
 		this.updatedOn = updatedOn;
 	}
 
-	public String getFirstApprover() {
-		return firstApprover;
+
+	public Integer getEstTransitDays() {
+		return estTransitDays;
 	}
 
-	public void setFirstApprover(String firstApprover) {
-		this.firstApprover = firstApprover;
+	public void setEstTransitDays(Integer estTransitDays) {
+		this.estTransitDays = estTransitDays;
 	}
 
 	public String getApproval() {
@@ -158,14 +156,6 @@ public class Bid {
 
 	public void setDf(boolean df) {
 		this.df = df;
-	}
-
-	public String getSecondApprover() {
-		return secondApprover;
-	}
-
-	public void setSecondApprover(String secondApprover) {
-		this.secondApprover = secondApprover;
 	}
 
 	public String getRemark() {

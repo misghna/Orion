@@ -1,6 +1,6 @@
 .statusBox {
-    width: 400px;
-    height: 350px;
+    width: 98%;
+    min-height: 100px;
     background-color: #F7F7F7;
      box-shadow:0.2px 0.2px 0.2px 0.2px #C9C9C9;
  	-webkit-box-shadow:0.2px 0.2px 0.2px 0.2px #C9C9C9;
@@ -9,6 +9,24 @@
       margin: auto; 
       cursor: pointer; 
      
+}
+
+span {
+  margin: 2px;
+  /*border: 1px dotted #cccccc;*/
+  padding: 0px 5px 0px 5px; 
+  line-height: 1.8;
+  word-wrap: normal;
+  display: inline-block;
+    
+    }
+
+.cont3 {
+  padding: 5px;
+  margin: 5px;
+  /*border: 1px solid #cccccc;*/
+  width: 98%;
+  word-wrap: break-word;
 }
 
 .statusBox2 {
@@ -53,7 +71,7 @@
 	padding-bottom : 10px;
 }
 
-.progress{width:360px}
+.progress{width:98%}
 
 .statusContainer{
     height : calc(100% - 100px);
@@ -63,7 +81,7 @@
 .sideMenu{
     border : 0px solid gray;
     height : calc(100% - 100px);
-    width:100%;
+    width:280px;
     margin-top:20px;
     margin-left:10px;
 }

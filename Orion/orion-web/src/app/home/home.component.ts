@@ -1,6 +1,8 @@
 import { Component, OnInit,ElementRef,Renderer,ViewChild } from '@angular/core';
+import { Router} from '@angular/router';
 import { Http} from '@angular/http';
 import { UtilService } from '../service/util.service';
+import { ShippingService } from '../shipping/shipping.service';
 import Utils from '../service/utility';
 import {Observable} from 'rxjs/Rx';
 import { HomeService } from './home.service';
@@ -19,9 +21,11 @@ declare var jQuery : any;
 export class HomeComponent implements OnInit {
 
  @ViewChild('myModalBtn2') modalInput:ElementRef;
+ @ViewChild('reportModalBtn') reportModalBtn:ElementRef;
 
   optionsList;data;selectedHeaders =[];allHeaders;colorSettings =[];
   newOrders;inTransitOrders;inPortOrders; inTerminalOrders;listType ="active";responseData;
+  headerNames=[];trackData;
  
   colors = ['silver','gray','Black','Red','maroon','yellow','Olive','Lime','Green','Aqua','Teal','Blue','Navy','Fuchsia','Purple','White'];
   
@@ -31,8 +35,8 @@ export class HomeComponent implements OnInit {
 
   colorConfig = {'colValue':'Select','colName':'Select','bckColor':'Select','txtColor':'Select','less':'','greater':''};
 
-  constructor(private utilService:UtilService, private http:Http,
-               private el: ElementRef,private homeService : HomeService,private rd: Renderer) {  
+  constructor(private utilService:UtilService, private http:Http,private router: Router,
+               private el: ElementRef,private homeService : HomeService,private rd: Renderer,private shipService:ShippingService) {  
 
         this.optionsList = [{'name':'Add/Remove Column','value':'addRemoveCol'},
                             {'name':'Edit notification color','value':'notifColor'},
@@ -68,6 +72,42 @@ export class HomeComponent implements OnInit {
   }
   
 
+trackShipment(bl){
+  if(bl==null){
+    alert("There is no shipping information yet.");
+    return;
+  }
+
+  this.trackData = [{"Vessel":"JPO LEO","ETA":"","Equip.":"20ST","Container Ref.":"CMAU2158941","Container Status":"Container to consignee","Loc.":"LUANDA","Voyage":"172MUE","* Favorite Containers":"* You must be logged to mark this container as favourite","Movement Date":"1\/9\/2017 12:45 PM"},{"Vessel":"JPO LEO","ETA":"","Equip.":"20ST","Container Ref.":"APZU3682623","Container Status":"Container to consignee","Loc.":"LUANDA","Voyage":"172MUE","* Favorite Containers":"* You must be logged to mark this container as favourite","Movement Date":"1\/9\/2017 12:45 PM"}];
+
+ this.headerNames =[];
+
+  
+  jQuery("#htmlTracking").empty();
+  this.shipService.trackShipping(bl)
+  .subscribe(
+      response => {
+            var res = JSON.parse(response['_body']);
+            if(res['type']=="HTML"){
+              jQuery("#htmlTracking").html(res['data']);
+            }else{
+              for (var key in res['data'][0]) {
+                  this.headerNames.push(key);
+               }
+              this.trackData =res['data'];
+            }
+
+            let event = new MouseEvent('click', {bubbles: true});
+            this.rd.invokeElementMethod(
+            this.reportModalBtn.nativeElement, 'dispatchEvent', [event]); 
+
+      },
+      error => {
+        alert("error when adding new settings");         
+      }
+    );
+
+}
 
 
   addColorSetting(){
@@ -288,6 +328,10 @@ sorter(a, b){
 
     }
 
+openStatus(id){
+  console.log("redirecting ...");
+   this.router.navigate(['./status/' + id]);
+}
 
     // proccessSearch(el,searchTxt){
     //   this.selectedHeaders.forEach(sel => {

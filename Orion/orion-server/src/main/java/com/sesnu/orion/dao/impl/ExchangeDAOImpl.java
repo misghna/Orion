@@ -59,6 +59,35 @@ public class ExchangeDAOImpl implements ExchangeDAO {
 	}
 
 	@Override
+	public Exchange get(String name, String type, String from, String to) {
+		String hql = "from Exchange where name = :name and type = :type and fromCurrency= :fromCurrency and toCurrency = :toCurrency";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql)
+				.setString("name", name)
+				.setString("type", type)
+				.setString("fromCurrency",from)
+				.setString("toCurrency", to);
+	    List<Exchange> currency = query.list();
+		if(currency.size()>0){
+			return currency.get(0);
+		}
+		return null;
+	}
+	
+	@Override
+	public Double getAvg(String type, String from, String to) {
+		String hql = "select avg(rate) from Exchange where type = :type and fromCurrency= :fromCurrency and toCurrency = :toCurrency";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql)
+				.setString("type", type)
+				.setString("fromCurrency",from)
+				.setString("toCurrency", to);
+	    List<Double> currency = query.list();
+		if(currency.size()>0){
+			return currency.get(0);
+		}
+		return null;
+	}
+	
+	@Override
 	public void delete(Exchange curr) {
 		sessionFactory.getCurrentSession().delete(curr);		
 	}
@@ -84,6 +113,21 @@ public class ExchangeDAOImpl implements ExchangeDAO {
 		String hql = "from Currency";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		return (List<Currency>) query.list();
+	}
+
+
+
+	@Override
+	public List<Exchange> getByTypeName(String type, String name) {
+		String hql = "from Exchange where name = :name and type = :type";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql)
+				.setString("name", name)
+				.setString("type", type);
+	    List<Exchange> rates = query.list();
+		if(rates.size()>0){
+			return rates;
+		}
+		return null;
 	}
 
 

@@ -43,7 +43,7 @@ export class HeaderComponent implements OnInit {
     });
 
     this.subscription = utilService.currentToolsCont$.subscribe(
-      tools => {  
+      tools => { 
         this.toolsList = tools;
     });
 
@@ -63,6 +63,7 @@ export class HeaderComponent implements OnInit {
             $(this).parent().parent().addClass("active"); 
           }     
         });
+        
         // home separate since it doesnt have drop down
         $(this.el.nativeElement).on('click','.navbar-nav li',function(){
           if($(this).html().indexOf('Home')>-1 || $(this).html().indexOf('Status')>-1){

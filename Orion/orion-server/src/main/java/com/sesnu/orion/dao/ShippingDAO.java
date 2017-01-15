@@ -28,4 +28,10 @@ public interface ShippingDAO {
 
 	public void delete(Shipping ship);
 	
+	public BigInteger InTransitCount(long itemId);
+	
+	public BigInteger InPortCount(long itemId);
+	
+	public BigInteger InTerminalCount(long itemId);
+	
 }

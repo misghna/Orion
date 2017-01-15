@@ -33,13 +33,28 @@ public class DocumentDAOImpl implements DocumentDAO {
 	
 	@Override
 	public List<DocView> listByDocType(String docType) {
-		String hql = "from Document where type = :docType";
+		String hql = "from DocView where type = :docType";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql)
 		.setParameter("docType",docType);
 		return (List<DocView>) query.list();
 	}
+	
+	@Override
+	public List<Document> listByDocTypeOrderRef(long orderRef,String docType) {
+		String hql = "from Document where orderRef= :orderRef and type = :docType";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql)
+		.setParameter("docType",docType)
+		.setParameter("orderRef",orderRef);		
+		return (List<Document>) query.list();
+	}
 
-
+	@Override
+	public List<DocView> listAll() {
+		String hql = "from DocView";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		return (List<DocView>) query.list();
+	}
+	
 	@Override
 	public void saveOrUpdate(Document doc) {
 		sessionFactory.getCurrentSession().saveOrUpdate(doc);				

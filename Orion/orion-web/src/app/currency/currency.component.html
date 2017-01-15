@@ -1,0 +1,164 @@
+
+<div class="alert alert-auto" alert-dismissible
+    [ngClass]="{
+      'hidden' : alertHidden,
+      'alert-danger' :  alertType == 'Error',
+      'alert-success' : alertType == 'Info'
+    }"
+  >
+<a  class="close" data-dismiss="alert" aria-label="close">&times;</a>
+  <strong>{{alertType}}!</strong> {{itemMsg}}
+</div>
+
+<div id="wrapper" style="text-align: center"> 
+  <div class="dropdown pull-center">
+    Currency Exchange Table
+  </div>
+</div>
+
+
+<form (submit)="addUpdate($event)">
+<table class="table table-striped tableFont" [mfData]="data" #mf="mfDataTable" [mfRowsOnPage]="20" >
+    <thead>
+    <tr>
+        <th class="text-center"
+            [ngClass]="{
+            'text-center' : tableHeader.j=='c' || tableHeader.j=='x',
+            'text-left' : tableHeader.j=='l'
+            }"
+         *ngFor="let tableHeader of headers; let i = index"> 
+            <mfDefaultSorter by="{{tableHeader.value}}"><font class ="tbl-header">
+              {{tableHeader.name}}</font></mfDefaultSorter>
+        </th>
+        <th style="width: 5%;" class ="tbl-header">Action</th>
+    </tr>
+    </thead>
+    <tbody>
+
+      <tr *ngFor="let item of mf.data; let i = index">
+         <td class="text-center" >{{i+1 + mf.rowsOnPage*(mf.activePage -1)}}</td>     
+         <td class="text-center"
+            [ngClass]="{
+            'text-center' : tableHeader.j=='c',
+            'text-left' : tableHeader.j=='l',
+            'hidden' : tableHeader.j=='x'
+            }"
+         *ngFor="let tableHeader of headers; let i = index">
+              <div *ngIf = "tableHeader.value != 'eta' && tableHeader.value != 'etd' "> 
+                {{item[tableHeader.value]}}
+              </div>
+              <div *ngIf = "tableHeader.value == 'eta' || tableHeader.value == 'etd'"> 
+                {{item[tableHeader.value] | date: 'dd/MM/yyyy'}}
+              </div>
+            </td>
+        <td class="text-center" >
+            <div class="dropdown" style="border: 0">
+            <button id= "{{item.id.toString() + '-' + item.name + '(' + item.type + ')'}}" #dropButton class="btn btn-default dropdown-toggle"
+                (click)="activeProductHeader = dropButton.id"
+                 style="border:0px solid transparent !important;background-color:transparent" type="button" id="dropdownMenu2"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <span class="caret"></span>
+            </button>
+            <ul id="{{item.id.toString() + '-' + item.agency}}" #dropDownBox class="dropdown-menu dropdown-menu-right" 
+                 aria-labelledby="dropdownMenu2">
+                <li><a #edit_item (click)="editItem(edit_item.parentElement.parentElement.id);activeOrderId=item.orderRef">Edit</a></li>
+                 <li role="separator" class="divider"></li>
+                <li><a #deleteitem (click)="triggerDelModal($event)">Delete</a></li>
+            </ul>
+            </div>
+        </td>
+      </tr>
+    </tbody>
+    
+    <tfoot>
+      
+      <tr [class.hidden]="hideAddNewForm" class="inputFormTr">
+        <td class="text-center" ><span class="glyphicon glyphicon-plus" aria-hidden="true" style="margin-top:5px"></span></td>
+        <td>
+            <div class="btn-group ">
+            <button type="button" class="btn btn-default dropdown-toggle editFormMargin noBorder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{itemDetail.type}} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a (click)="setType('Customs')">Customs</a></li>
+                <li><a (click)="setType('Ports')">Port</a></li>
+                <li><a (click)="setType('Terminals')">Terminal</a></li>
+                <li><a (click)="setType('Shipping Agency')">Shipping Agency</a></li>
+                <li><a (click)="setType('Other')">Other</a></li>
+            </ul>
+            </div>
+        </td>
+        <td>
+            <div class="btn-group ">
+            <button type="button" class="btn btn-default dropdown-toggle editFormMargin noBorder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{itemDetail.name}} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li *ngFor="let name of names"><a (click)="itemDetail.name = name">{{name}}</a></li>
+            </ul>
+            </div>
+        </td>
+         <td>
+         <div class="dropdown">
+            <textarea id="from" #from class="dropdown-toggle form-control txt-flat middletext" data-toggle="dropdown" rows="2"  
+                placeholder="From" (keyup)="filterCurrency(from.value)" 
+                [(ngModel)]="itemDetail.fromCurrency" [ngModelOptions]="{standalone: true}"></textarea>           
+            <ul class="dropdown-menu item-name">
+              <li >
+                <table class="table table-striped tableFont" style="width:250px">
+                  <thead><tr>
+                   <th class="text-center">Country</th>
+                   <th class="text-center">Currency</th>
+                   <th class="text-center">Abbrev</th>
+                   </tr></thead>
+                <tr *ngFor = "let curr of currencies" 
+                  (click)="itemDetail.fromCurrency = curr.abrevation">
+                  <td >{{curr.country}}</td>
+                  <td>{{curr.currency}}</td>
+                  <td>{{curr.abrevation}}</td>
+                </tr>
+                </table> 
+              </li>
+            </ul>          
+          </div>    
+        </td>
+        <td>
+        <div class="dropdown">
+            <textarea id="to" #to class="dropdown-toggle form-control txt-flat middletext" data-toggle="dropdown" rows="2"  
+                placeholder="From" (keyup)="filterCurrency(to.value)" 
+                [(ngModel)]="itemDetail.toCurrency" [ngModelOptions]="{standalone: true}"></textarea>           
+            <ul class="dropdown-menu item-name">
+              <li >
+                <table class="table table-striped tableFont" style="width:250px">
+                  <thead><tr>
+                   <th class="text-center">Country</th>
+                   <th class="text-center">Currency</th>
+                   <th class="text-center">Abbrev</th>
+                   </tr></thead>
+                <tr *ngFor = "let curr of currencies" 
+                  (click)="itemDetail.toCurrency = curr.abrevation">
+                  <td >{{curr.country}}</td>
+                  <td>{{curr.currency}}</td>
+                  <td>{{curr.abrevation}}</td>
+                </tr>
+                </table> 
+              </li>
+            </ul>
+           
+          </div>    
+        </td>
+        <td><textarea #unit class="form-control txt-flat middletext" rows="2" digitsonly placeholder="Rate'" required [(ngModel)]="itemDetail.rate" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <td><textarea #updatedOn class="form-control txt-flat middletext" readonly rows="2"  placeholder="auto">{{todayDate}}</textarea></td> 
+        <td class="text-left" ><input type="submit" class="btn btn-success" value="{{taskType}}"/></td>
+      </tr>      
+    <tr>
+        <td colspan="17" > <font class ="tbl-header">
+            <mfBootstrapPaginator [rowsOnPageSet]="[5,20,25]"></mfBootstrapPaginator></font>
+        </td>
+    </tr>
+    </tfoot>
+</table>
+
+</form>
+
+

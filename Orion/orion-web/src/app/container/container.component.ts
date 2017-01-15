@@ -4,6 +4,9 @@ import { FilterNamePipe } from '../pipes/pipe.filterName';
 import { ContainerService } from '../container/container.service';
 import { UtilService } from '../service/util.service';
 import { ShippingService } from '../shipping/shipping.service';
+import { ClientService } from '../client/client.service';
+import {MiscSettingService} from '../misc/misc-service.service'
+
 import { Router,ActivatedRoute, Params } from '@angular/router';
 
 declare var jQuery : any;
@@ -27,24 +30,23 @@ export class ContainerComponent implements OnInit {
   rangeSelectorHidden;selectedMonth;selectedYear;years;returnedRange;todayDate;
   monthNames;
   productNameList=[]; allPrdList=[];
-  headers = [];
+  headers = [];destinations;transporters;
   filterQuery = "";
   bntOption = "Search";
   selectedDate;activeShippingId;activeOrderId;
   activeOrder= {}; filteredSalesPlanList=[]; allOrders;shippingList; allShippingList;
 
   constructor(private utilService :UtilService,private contService:ContainerService, private el: ElementRef,
-              private shipService:ShippingService ,public route: ActivatedRoute,public router:Router) {
+              private shipService:ShippingService ,public route: ActivatedRoute,public router:Router,
+              private clientService :ClientService, private miscService :MiscSettingService) {
           
           utilService.currentdelItem$.subscribe(opt => { this.delete();}); 
           this.optionsList = [{'name':'Add Container','value':'addNew'}];
           this.utilService.setToolsContent(this.optionsList);
               
           this.pageName;
-
           this.alertHidden=true;  
           this.hideAddNewForm=true;
-
           this.todayDate = this.getDate(new Date());
 
           // tools listener
@@ -75,12 +77,16 @@ export class ContainerComponent implements OnInit {
   ngOnInit() {
       this.headers = [{'name':'No','value':'id','j':'x'},{'name':'BL','value':'bl','j':'l'},
                       {'name':'Cont Size','value':'contSize','j':'c'},{'name':'Container Id','value':'contNo','j':'l'},
+                      {'name':'Transporter','value':'transporter','j':'c'},
+                      {'name':'Destination','value':'destination','j':'c'},{'name':'Cont return date','value':'contReturnDate','j':'l'},
                       {'name':'Remark','value':'remark','j':'c'},{'name':'Updated On','value':'updatedOn','j':'c'}];
         
         this.activeShippingId = this.route.snapshot.params['id'];
         this.loadAll(this.activeShippingId);
         
         this.getAllShiping();
+        this.getDestinations();
+        this.getTransporters();
 
         jQuery(this.el.nativeElement).find('#monthSelector li').on('click',function(){  
           jQuery('#monthBtn').html(jQuery(this).text().trim()); 
@@ -89,6 +95,31 @@ export class ContainerComponent implements OnInit {
 
         console.log(this.route.snapshot.params['id']);
   } 
+
+
+getTransporters(){
+     this.miscService.getProp("transporters")
+      .subscribe(
+          response => {
+              this.transporters = response;    
+          },
+          error => {
+            error.log("Clients/WH not found");
+          }
+        );
+}
+
+getDestinations(){
+     this.clientService.get()
+      .subscribe(
+          response => {
+              this.destinations = response;    
+          },
+          error => {
+            error.log("Clients/WH not found");
+          }
+        );
+}
 
 
 
@@ -218,6 +249,8 @@ updateBaseUnit(unit){
       this.hideAddNewForm=false;
       this.itemDetail={};
       this.itemDetail['contSize']='Select Size';
+      this.itemDetail['transporter'] = "Select";
+      this.itemDetail['destination'] = "Select";
     }
 
     popAlert(type,label,msg){

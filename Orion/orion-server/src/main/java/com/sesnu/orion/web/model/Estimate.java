@@ -2,14 +2,14 @@ package com.sesnu.orion.web.model;
 
 import org.json.simple.JSONObject;
 
-public class PaymentEstimate {
+public class Estimate {
 	
 	private double value;
 	private JSONObject details;
 	
 	
 	
-	public PaymentEstimate(double value, JSONObject details) {
+	public Estimate(double value, JSONObject details) {
 		this.value = value;
 		this.details = details;
 	}

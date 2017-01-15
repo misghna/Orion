@@ -145,6 +145,13 @@ public class OrderDAOImpl implements OrderDAO {
 		return null;
 	}
 
+	@Override
+	public BigInteger newOrdersCount(long itemId) {
+		String sql = "SELECT count(*) from order_view where item_id = :itemId and bl is null";
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql)
+		.setLong("itemId",itemId);
+		return  (BigInteger) query.list().get(0);
+	}
 	
 	
 }

@@ -36,16 +36,16 @@ public class OrderView {
 	private String budgetRef;
 	
 	@Column(name = "base_size")
-	private int baseSize;
+	private Integer baseSize;
 	
 	@Column(name = "base_unit")
 	private String baseUnit;
 	
 	@Column(name = "qty_per_pck")
-	private int qtyPerPack;
+	private Integer qtyPerPack;
 	
 	@Column(name = "pck_per_cont")
-	private int pckPerCont;
+	private Integer pckPerCont;
 	
 	@Column(name = "cont_size")
 	private int contSize;
@@ -70,6 +70,9 @@ public class OrderView {
 	
 	@Column(name = "bl")
 	private String bl;
+	
+	@Column(name = "terminal")
+	private String terminal;
 	
 	@Column(name = "type")
 	private String itemType;
@@ -114,11 +117,11 @@ public class OrderView {
 		this.budgetRef = budgetRef;
 	}
 
-	public int getBaseSize() {
+	public Integer getBaseSize() {
 		return baseSize;
 	}
 
-	public void setBaseSize(int baseSize) {
+	public void setBaseSize(Integer baseSize) {
 		this.baseSize = baseSize;
 	}
 
@@ -130,19 +133,19 @@ public class OrderView {
 		this.baseUnit = baseUnit;
 	}
 
-	public int getQtyPerPack() {
+	public Integer getQtyPerPack() {
 		return qtyPerPack;
 	}
 
-	public void setQtyPerPack(int qtyPerPack) {
+	public void setQtyPerPack(Integer qtyPerPack) {
 		this.qtyPerPack = qtyPerPack;
 	}
 
-	public int getPckPerCont() {
+	public Integer getPckPerCont() {
 		return pckPerCont;
 	}
 
-	public void setPckPerCont(int pckPerCont) {
+	public void setPckPerCont(Integer pckPerCont) {
 		this.pckPerCont = pckPerCont;
 	}
 
@@ -242,6 +245,14 @@ public class OrderView {
 
 	public void setItemId(long itemId) {
 		this.itemId = itemId;
+	}
+
+	public String getTerminal() {
+		return terminal;
+	}
+
+	public void setTerminal(String terminal) {
+		this.terminal = terminal;
 	}
 
 	

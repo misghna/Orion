@@ -118,7 +118,7 @@
                 <li><a (click)="drillDown('/import/bid',item.id)">Open Bids</a></li>
                 <li><a (click)="drillDown('/finance/payment',item.id)">Open Payments</a></li>
                 <li><a (click)="drillDown('/import/shipping',item.id)">Open Shipping</a></li>
-                <li><a routerLink="{{'/document/orderRef-'+item.id}}" routerLinkActive="active" >Open Documents</a></li>
+                <li><a routerLink="{{'/document/uploaded/orderRef-'+item.id}}" routerLinkActive="active" >Open Documents</a></li>
             </ul>
             </div>
         </td>
@@ -212,8 +212,26 @@
             </div>
         </td>
         <td><textarea name="contQnt" #unit class="form-control txt-flat middletext" rows="2"  numberonly placeholder="Cont Qty" required [(ngModel)]="itemDetail.contQnt" [ngModelOptions]="{standalone: true}"></textarea></td> 
-        <td><textarea name="importer" class="form-control txt-flat middletext" rows="2"  placeholder="Importer" required [(ngModel)]="itemDetail.importer" [ngModelOptions]="{standalone: true}"></textarea></td>
-        <td><textarea name="destinationPort" #destinationPort class="form-control txt-flat middletext" rows="2"  placeholder="Destination Port" required [(ngModel)]="itemDetail.destinationPort" [ngModelOptions]="{standalone: true}"></textarea></td>
+        <td>
+            <div class="btn-group ">
+            <button type="button" class="btn btn-default dropdown-toggle editFormMargin noBorder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{itemDetail.importer}} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li *ngFor ="let imp of importers" ><a (click)="itemDetail.importer = imp">{{imp}}</a></li>
+            </ul>
+            </div>
+        </td>
+        <td>
+            <div class="btn-group ">
+            <button type="button" class="btn btn-default dropdown-toggle editFormMargin noBorder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{itemDetail.destinationPort}} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li *ngFor ="let port of ports" ><a (click)="itemDetail.destinationPort = port">{{port}}</a></li>
+            </ul>
+            </div>
+        </td>
         <td><input type="date" class="form-control txt-flat middletext"  [(ngModel)]="itemDetail.latestETA" [ngModelOptions]="{standalone: true}"/></td>
         <td><textarea name="itemOrigin" #itemOrigin class="form-control txt-flat middletext" rows="2"  placeholder="Inv No." required [(ngModel)]="itemDetail.invNo" [ngModelOptions]="{standalone: true}"></textarea></td>
         <td><textarea name="createdby" #updatedOn class="form-control txt-flat middletext" readonly rows="2"  placeholder="auto">{{activeUserName}}</textarea></td> 

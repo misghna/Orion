@@ -98,5 +98,35 @@ public class ShippingDAOImpl implements ShippingDAO {
 		return null;
 	}
 	
+	@Override
+	public BigInteger InTransitCount(long itemId) {
+		String sql = "SELECT count(*) from orders o left join shipping s on o.id=s.order_ref "
+				+ "where o.item_id = :itemId and s.bl is not null and ((s.ata is not null and s.ata < :today) or  (s.eta < :today))";
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql)
+		.setLong("itemId",itemId)
+		.setDate("today", new Date());		
+		return  (BigInteger) query.list().get(0);
+	}
+	
+	@Override
+	public BigInteger InPortCount(long itemId) {
+		String sql = "SELECT count(*) from orders o left join shipping s on o.id=s.order_ref where o.item_id = :itemId and s.bl is not null"
+				+ " and ((s.ata is not null and s.ata - :today <= 0 and s.ata - :today >=-5) or  (s.eta - :today <= 0 and s.eta - :today >=-5))";
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql)
+		.setLong("itemId",itemId)
+		.setDate("today", new Date());
+		return  (BigInteger) query.list().get(0);
+	}
+
+	@Override
+	public BigInteger InTerminalCount(long itemId) {
+		String sql = "SELECT count(*) from orders o left join shipping s on o.id=s.order_ref where o.item_id = :itemId and s.bl is not null"
+				+ " and ((s.ata is not null and s.ata - :today < -5) or  (s.eta - :today < -5)) and o.id not in (select order_ref from payment where name ='Terminal')";
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql)
+		.setLong("itemId",itemId)
+		.setDate("today", new Date());
+		return  (BigInteger) query.list().get(0);
+	}
+	
 }
 

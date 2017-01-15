@@ -10,7 +10,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "PORT_FEES")
+@Table(name = "shipping_agency_fees")
 public class PortFee {
 	
 	@Id
@@ -48,6 +48,15 @@ public class PortFee {
 	
 	@Column(name = "updated_on")
 	private String updatedOn;
+	
+	@Column(name = "tracking_url")
+	private String trackingUrl;
+	
+	@Column(name = "tag_id")
+	private String tagId;
+	
+	@Column(name = "drop_cols")
+	private String dropCols;
 	
 	
 	public Long getId() {
@@ -138,6 +147,31 @@ public class PortFee {
 		this.agency = agency;
 	}
 
+	public String getTrackingUrl() {
+		return trackingUrl;
+	}
+
+	public void setTrackingUrl(String trackingUrl) {
+		this.trackingUrl = trackingUrl;
+	}
+
+	public String getTagId() {
+		return tagId;
+	}
+
+	public void setTagId(String tagId) {
+		this.tagId = tagId;
+	}
+
+	public String getDropCols() {
+		return dropCols;
+	}
+
+	public void setDropCols(String dropCols) {
+		this.dropCols = dropCols;
+	}
+
+	
 
 	
 }

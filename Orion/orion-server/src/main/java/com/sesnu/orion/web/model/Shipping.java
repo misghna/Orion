@@ -33,6 +33,9 @@ public class Shipping {
 	@Column(name = "item_origin")
 	private String itemOrigin;
 	
+	@Column(name = "terminal")
+	private String terminal;
+	
 	@Column(name = "etd")
 	private Date etd;
 	
@@ -128,6 +131,14 @@ public class Shipping {
 
 	public void setDf(boolean df) {
 		this.df = df;
+	}
+
+	public String getTerminal() {
+		return terminal;
+	}
+
+	public void setTerminal(String terminal) {
+		this.terminal = terminal;
 	}
 	
 

@@ -1,5 +1,6 @@
 package com.sesnu.orion.dao.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -74,8 +75,6 @@ public class StatusDAOImpl implements StatusDAO {
 		return (List<OrderStat>) query.list();
 	}
 
-
-	
 	
 }
 

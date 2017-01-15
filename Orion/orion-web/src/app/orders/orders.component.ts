@@ -5,6 +5,8 @@ import { OrdersService } from '../orders/orders.service';
 import { UtilService } from '../service/util.service';
 import { SalesPlanService } from '../sales-plan/sales-plan.service';
 import { Router,ActivatedRoute, Params } from '@angular/router';
+import { MiscSettingService } from '../misc/misc-service.service';
+
 
 declare var jQuery : any;
 
@@ -33,10 +35,11 @@ export class OrdersComponent implements OnInit {
   filterQuery = "";
   bntOption = "Search";
   selectedDate;subscription;activeOrderId;
-  salesPlanList= []; filteredSalesPlanList=[];
+  salesPlanList= []; filteredSalesPlanList=[];importers;ports;
 
   constructor(private utilService :UtilService,private orderService:OrdersService, private el: ElementRef,
-              private miscService:MiscService, private salesService:SalesPlanService,public router: Router ,public route: ActivatedRoute) {
+              private miscService:MiscService, private salesService:SalesPlanService,public router: Router 
+              ,public route: ActivatedRoute, private miscSettingService :MiscSettingService) {
 
           this.subscription = utilService.currentSearchTxt$.subscribe(txt => {this.search(txt);});
           this.activeOrderId = this.route.snapshot.params['id'];
@@ -83,6 +86,8 @@ export class OrdersComponent implements OnInit {
         this.getItemNameBrandList();
         this.populateYear();
         this.getSalesPlan();
+        this.getImporters();
+        this.getPorts();
         this.loadData();
 
         jQuery(this.el.nativeElement).find('#monthSelector li').on('click',function(){  
@@ -92,6 +97,29 @@ export class OrdersComponent implements OnInit {
 
   } 
   
+  getImporters() {
+     this.miscSettingService.getImporters()
+      .subscribe(
+          response => {
+              this.importers = response; 
+          },
+          error => {
+               console.error("importers not found!");          
+          }
+        );
+  } 
+  
+    getPorts() {
+     this.miscSettingService.getPorts()
+      .subscribe(
+          response => {
+              this.ports = response; 
+          },
+          error => {
+               console.error("Ports not found!");          
+          }
+        );
+  } 
 
 loadData(){
       if(this.activeOrderId=="all"){
@@ -114,10 +142,12 @@ populateYear() {
 } 
 
 updateBudgetRef(plan){
+
   if(plan=='none'){
     this.itemDetail['budgetRef'] = 'none';
     return;
   }
+
   this.itemDetail['budgetRef'] = plan.id;
   this.itemDetail['itemId'] = plan.itemId;
   this.itemDetail['item'] = plan.name;
@@ -125,6 +155,7 @@ updateBudgetRef(plan){
   this.itemDetail['baseSize'] = plan['baseSize'];
   this.itemDetail['baseUnit'] = plan['baseUnit'];
   this.itemDetail['qtyPerPack'] = plan['qtyPerPack'];
+  this.itemDetail['contSize'] = plan['contSize'];
   this.itemDetail['itemOrigin'] = plan['itemOrigin'];
   this.itemDetail['destinationPort'] = plan['destinationPort'];
   
@@ -300,6 +331,7 @@ getCustomOrder(state){
               this.popAlert("Error","danger","Item Origin doesnt much with refrenced budget item or set budget reference to none!");
               return;
             }
+            console.log(selPlan['destinationPort']);
             if(selPlan['destinationPort']!= this.itemDetail['destinationPort']){
               this.popAlert("Error","danger","Destination port doesnt much with refrenced budget item or set budget reference to none!");
               return;
@@ -319,6 +351,10 @@ getCustomOrder(state){
             }
         }
 
+        if(this.itemDetail['importer'] == "Select Importer"){
+              this.popAlert("Error","danger","please select Importer from the list!");
+              return;
+        }
         this.itemDetail['destinationPort'] = this.capitalizeFirstLetter(this.itemDetail['destinationPort']);
 
         if (this.taskType=="Add"){
@@ -363,6 +399,8 @@ getCustomOrder(state){
       this.itemDetail={};
       var today = new Date();
       this.itemDetail['year'] = today.getFullYear();
+      this.itemDetail['importer'] = "Select Importer";
+      this.itemDetail['destinationPort'] = "Select Port";
     }
 
     popAlert(type,label,msg){

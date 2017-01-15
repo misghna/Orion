@@ -173,17 +173,23 @@
 		    <version>1.4</version>
 		</dependency>
 
-  	<dependency>
-	    <groupId>com.amazonaws</groupId>
-	    <artifactId>aws-java-sdk-sns</artifactId>
-	    <version>1.11.63</version>
-	</dependency>
+	  	<dependency>
+		    <groupId>com.amazonaws</groupId>
+		    <artifactId>aws-java-sdk-sns</artifactId>
+		    <version>1.11.63</version>
+		</dependency>
 	
 		<dependency>
 		    <groupId>com.amazonaws</groupId>
 		    <artifactId>aws-java-sdk</artifactId>
 		    <version>1.11.66</version>
 		</dependency>
+		
+<!-- 		<dependency>
+		    <groupId>org.apache.httpcomponents</groupId>
+		    <artifactId>httpclient</artifactId>
+		    <version>4.3.6</version>
+		</dependency> -->
 	
 <!-- 	<dependency>
 	    <groupId>com.fasterxml.jackson.core</groupId>
@@ -191,11 +197,11 @@
 	    <version>2.8.5</version>
 	</dependency> -->
 
-	<dependency>
+<!-- 	<dependency>
 	    <groupId>org.apache.httpcomponents</groupId>
 	    <artifactId>httpclient</artifactId>
 	    <version>4.4</version>
-	</dependency>
+	</dependency> -->
 	
 	<dependency>
 	    <groupId>com.fasterxml.jackson.dataformat</groupId>
@@ -234,6 +240,24 @@
 	    <version>9176297</version>
 	</dependency>
 
+	<dependency>
+	    <groupId>org.seleniumhq.selenium</groupId>
+	    <artifactId>selenium-htmlunit-driver</artifactId>
+	    <version>2.52.0</version>
+	</dependency>
+		  
+	<dependency>
+        <groupId>org.seleniumhq.selenium</groupId>
+        <artifactId>selenium-java</artifactId>
+        <version>2.30.0</version>
+    </dependency>
+	
+	<dependency>
+	    <groupId>xml-apis</groupId>
+	    <artifactId>xml-apis</artifactId>
+	    <version>1.4.01</version>
+	</dependency>
+	
 	</dependencies>
 
 	<build>

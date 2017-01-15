@@ -36,6 +36,15 @@ public class Container {
 	@Column(name = "updated_on")
 	private String updatedOn;
 	
+	@Column(name = "transporter")
+	private String transporter;
+	
+	@Column(name = "destination")
+	private String destination;
+	
+	@Column(name = "cont_return_date")
+	private Date contReturnDate;;
+	
 	@Column(name = "df")
 	private boolean df;
 
@@ -95,6 +104,30 @@ public class Container {
 
 	public void setDf(boolean df) {
 		this.df = df;
+	}
+
+	public String getTransporter() {
+		return transporter;
+	}
+
+	public void setTransporter(String transporter) {
+		this.transporter = transporter;
+	}
+
+	public String getDestination() {
+		return destination;
+	}
+
+	public void setDestination(String destination) {
+		this.destination = destination;
+	}
+
+	public Date getContReturnDate() {
+		return contReturnDate;
+	}
+
+	public void setContReturnDate(Date contReturnDate) {
+		this.contReturnDate = contReturnDate;
 	}
 	
 	

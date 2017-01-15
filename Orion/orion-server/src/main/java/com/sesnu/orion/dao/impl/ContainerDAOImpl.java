@@ -31,6 +31,15 @@ public class ContainerDAOImpl implements ContainerDAO {
 		return (List<ContainerView>) query.list();
 	}
 	
+	@Override
+	public List<ContainerView> listContIdByOrderId(String contNo, long orderRefId) {
+		String hql = "from ContainerView where orderRef = :orderRefId and contNo = :contNo";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql)
+		.setLong("orderRefId",orderRefId)
+		.setString("contNo", contNo);
+		return (List<ContainerView>) query.list();
+	}
+	
 
 	public List<ContainerView> listAll(){
 		String hql = "from ContainerView";

@@ -43,7 +43,7 @@ export class PaymentService {
 
 
   getPaymentList(){
-      return ['Frwd. Agent Fee','Bromangol','Customs','Legalization','Port','Seller','Terminal','Transport'];
+      return ['Frwd. Agent Fee','Bromangol','Customs','Legalization','Port','Seller','Terminal','Transport','Container delay Penality'];
   }
 
   

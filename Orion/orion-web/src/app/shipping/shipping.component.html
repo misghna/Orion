@@ -10,7 +10,7 @@
   <strong>{{alertType}}!</strong> {{itemMsg}}
 </div>
 
-<div id="wrapper" style="text-align: center"> 
+<div id="wrapper" style="text-align: center;"> 
   <div class="dropdown pull-center">
     Shipping Details
   </div>
@@ -126,6 +126,17 @@
         <td><textarea #unit class="form-control txt-flat middletext" rows="2" readonly placeholder="Cont Qnt" required [(ngModel)]="itemDetail.contQnt" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td><textarea #unit class="form-control txt-flat middletext" rows="2"  placeholder="BL" required [(ngModel)]="itemDetail.bl" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td><textarea #unit class="form-control txt-flat middletext" rows="2"  placeholder="Item Origin" required [(ngModel)]="itemDetail.itemOrigin" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <!--<td><textarea #unit class="form-control txt-flat middletext" rows="2"  placeholder="Terminal" required [(ngModel)]="itemDetail.terminal" [ngModelOptions]="{standalone: true}"></textarea></td> -->
+        <td>
+            <div class="btn-group ">
+            <button type="button" class="btn btn-default dropdown-toggle editFormMargin noBorder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{itemDetail.terminal}} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li *ngFor ="let term of terminals" ><a (click)="itemDetail.terminal = term">{{term}}</a></li>
+            </ul>
+            </div>
+        </td>
         <td>
             <div class="btn-group ">
             <button type="button" class="btn btn-default dropdown-toggle editFormMargin noBorder"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -141,6 +152,7 @@
        
         <td><input type="date" class="form-control txt-flat middletext"  [(ngModel)]="itemDetail.etd" [ngModelOptions]="{standalone: true}"/></td>
         <td><input type="date" class="form-control txt-flat middletext"  [(ngModel)]="itemDetail.eta" [ngModelOptions]="{standalone: true}"/></td>
+        <td><input type="date" class="form-control txt-flat middletext"  [(ngModel)]="itemDetail.ata" [ngModelOptions]="{standalone: true}"/></td>
         <td><textarea #destinationPort class="form-control txt-flat middletext" rows="2"  placeholder="Remark" [(ngModel)]="itemDetail.remark" [ngModelOptions]="{standalone: true}"></textarea></td>
         <td><textarea #updatedOn class="form-control txt-flat middletext" readonly rows="2"  placeholder="auto">{{todayDate}}</textarea></td> 
         <td class="text-left" ><input type="submit" class="btn btn-success" value="{{taskType}}"/></td>

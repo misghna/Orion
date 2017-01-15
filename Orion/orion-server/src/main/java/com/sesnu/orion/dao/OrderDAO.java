@@ -39,7 +39,6 @@ public interface OrderDAO {
 	
 	public String getLatest();
 	
-
-
+	public BigInteger newOrdersCount(long itemId);
 	
 }

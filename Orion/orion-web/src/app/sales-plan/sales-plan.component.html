@@ -163,7 +163,16 @@
         
         <td><textarea name="contQnt" #unit class="form-control txt-flat middletext" rows="2" numberonly placeholder="cont Qty" required [(ngModel)]="itemDetail.contQnt" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td><textarea name="cif" #cif class="form-control txt-flat middletext" rows="2"  digitsonly placeholder="cif" required [(ngModel)]="itemDetail.cif" [ngModelOptions]="{standalone: true}"></textarea></td> 
-        <td><textarea name="destinationPort" #destinationPort class="form-control txt-flat middletext" rows="2"  placeholder="Destination Port" required [(ngModel)]="itemDetail.destinationPort" [ngModelOptions]="{standalone: true}"></textarea></td>
+        <td>
+            <div class="btn-group ">
+            <button type="button" class="btn btn-default dropdown-toggle editFormMargin noBorder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{itemDetail.destinationPort}} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li *ngFor ="let port of ports" ><a (click)="itemDetail.destinationPort = port">{{port}}</a></li>
+            </ul>
+            </div>
+        </td>
         <td>
           <div class="dropdown">
             <!--<input class="dropdown-toggle form-control txt-flat" type="text" data-toggle="dropdown"/>-->

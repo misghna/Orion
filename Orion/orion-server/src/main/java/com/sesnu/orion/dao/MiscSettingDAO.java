@@ -17,7 +17,7 @@ public interface MiscSettingDAO {
 
 	public void delete(MiscSetting setting);
 
-	public List<MiscSetting> getByNameType(String name, String type);
+	public MiscSetting getByName(String name);
 	
 //	public List<Currency> getByNameType(String name, String type);
 	

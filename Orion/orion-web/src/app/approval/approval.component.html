@@ -1,5 +1,5 @@
 
-<div class="alert alert-auto" alert-dismissible
+<div  class="alert alert-auto" alert-dismissible
     [ngClass]="{
       'hidden' : alertObj.alertHidden,
       'alert-danger' :  alertObj.alertType == 'Error',
@@ -10,9 +10,9 @@
   <strong>{{alertObj.alertType}}!</strong> {{alertObj.itemMsg}}
 </div>
 
-<div id="wrapper" style="text-align: center"> 
+<div id="wrapper" style="text-align: center;"> 
   <div class="dropdown pull-center">
-    Approvals List
+    Approvals Sheet
   </div>
 </div>
 
@@ -60,9 +60,10 @@
             </button>
             <ul id="{{item.id.toString() + '-' + item.invNo}}" #dropDownBox class="dropdown-menu dropdown-menu-right" 
                  aria-labelledby="dropdownMenu2">
+                 <li><a (click)="preview(item)">Preview</a></li>
                 <li><a #edit_item (click)="approve()">Approve</a></li>
                  <li role="separator" class="divider"></li>
-                <li><a #deleteitem (click)="triggerDelModal($event)">Delete</a></li>
+                <li><a #deleteitem (click)="triggerDelModal($event)">Void</a></li>
             </ul>
             </div>
         </td>
@@ -80,4 +81,22 @@
 
 </form>
 
+  <!-- Modal -->
+<div class="modal fade" id="reportModal">
+    <div class="modal-dialog custom-class">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" (click)="close()" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="modal-header-text">PREVIEW</h3>
+            </div>
+            <div class="modal-body" id="reportModalDiv">
+             
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+ <button #reportModalBtn data-toggle="modal" data-target="#reportModal" hidden></button>
 

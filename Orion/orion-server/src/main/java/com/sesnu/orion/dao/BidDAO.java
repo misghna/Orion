@@ -3,13 +3,14 @@ package com.sesnu.orion.dao;
 import java.util.List;
 
 import com.sesnu.orion.web.model.Bid;
+import com.sesnu.orion.web.model.BidView;
 
 
 
 
 public interface BidDAO {
 	
-	public List<Bid> list(long orderRef);
+	public List<BidView> list(long orderRef);
 
 	public void saveOrUpdate(Bid bid);
 	
@@ -21,7 +22,7 @@ public interface BidDAO {
 	
 	public void delete(Bid bid);
 
-	public List<Bid> listAll();
+	public List<BidView> listAll();
 
 
 

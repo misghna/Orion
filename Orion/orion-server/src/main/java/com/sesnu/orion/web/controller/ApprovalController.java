@@ -27,6 +27,7 @@ import com.sesnu.orion.web.model.Bid;
 import com.sesnu.orion.web.model.Payment;
 import com.sesnu.orion.web.model.User;
 import com.sesnu.orion.web.utility.ConfigFile;
+import com.sesnu.orion.web.utility.ReportService;
 import com.sesnu.orion.web.utility.Util;
 
 @CrossOrigin(origins = "http://localhost:4200")
@@ -37,11 +38,11 @@ public class ApprovalController {
 	@Autowired ApprovalDAO aprvDao;
 	@Autowired Util util;
 	@Autowired private ConfigFile conf;
-	@Autowired UserDAO userDao;
-	@Autowired BidDAO bidDao;
-	@Autowired PaymentDAO payDao;
+	@Autowired private UserDAO userDao;
+	@Autowired private BidDAO bidDao;
+	@Autowired private PaymentDAO payDao;
+	@Autowired private ReportService repoService;
 	
-
 	@RequestMapping(value = "/api/user/approval/{orderRef}", method = RequestMethod.GET)
 	public @ResponseBody List<ApprovalView> byId(@PathVariable("orderRef") String orderRef,
 			HttpServletResponse response) throws IOException {
@@ -159,38 +160,43 @@ public class ApprovalController {
 			Bid bid = bidDao.get(aprv.getForId());
 			bid.setApproval("Approved");
 			bidDao.saveOrUpdate(bid);
+			repoService.generateOrderAuthReport(aprv,"actual");
 			return "success";
 		}else{
 			Payment pay = payDao.get(aprv.getForId());
 			pay.setStatus("Approved");
 			payDao.saveOrUpdate(pay);
+			repoService.generatePayAuthReport(aprv, "actual");
 			return "success";
 		}
 		
 	}
 	
-//	@RequestMapping(value = "/api/user/approval", method = RequestMethod.PUT)
-//	public @ResponseBody List<ApprovalView> updateItem(HttpServletResponse response,
-//			@RequestBody Approval aprv)
-//			throws Exception {
-//		
-//		if(aprvDao.get(aprv.getId())==null){
-//			response.sendError(400);
-//			return null;
-//		}
-//		aprvDao.saveOrUpdate(aprv);
-//		
-//		List<ApprovalView> aprvls = aprvDao.listByOrderRef(aprv.getOrderRef());
-//		if(aprvls.size()>0){
-//			return aprvls;
-//		}
-//		response.sendError(404);
-//		return null;
-//
-//	}
-//	
-//	
-//
+	@RequestMapping(value = "/api/user/approval/void/{id}", method = RequestMethod.PUT)
+	public @ResponseBody List<ApprovalView> updateItem(HttpServletResponse response,
+			@PathVariable("id") long id)
+			throws Exception {
+		
+		Approval ap = aprvDao.get(id);
+		if(ap==null){
+			response.sendError(400,"bad request");
+			return null;
+		}
+		ap.setStatus("Void");
+		
+		aprvDao.saveOrUpdate(ap);
+		
+		List<ApprovalView> aprvls = aprvDao.listByOrderRef(ap.getOrderRef());
+		if(aprvls.size()>0){
+			return aprvls;
+		}
+		response.sendError(404);
+		return null;
+
+	}
+	
+	
+
 //	@RequestMapping(value = "/api/user/approval/{id}", method = RequestMethod.DELETE)
 //	
 //	public @ResponseBody List<ApprovalView> deleteItem(@PathVariable("id") long id,

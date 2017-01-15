@@ -29,6 +29,9 @@ public class DocView {
 	@Column(name = "inv_no")
 	private String invNo;
 	
+	@Column(name = "bl")
+	private String bl;
+	
 	@Column(name = "updated_on")
 	private String updatedOn;
 	
@@ -103,6 +106,14 @@ public class DocView {
 
 	public void setInvNo(String invNo) {
 		this.invNo = invNo;
+	}
+
+	public String getBl() {
+		return bl;
+	}
+
+	public void setBl(String bl) {
+		this.bl = bl;
 	}
 
 	

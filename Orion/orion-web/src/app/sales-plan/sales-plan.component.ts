@@ -3,6 +3,7 @@ import { SalesPlanService } from './sales-plan.service';
 import { MiscService } from '../service/misc.service';
 import { FilterNamePipe } from '../pipes/pipe.filterName';
 import { UtilService } from '../service/util.service';
+import { MiscSettingService } from '../misc/misc-service.service';
 
 
 declare var jQuery : any;
@@ -30,10 +31,10 @@ export class SalesPlanComponent implements OnInit {
   productNameList=[]; allPrdList=[];
   headers = [];
   filterQuery = "";
-  bntOption = "Search";subscription;
+  bntOption = "Search";subscription;ports;
 
   constructor(private salesService:SalesPlanService, private el: ElementRef,
-             private miscService : MiscService,private utilService : UtilService) {
+             private miscService : MiscService,private utilService : UtilService,private miscSettingService: MiscSettingService) {
 
     this.subscription = utilService.currentSearchTxt$.subscribe(txt => {this.search(txt);});
 
@@ -76,6 +77,7 @@ export class SalesPlanComponent implements OnInit {
         this.loadAll(2000,'latest');
         this.getItemNameBrandList();
         this.populateYear();
+        this.getPorts();
 
         jQuery(this.el.nativeElement).find('#monthSelector li').on('click',function(){  
           jQuery('#monthBtn').html(jQuery(this).text().trim()); 
@@ -89,7 +91,19 @@ export class SalesPlanComponent implements OnInit {
 
 
   } 
-  
+
+getPorts() {
+     this.miscSettingService.getPorts()
+      .subscribe(
+          response => {
+              this.ports = response; 
+          },
+          error => {
+               console.error("Ports not found!");          
+          }
+        );
+  } 
+
 populateYear() {
    var d = new Date();
    var cYear= d.getFullYear();
@@ -171,7 +185,7 @@ updateBaseUnit(unit){
           error => {
             if(error.status==404){
                this.setData([]);
-               this.popAlert("Error","danger","Sales plan for the selected time not found!");          
+               this.popAlert("Info","success","Sales plan for the selected time not found!");          
             }else{
                this.popAlert("Error","danger","Something went wrong, please try again later!");          
             }
@@ -252,6 +266,7 @@ updateBaseUnit(unit){
       this.itemDetail={};
       var today = new Date();
       this.itemDetail['year'] = today.getFullYear();
+      this.itemDetail['destinationPort'] = "Select Port";
     }
 
     popAlert(type,label,msg){

@@ -11,6 +11,8 @@ public interface ContainerDAO {
 	
 	public List<ContainerView> listByOrderId(long orderRef);
 	
+	public List<ContainerView> listContIdByOrderId(String contNo, long orderRefId);
+	
 	public List<ContainerView> listAll();
 	
 	public void saveOrUpdate(Container ship);

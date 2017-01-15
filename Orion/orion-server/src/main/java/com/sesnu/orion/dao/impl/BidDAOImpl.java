@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sesnu.orion.dao.BidDAO;
 import com.sesnu.orion.dao.OrderDAO;
 import com.sesnu.orion.web.model.Bid;
+import com.sesnu.orion.web.model.BidView;
 import com.sesnu.orion.web.model.Order;
 @SuppressWarnings("unchecked")
 @Transactional
@@ -25,13 +26,13 @@ public class BidDAOImpl implements BidDAO {
 
 
 	@Override
-	public List<Bid> list(long orderRefId) {
-		String hql = "from Bid where orderRef = :orderRefId";
+	public List<BidView> list(long orderRefId) {
+		String hql = "from BidView where orderRef = :orderRefId";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql)
 		.setLong("orderRefId",orderRefId);
-		return (List<Bid>) query.list();
+		return (List<BidView>) query.list();
 	}
-
+	
 
 	@Override
 	public void saveOrUpdate(Bid bid) {
@@ -69,10 +70,10 @@ public class BidDAOImpl implements BidDAO {
 
 
 	@Override
-	public List<Bid> listAll() {
-		String hql = "from Bid";
+	public List<BidView> listAll() {
+		String hql = "from BidView";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
-		return (List<Bid>) query.list();
+		return (List<BidView>) query.list();
 	}	
 	
 	

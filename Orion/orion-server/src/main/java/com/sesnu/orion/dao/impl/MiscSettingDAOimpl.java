@@ -49,15 +49,18 @@ public class MiscSettingDAOimpl implements MiscSettingDAO {
 	}
 
 	@Override
-	public List<MiscSetting> getByNameType(String name, String type) {
-		String hql = "from MiscSetting where name = :name and type = :type";
+	public MiscSetting getByName(String name) {
+		String hql = "from MiscSetting where name = :name";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql)
-				.setString("name", name)
-				.setString("type", type);
-		return (List<MiscSetting>) query.list();
+				.setString("name", name);
+		if(query.list().size()>0){
+			return (MiscSetting) query.list().get(0);
+		}	
+		return null;
 	}
 
 
+	
 
 
 

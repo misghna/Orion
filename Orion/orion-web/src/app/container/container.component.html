@@ -99,7 +99,32 @@
             </ul>
             </div>
         </td>
-        <td><textarea #unit class="form-control txt-flat" rows="2"  placeholder="Cont Id" required [(ngModel)]="itemDetail.contNo" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <td><textarea class="form-control txt-flat" rows="2"  placeholder="Cont Id" required [(ngModel)]="itemDetail.contNo" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <td>
+            <div class="btn-group ">
+            <button type="button" class="btn btn-default dropdown-toggle editFormMargin noBorder"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{itemDetail.transporter}} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li *ngFor="let trans of transporters">
+                    <a (click)="itemDetail.transporter = trans">{{trans}}</a>
+                </li>
+            </ul>
+            </div>
+        </td>
+         <td>
+            <div class="btn-group ">
+            <button type="button" class="btn btn-default dropdown-toggle editFormMargin noBorder"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{itemDetail.destination}} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li *ngFor="let dest of destinations">
+                    <a (click)="itemDetail.destination = dest.name">{{dest.name}}</a>
+                </li>
+            </ul>
+            </div>
+        </td>
+        <td><input type="date" class="form-control txt-flat middletext"  [(ngModel)]="itemDetail.contReturnDate" [ngModelOptions]="{standalone: true}"/></td>
         <td><textarea #destinationPort class="form-control txt-flat middletext" rows="2"  placeholder="Remark" [(ngModel)]="itemDetail.remark" [ngModelOptions]="{standalone: true}"></textarea></td>
         <td><textarea #updatedOn class="form-control txt-flat middletext" readonly rows="2"  placeholder="auto">{{todayDate}}</textarea></td> 
         <td class="text-left" ><input type="submit" class="btn btn-success" value="{{taskType}}"/></td>
@@ -113,5 +138,4 @@
 </table>
 
 </form>
-
 

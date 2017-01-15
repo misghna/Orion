@@ -64,6 +64,13 @@ public class ContainerController {
 			return null;
 		}
 		
+		List<ContainerView> conts = contDao.listContIdByOrderId(container.getContNo(), container.getOrderRef());
+		
+		if(conts.size()>0){
+			response.sendError(400,Util.parseError("Container number already exists"));
+			return null;
+		}
+		
 		container.setUpdatedOn(Util.parseDate(new Date(),"/"));
 		container.setId(null);
 		contDao.saveOrUpdate(container);

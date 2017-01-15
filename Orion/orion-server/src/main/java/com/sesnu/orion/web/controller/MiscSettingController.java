@@ -1,11 +1,13 @@
 package com.sesnu.orion.web.controller;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -42,7 +44,39 @@ public class MiscSettingController {
 		response.sendError(404);
 		return null;
 	}
+
+	@RequestMapping(value = "/api/user/miscSetting/ports", method = RequestMethod.GET)
+	public @ResponseBody List<String> ports(HttpServletResponse response) throws IOException {
+
+		MiscSetting miscSetting = miscSettingDao.getByName("Ports");
+		if(miscSetting !=null){
+			return Arrays.asList(miscSetting.getValue().split(","));
+		}
+		response.sendError(404);
+		return null;
+	}
 	
+	@RequestMapping(value = "/api/user/miscSetting/{name}", method = RequestMethod.GET)
+	public @ResponseBody List<String> terminals(HttpServletResponse response,@PathVariable("name") String name) throws IOException {
+		
+		MiscSetting miscSetting = miscSettingDao.getByName(StringUtils.capitalize(name));
+		if(miscSetting!=null){
+			return Arrays.asList(miscSetting.getValue().split(","));
+		}
+		response.sendError(400,Util.parseError("Bad Property name"));
+		return null;
+	}
+	
+//	@RequestMapping(value = "/api/user/miscSetting/importers", method = RequestMethod.GET)
+//	public @ResponseBody List<String> importers(HttpServletResponse response) throws IOException {
+//
+//		MiscSetting miscSetting = miscSettingDao.getByName("Importers");
+//		if(miscSetting!=null){
+//			return Arrays.asList(miscSetting.getValue().split(","));
+//		}
+//		response.sendError(404);
+//		return null;
+//	}
 	
 	@RequestMapping(value = "/api/user/miscSetting", method = RequestMethod.PUT)
 	public @ResponseBody List<MiscSetting> updateItem(HttpServletResponse response,

@@ -47,12 +47,17 @@ import { PortFeeService } from './port-fee/port-fee.service';
 import { StatusComponent } from './status/status.component';
 import { ApprovalComponent } from './approval/approval.component';
 import { ApprovalService } from './approval/approval.service';
-
 import { StatusService } from './status/status.service';
 import { MiscComponent } from './misc/misc.component';
 import { CurrencyComponent } from './currency/currency.component';
 import { MiscSettingService } from './misc/misc-service.service';
 import { CurrencyService } from './currency/currency.service';
+import { LicenseComponent } from './license/license.component';
+import { LicenseService } from './license/license.service';
+import { ClientComponent } from './client/client.component';
+import { ClientService } from './client/client.service';
+import { BudgetComponent } from './budget/budget.component';
+
 
 
 @NgModule({
@@ -71,15 +76,15 @@ import { CurrencyService } from './currency/currency.service';
                 PassRenewComponent,
                 ChangePasswordComponent,
                 ItemsComponent,FilterNamePipe, SalesPlanComponent, OrdersComponent, FileUploadComponent,
-                BidComponent, PaymentComponent, ShippingComponent,
+                BidComponent, PaymentComponent, ShippingComponent,LicenseComponent,
                 FileSelectDirective, FileDropDirective, DocumentComponent,DigitsOnly,NumberOnly, ContainerComponent,
-                PortFeeComponent, StatusComponent, ApprovalComponent, MiscComponent, CurrencyComponent
+                PortFeeComponent, StatusComponent, ApprovalComponent, MiscComponent, CurrencyComponent, ClientComponent, BudgetComponent
                  ],
   providers:[AuthGuard,UtilService,UserService,AppSettings,MiscService,
             SalesPlanService,OrdersService,DocumentService,
             BidService,PaymentService,ShippingService,HomeService,
             ContainerService,PortFeeService,ApprovalService,StatusService,
-            MiscSettingService,CurrencyService,
+            MiscSettingService,CurrencyService,ClientService,LicenseService,
         {
           provide: Http,
           useFactory: (backend: XHRBackend, defaultOptions: RequestOptions, utilService:UtilService) => {

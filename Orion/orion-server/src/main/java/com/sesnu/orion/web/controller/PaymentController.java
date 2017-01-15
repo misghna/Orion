@@ -29,7 +29,7 @@ import com.sesnu.orion.web.model.Order;
 import com.sesnu.orion.web.model.OrderView;
 import com.sesnu.orion.web.model.PayView;
 import com.sesnu.orion.web.model.Payment;
-import com.sesnu.orion.web.model.PaymentEstimate;
+import com.sesnu.orion.web.model.Estimate;
 import com.sesnu.orion.web.model.PortFee;
 import com.sesnu.orion.web.model.Shipping;
 import com.sesnu.orion.web.model.ShippingView;
@@ -153,7 +153,7 @@ public class PaymentController {
 	
 	
 	@SuppressWarnings("unchecked")
-	private PaymentEstimate calcEstimate(Payment pay, ShippingView ship){
+	private Estimate calcEstimate(Payment pay, ShippingView ship){
 		Date d = new Date();
 		Date arrival = ship.getEta()!=null? ship.getEta():ship.getEta();
 		long diff = d.getTime() - arrival.getTime();
@@ -194,7 +194,7 @@ public class PaymentController {
 			pd.put("Customs", total);
 		}
 		
-		PaymentEstimate paymentEstimate = new PaymentEstimate(total,pd);
+		Estimate paymentEstimate = new Estimate(total,pd);
 		
 		return paymentEstimate;
 	}

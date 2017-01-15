@@ -1,6 +1,8 @@
 package com.sesnu.orion.web.model;
 
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -29,11 +31,21 @@ public class ContainerView {
 	@Column(name = "cont_no")
 	private String contNo;
 	
+	@Column(name = "transporter")
+	private String transporter;
+	
+	@Column(name = "destination")
+	private String destination;
+	
+	@Column(name = "cont_return_date")
+	private Date contReturnDate;;
+	
 	@Column(name = "remark")
 	private String remark;
 	
 	@Column(name = "updated_on")
 	private String updatedOn;
+	
 	
 	@Column(name = "df")
 	private boolean df;
@@ -122,6 +134,42 @@ public class ContainerView {
 
 	public void setBl(String bl) {
 		this.bl = bl;
+	}
+
+
+
+	public String getTransporter() {
+		return transporter;
+	}
+
+
+
+	public void setTransporter(String transporter) {
+		this.transporter = transporter;
+	}
+
+
+
+	public String getDestination() {
+		return destination;
+	}
+
+
+
+	public void setDestination(String destination) {
+		this.destination = destination;
+	}
+
+
+
+	public Date getContReturnDate() {
+		return contReturnDate;
+	}
+
+
+
+	public void setContReturnDate(Date contReturnDate) {
+		this.contReturnDate = contReturnDate;
 	}
 
 

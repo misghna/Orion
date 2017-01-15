@@ -22,6 +22,7 @@ import com.sesnu.orion.web.model.Order;
 import com.sesnu.orion.web.model.OrderView;
 import com.sesnu.orion.web.model.Shipping;
 import com.sesnu.orion.web.model.ShippingView;
+import com.sesnu.orion.web.utility.TrackingService;
 import com.sesnu.orion.web.utility.Util;
 
 @CrossOrigin(origins = "http://localhost:4200")
@@ -32,7 +33,7 @@ public class ShippingController {
 	@Autowired
 	ShippingDAO shipDao;
 	@Autowired OrderDAO orderDao;
-
+	@Autowired TrackingService trackService;
 	@Autowired Util util;
 	
 
@@ -51,6 +52,16 @@ public class ShippingController {
 		}
 		response.sendError(404);
 		return null;
+	}
+	
+	@RequestMapping(value = "/api/user/ship/track/{bl}", method = RequestMethod.GET)
+	public @ResponseBody String conrTrack(@PathVariable("bl") String bl,
+			HttpServletResponse response) throws IOException {
+		List<ShippingView> ship = shipDao.listByBL(bl);
+		if(ship.size()==0){
+			response.sendError(400,Util.parseError("Shipment info not found"));
+		}
+		return trackService.getShipmentTracking(ship.get(0).getShipAgency(), bl);
 	}
 	
 	

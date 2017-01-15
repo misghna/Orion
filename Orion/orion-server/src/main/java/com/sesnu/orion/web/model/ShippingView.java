@@ -39,6 +39,9 @@ public class ShippingView {
 	@Column(name = "item_origin")
 	private String itemOrigin;
 	
+	@Column(name = "terminal")
+	private String terminal;
+	
 	@Column(name = "etd")
 	private Date etd;
 	
@@ -150,6 +153,14 @@ public class ShippingView {
 
 	public void setContQnt(int contQnt) {
 		this.contQnt = contQnt;
+	}
+
+	public String getTerminal() {
+		return terminal;
+	}
+
+	public void setTerminal(String terminal) {
+		this.terminal = terminal;
 	}
 	
 

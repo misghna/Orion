@@ -57,7 +57,7 @@ public class UserDAOImpl implements UserDAO {
 		if (list != null && !list.isEmpty()) {
 			return (User) list.get(0);
 		}
-		
+
 		return null;
 	}
 	

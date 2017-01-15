@@ -7,6 +7,8 @@ import { OrdersService } from '../orders/orders.service';
 import { Router,ActivatedRoute, Params } from '@angular/router';
 import { UserService } from '../users/users.service';
 import { ApprovalService } from '../approval/approval.service';
+import { CurrencyService } from '../currency/currency.service';
+
 
 
 declare var jQuery : any;
@@ -41,11 +43,13 @@ export class PaymentComponent implements OnInit {
   selectedDate;
   activeOrder= {}; filteredSalesPlanList=[];allPaymentList;
   approversList;approversPlaceHolder;approvalAlert={};
+  responseCurrency;currencies;
 
   activeOrderId;
   constructor(private utilService :UtilService,private payService:PaymentService, private el: ElementRef,
               private orderService:OrdersService ,public route: ActivatedRoute,public router : Router,
-              private userService :UserService,private approvalService :ApprovalService,private rd: Renderer) {
+              private userService :UserService,private approvalService :ApprovalService,private rd: Renderer,
+              private currencyService : CurrencyService) {
 
     this.approvalAlert['hidden']=true;
     utilService.currentSearchTxt$.subscribe(txt => {this.search(txt);});
@@ -83,12 +87,10 @@ export class PaymentComponent implements OnInit {
 
 
    getOrderApprovers(){
-     console.log("name " + JSON.stringify(this.itemDetail));
      this.userService.getApprovers(this.itemDetail['name'])
       .subscribe(
           response => {
               this.approversList = response; 
-              console.log("got response " + JSON.stringify(response));
           },
           error => {
             console.log("approvers not found");
@@ -158,6 +160,7 @@ export class PaymentComponent implements OnInit {
         this.setTitle();
         this.getAllOrders();
         this.allPaymentList = this.payService.getPaymentList();
+        this.getAllCurrencies();
 
         jQuery(this.el.nativeElement).find('#monthSelector li').on('click',function(){  
           jQuery('#monthBtn').html(jQuery(this).text().trim()); 
@@ -218,11 +221,29 @@ getActiveOrder(){
 
 triggerDelModal(event){
     event.preventDefault();
-    console.log("triigered");
     var modalInfo = {"title" : "Order", "msg" : this.activeProductHeader.split('-')[1],"task" :"myTask"};
     this.utilService.showModalState(modalInfo);
 }
 
+
+  getAllCurrencies(){
+
+    var setRev :boolean;
+     this.currencyService.getCurrency()
+      .subscribe(
+          response => {
+              this.currencies = response; 
+              this.responseCurrency = response; 
+          },
+          error => {
+            console.error(error.status);
+          }
+        );
+  }
+
+filterCurrency(txt){
+  this.currencies = this.currencyService.filterCurrency(txt,this.responseCurrency);
+}
 
 updateMonthName(month){
   this.itemDetail['month'] = month;
@@ -284,8 +305,6 @@ updateBaseUnit(unit){
 
     addUpdate(event){
       event.preventDefault();
-      
-      console.log("payment " + JSON.stringify(this.itemDetail));
         if (this.taskType=="Add"){
             this.itemDetail['orderRef'] = this.activeOrderId;
             this.payService.add(this.itemDetail)
@@ -317,10 +336,10 @@ updateBaseUnit(unit){
       this.hideAddNewForm=false;
       this.itemDetail={};
       var today = new Date();
-      this.itemDetail['invNo'] = this.activeOrder['invNo'];
-      this.itemDetail['bl'] = this.activeOrder['bl'];
-      this.itemDetail['orderRef'] = this.activeOrder['id'];
-      this.itemDetail['year'] = today.getFullYear();
+      // this.itemDetail['invNo'] = this.activeOrder['invNo'];
+      // this.itemDetail['bl'] = this.activeOrder['bl'];
+      // this.itemDetail['orderRef'] = this.activeOrder['id'];
+      // this.itemDetail['year'] = today.getFullYear();
     }
 
 
@@ -368,7 +387,6 @@ updateBaseUnit(unit){
     }
 
     update(){
-          console.log(this.itemDetail['id']);
             this.payService.update(this.itemDetail)
             .subscribe(
                 response => {

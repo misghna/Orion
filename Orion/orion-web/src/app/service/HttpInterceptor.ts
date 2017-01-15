@@ -60,7 +60,7 @@ export class HttpInterceptor extends Http {
                 this.util.setLoaderState(false);
             }
 
-       //      console.log("catch()  " + error);
+   //         console.log("catch()  " + error);
 
             if (error.status  === 401) {
                 console.error("401 error");
@@ -77,7 +77,6 @@ export class HttpInterceptor extends Http {
     }
 
     private onSubscribeSuccess(res: Response): void {
-
         if(res.url.indexOf("login")>=0 ){
             this.util.redirectToLogin();
         }
@@ -93,7 +92,7 @@ export class HttpInterceptor extends Http {
         if(this.total >= this.sent * 2){
             this.util.setLoaderState(false);
         }
-     //   console.error(error);
+   //     console.error(error);
     }
 
 

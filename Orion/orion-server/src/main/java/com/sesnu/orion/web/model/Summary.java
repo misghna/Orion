@@ -71,7 +71,7 @@ public class Summary {
 	private String ata;
 	
 	@Column(name = "ship_agency")
-	private String ShippingAgency;
+	private String shippingAgency;
 	
 	@Column(name = "free_days")
 	private String freeDaysLeft;
@@ -227,11 +227,11 @@ public class Summary {
 	}
 
 	public String getShippingAgency() {
-		return ShippingAgency;
+		return shippingAgency;
 	}
 
 	public void setShippingAgency(String shippingAgency) {
-		ShippingAgency = shippingAgency;
+		this.shippingAgency = shippingAgency;
 	}
 
 	public String getUpdatedOn() {

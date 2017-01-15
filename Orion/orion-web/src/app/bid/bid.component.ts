@@ -8,6 +8,7 @@ import { OrdersService } from '../orders/orders.service';
 import { Router,ActivatedRoute, Params } from '@angular/router';
 import { UserService } from '../users/users.service';
 import { ApprovalService } from '../approval/approval.service';
+import { CurrencyService } from '../currency/currency.service';
 
 declare var jQuery : any;
 
@@ -43,13 +44,13 @@ export class BidComponent implements OnInit {
   bntOption = "Search";
   selectedDate;activeOrderId;
   activeOrder= {}; filteredSalesPlanList=[];
-  approvalAlert={};
-  approversList;
+  approvalAlert={};allOrders;ordersList;
+  approversList;currencies;responseCurrency;
   approversPlaceHolder = "Select an Approver";
 
   constructor(private utilService :UtilService,private bidService:BidService, private el: ElementRef,private rd: Renderer,
               private orderService:OrdersService ,public route: ActivatedRoute,private userService : UserService,
-              public router: Router,private approvalService : ApprovalService) {
+              public router: Router,private approvalService : ApprovalService,private currencyService : CurrencyService) {
     this.approvalAlert['hidden']=true;
     this.optionsList = [{'name':'Add New Bidder','value':'addNew'}];
     this.utilService.setToolsContent(this.optionsList);
@@ -81,18 +82,20 @@ export class BidComponent implements OnInit {
    }
 
   ngOnInit() {
-      this.headers = [{'name':'No','value':'id','j':'x'},{'name':'Supplier','value':'supplier','j':'l'},
-                      {'name':'Currency','value':'currency','j':'l'},
+      this.headers = [{'name':'No','value':'id','j':'x'},{'name':'Inv. No','value':'invNo','j':'l'},
+                      {'name':'Supplier','value':'supplier','j':'l'},{'name':'Currency','value':'currency','j':'l'},
                       {'name':'FOB','value':'fob','j':'c'},{'name':'CIF','value':'cifCnf','j':'c'},
                       {'name':'Total (CNF)', 'value':'totalBid','j':'c'}, 
                       {'name':'Payment Method','value':'paymentMethod','j':'c'},
+                      {'name':'Est Transit Days','value':'estTransitDays','j':'c'},
                       {'name':'Selected','value':'selected','j':'c'},{'name':'Approval','value':'approval','j':'c'},
                       {'name':'Updated On','value':'updatedOn','j':'c'}];
       
         this.activeOrderId = this.route.snapshot.params['id'];
         this.loadAll(this.activeOrderId);
         this.populateYear();
-        this.getActiveOrder();
+        this.getAllOrders();
+        this.getAllCurrencies();
 
         jQuery(this.el.nativeElement).find('#monthSelector li').on('click',function(){  
           jQuery('#monthBtn').html(jQuery(this).text().trim()); 
@@ -108,6 +111,27 @@ populateYear() {
      this.years.push(cYear + i);
    }
 } 
+
+
+  getAllCurrencies(){
+
+    var setRev :boolean;
+     this.currencyService.getCurrency()
+      .subscribe(
+          response => {
+              this.currencies = response; 
+              this.responseCurrency = response; 
+          },
+          error => {
+            console.error(error.status);
+          }
+        );
+  }
+
+filterCurrency(txt){
+  this.currencies = this.currencyService.filterCurrency(txt,this.responseCurrency);
+}
+
 
 updateBudgetRef(plan){
   if(plan=='none'){
@@ -149,12 +173,12 @@ getOrderApprovers(itemDetail){
 }
 
 
-getActiveOrder(){
-    var setRev :boolean;
-     this.orderService.getOrderById(this.activeOrderId) 
+getAllOrders(){
+      this.orderService.getAllOrders('all') 
       .subscribe(
           response => {
-              this.activeOrder = response; 
+              this.allOrders = response; 
+              this.ordersList = response;
           },
           error => {
                console.error("order not found!");          
@@ -304,7 +328,6 @@ updateBaseUnit(unit){
 
     addUpdate(event){
       event.preventDefault();
-      this.itemDetail['orderRef']=this.activeOrderId;
         if (this.taskType=="Add"){
             this.bidService.add(this.itemDetail)
             .subscribe(
@@ -320,6 +343,15 @@ updateBaseUnit(unit){
         }else if(this.taskType=="Update"){
           this.updateOrder();
          }
+    }
+
+
+   filterOrderByInvNo(invNo){
+        if(invNo.length<1){
+          return this.allOrders;
+        }
+        this.ordersList = this.allOrders.filter(item => (
+            (item.invNo.toLowerCase().indexOf(invNo.toLowerCase()) !== -1) ));
     }
 
 
@@ -365,11 +397,13 @@ updateBaseUnit(unit){
       this.activeItemId = id;
       this.taskType = "Update";
       this.itemDetail = this.responseData.filter(item => item.id==id)[0];
+      console.log(JSON.stringify(this.itemDetail));
       this.getDate(new Date());
       this.hideAddNewForm=false;
     }
 
     updateOrder(){
+      
             this.bidService.update(this.itemDetail)
             .subscribe(
                 response => {

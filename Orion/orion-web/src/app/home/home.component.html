@@ -91,10 +91,12 @@
             'hidden' : tableHeader.j=='x'
             }"
          *ngFor="let tableHeader of selectedHeaders; let i = index"> 
-             <div *ngIf ="tableHeader.value!='progress'">{{item[tableHeader.value]}}</div>
-             <div *ngIf ="tableHeader.value=='progress'" class="progress" style="padding:0px;margin-bottom:0px">
+             <div *ngIf ="tableHeader.value!='progress' && tableHeader.value!='shippingAgency'">{{item[tableHeader.value]}}</div>
+             <div *ngIf ="tableHeader.value=='shippingAgency'"><a (click)="trackShipment(item.bl)">{{item[tableHeader.value]}}</a></div>           
+             <div *ngIf ="tableHeader.value=='progress'" class="progress" style="padding:0px;margin-bottom:0px;cursor: pointer; cursor: hand;"
+                    (click)="openStatus(item.id)">
                 <div class="progress-bar progress-bar-success" role="progressbar" [attr.aria-valuenow]="item[tableHeader.value]"
-                aria-valuemin="0" aria-valuemax="100" [style.width] ="item[tableHeader.value] + '%'">
+                aria-valuemin="0" aria-valuemax="100" [style.width] ="item[tableHeader.value] + '%'"> 
                     <font color="black">{{item[tableHeader.value] + '%'}}</font>
                 </div>
            </div>
@@ -208,12 +210,48 @@
     </tbody>
   </table>
 </div>
-            <div class="modal-footer">
+
+     <div class="modal-footer">
             <!--<button type="button" class="btn btn-default" >Apply</button>-->
             <button type="button" class="btn btn-default" data-dismiss="modal" (click)="getAllData()">Apply</button>
-            </div>
+     </div>
       </div>
     </div>
   </div>
 
  <button #myModalBtn2 data-toggle="modal" data-target="#homeModal" hidden></button>
+
+
+   <!-- Modal -->
+<div class="modal fade" id="reportModal">
+    <div class="modal-dialog custom-class">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="modal-header-text">Tracking Info</h3>
+            </div>
+            <div class="modal-body" >
+             <div id="htmlTracking"></div>   
+                    <table class="table" id="trackTable">
+                        <thead>
+                        <tr>
+                            <th *ngFor="let header of headerNames">{{header}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let track of trackData">
+                            <td class="text-center" *ngFor="let header of headerNames; let i = index">
+                                    {{track[header]}}
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<button #reportModalBtn data-toggle="modal" data-target="#reportModal" hidden></button>

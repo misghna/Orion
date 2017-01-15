@@ -10,7 +10,7 @@
   <strong>{{alertType}}!</strong> {{itemMsg}}
 </div>
 
-<div id="wrapper" style="text-align: center"> 
+<div id="wrapper" style="text-align: center;"> 
   <div class="dropdown pull-center">
     Bid For : {{activeOrder.item + '(' + activeOrder.brand + ') ordered on '}} {{ activeOrder.createdOn | date: 'dd/MM/yyyy'}}
   </div>
@@ -117,14 +117,52 @@
       
       <tr [class.hidden]="hideAddNewForm" class="inputFormTr">
         <td class="text-center" ><span class="glyphicon glyphicon-plus" aria-hidden="true" style="margin-top:5px"></span></td>
-        <td><textarea #unit class="form-control txt-flat" rows="2"  placeholder="Supplier" required [(ngModel)]="itemDetail.supplier" [ngModelOptions]="{standalone: true}"></textarea></td> 
-        <td><textarea #unit class="form-control txt-flat middletext" rows="2"  digitsonly placeholder="FOB" required [(ngModel)]="itemDetail.fob" [ngModelOptions]="{standalone: true}"></textarea></td> 
-        <td><textarea #unit class="form-control txt-flat middletext" rows="2" digitsonly placeholder="CIF" required [(ngModel)]="itemDetail.cifCnf" [ngModelOptions]="{standalone: true}"></textarea></td> 
-        <td><textarea #unit class="form-control txt-flat middletext" rows="2" digitsonly placeholder="Total Bid Amount" required [(ngModel)]="itemDetail.totalBid" [ngModelOptions]="{standalone: true}"></textarea></td> 
-        <td><textarea #itemOrigin class="form-control txt-flat middletext" rows="2"  placeholder="Payment Method" required [(ngModel)]="itemDetail.paymentMethod" [ngModelOptions]="{standalone: true}"></textarea></td>
-        <td><textarea #destinationPort class="form-control txt-flat middletext" rows="2" readonly placeholder="Auto" [(ngModel)]="itemDetail.status" [ngModelOptions]="{standalone: true}"></textarea></td>
-        <td><textarea #destinationPort class="form-control txt-flat middletext" rows="2" readonly placeholder="Auto" [(ngModel)]="itemDetail.approval" [ngModelOptions]="{standalone: true}"></textarea></td>
-        <td><textarea #updatedOn class="form-control txt-flat middletext" readonly rows="2"  placeholder="auto">{{todayDate}}</textarea></td> 
+        <td>
+         <div class="dropdown">
+          <textarea id="invNo" #invNo class="dropdown-toggle form-control txt-flat" data-toggle="dropdown" rows="2"  
+                placeholder="Inv No" (keyup)="filterOrderByInvNo(invNo.value);itemDetail.invNo=invNo.value" 
+                [(ngModel)]="itemDetail.invNo" [ngModelOptions]="{standalone: true}"></textarea> 
+            <ul class="dropdown-menu item-name">
+              <li *ngFor="let order of ordersList">
+                   <a (click)="itemDetail.invNo=order.invNo;itemDetail.contQnt=order.contQnt;itemDetail.orderRef=order.id"> {{order.invNo}} </a>
+              </li>                      
+            </ul>        
+          </div>    
+        </td> 
+        <td><textarea #unit class="form-control txt-flat" rows="2"  placeholder="Supplier" 
+              required [(ngModel)]="itemDetail.supplier" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <td>
+         <div class="dropdown">
+            <textarea id="from" #from class="dropdown-toggle form-control txt-flat" data-toggle="dropdown" rows="2"  
+                placeholder="Currency" (keyup)="filterCurrency(from.value)" 
+                [(ngModel)]="itemDetail.currency" [ngModelOptions]="{standalone: true}"></textarea>           
+            <ul class="dropdown-menu item-name">
+              <li >
+                <table class="table table-striped tableFont" style="width:250px">
+                  <thead><tr>
+                   <th class="text-center">Country</th>
+                   <th class="text-center">Currency</th>
+                   <th class="text-center">Abbrev</th>
+                   </tr></thead>
+                <tr *ngFor = "let curr of currencies" 
+                  (click)="itemDetail.currency = curr.abrevation">
+                  <td >{{curr.country}}</td>
+                  <td>{{curr.currency}}</td>
+                  <td>{{curr.abrevation}}</td>
+                </tr>
+                </table> 
+              </li>
+            </ul>          
+          </div>    
+        </td>
+        <td><textarea class="form-control txt-flat middletext" rows="2"  digitsonly placeholder="FOB" required [(ngModel)]="itemDetail.fob" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <td><textarea class="form-control txt-flat middletext" rows="2" digitsonly placeholder="CIF" required [(ngModel)]="itemDetail.cifCnf" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <td><textarea class="form-control txt-flat middletext" rows="2" digitsonly placeholder="Total Bid Amount" required [(ngModel)]="itemDetail.totalBid" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <td><textarea class="form-control txt-flat middletext" rows="2"  placeholder="Payment Method" required [(ngModel)]="itemDetail.paymentMethod" [ngModelOptions]="{standalone: true}"></textarea></td>
+        <td><textarea class="form-control txt-flat middletext" rows="2"  digitsonly placeholder="Est Transit Days" required [(ngModel)]="itemDetail.estTransitDays" [ngModelOptions]="{standalone: true}"></textarea></td>
+        <td><textarea class="form-control txt-flat middletext" rows="2" readonly placeholder="Auto" [(ngModel)]="itemDetail.status" [ngModelOptions]="{standalone: true}"></textarea></td>
+        <td><textarea class="form-control txt-flat middletext" rows="2" readonly placeholder="Auto" [(ngModel)]="itemDetail.approval" [ngModelOptions]="{standalone: true}"></textarea></td>
+        <td><textarea class="form-control txt-flat middletext" readonly rows="2"  placeholder="auto">{{todayDate}}</textarea></td> 
         <td class="text-left" ><input type="submit" class="btn btn-success" value="{{taskType}}"/></td>
       </tr>      
     <tr>

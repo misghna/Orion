@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { StatusService } from './status.service';
 import { ShippingService } from '../shipping/shipping.service';
 import { OrdersService } from '../orders/orders.service';
+import { Router,ActivatedRoute, Params } from '@angular/router';
 
 
 declare var $ :any;
@@ -13,13 +14,18 @@ declare var $ :any;
 })
 export class StatusComponent implements OnInit {
 
- payPercent; orderPercent; docPercent;statusHidden;allOrdersResponse;allOrders;activeOrder;activeOrderId='';
+ payPercent; orderPercent; docPercent;statusHidden;allOrdersResponse;allOrders;activeOrder={};activeOrderId='';
  payments;documents;orders;guageLoaded;
  title = {display : true, value : 'Over all progress', fontFamily : 'Arial', fontColor : '#818181',  fontSize : 20, fontWeight : 'normal'};
  valueLabel = {display : true, fontFamily : 'Arial', fontColor : '#000', fontSize : 20, fontWeight : 'normal'};
-
-  constructor(private ordersService: OrdersService,private statService :StatusService) {
+ routeId;
+  constructor(private ordersService: OrdersService,private statService :StatusService,
+              public route: ActivatedRoute,public router:Router) {
     this.statusHidden=true;
+      router.events.subscribe((val) => {
+      var newRouteParam = this.route.snapshot.params['id'];
+      this.routeId =newRouteParam;    
+    });
    }
 
   ngOnInit() {
@@ -34,8 +40,7 @@ export class StatusComponent implements OnInit {
     }
   }
 
-  openStat(event){
-      event.preventDefault();
+  openStat(){
       this.payments=null; this.orders=null; this.documents=null;
       this.getPaymentStat();
       this.getDocumentStat();
@@ -98,13 +103,17 @@ export class StatusComponent implements OnInit {
       );
   }
 
-  getOrderList(){
-   
+  getOrderList(){ 
      this.ordersService.getAllOrders('all')
             .subscribe(
                 response => {
                     this.allOrdersResponse =response;  
-                    this.allOrders =response;     
+                    this.allOrders =response;    
+                    if(this.routeId!="search"){
+                        this.activeOrder = this.getOrder(this.routeId)[0];
+                        this.openStat();
+                        this.assignOrder(this.activeOrder);
+                    }    
                 },
                 error => {      
                     console.error("Something went wrong, please try again later!");
@@ -125,12 +134,19 @@ export class StatusComponent implements OnInit {
 
   }
 
+    getOrder(id){
+      return this.allOrdersResponse.filter(order => {
+        if(order!=null && order.id==id)
+            return order;
+      });
+
+  }
+
 
 overAllProgress(){
   if(this.payments==null || this.orders==null || this.documents==null){
     return;
   }
-  console.log("pay " + this.payments.length + " order " + this.orders.length + " doc " + this.documents.length);
   var mrg1 = JSON.parse(JSON.stringify(this.payments));
   Array.prototype.push.apply(mrg1,this.orders);
   Array.prototype.push.apply(mrg1,this.documents);

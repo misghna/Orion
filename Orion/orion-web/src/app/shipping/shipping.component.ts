@@ -5,6 +5,7 @@ import { ShippingService } from '../shipping/shipping.service';
 import { UtilService } from '../service/util.service';
 import { OrdersService } from '../orders/orders.service';
 import { Router,ActivatedRoute, Params } from '@angular/router';
+import { MiscSettingService } from '../misc/misc-service.service';
 
 declare var jQuery : any;
 
@@ -31,10 +32,13 @@ export class ShippingComponent implements OnInit {
   filterQuery = "";
   bntOption = "Search";
   selectedDate;activeShippingId;allAgencies;
-  activeOrder= {}; filteredSalesPlanList=[]; allOrders;ordersList;
+  activeOrder= {}; filteredSalesPlanList=[]; allOrders;ordersList;terminals;
 
   constructor(private utilService :UtilService,private shipService:ShippingService, private el: ElementRef,
-              private orderService:OrdersService ,public route: ActivatedRoute,public router:Router) {
+              private orderService:OrdersService ,public route: ActivatedRoute,public router:Router,
+              private miscSettingService :MiscSettingService) {
+    
+
     utilService.currentdelItem$.subscribe(opt => { this.delete();}); 
     this.optionsList = [{'name':'Add Shipping','value':'addNew'}];
     this.utilService.setToolsContent(this.optionsList);
@@ -79,23 +83,23 @@ export class ShippingComponent implements OnInit {
   ngOnInit() {
       this.headers = [{'name':'No','value':'id','j':'x'},{'name':'Inv No','value':'invNo','j':'c'},
                       {'name':'Cont Qnt','value':'contQnt','j':'c'},{'name':'BL','value':'bl','j':'c'},
-                      {'name':'Item Origin','value':'itemOrigin','j':'l'},
+                      {'name':'Item Origin','value':'itemOrigin','j':'l'},{'name':'Terminal','value':'terminal','j':'l'},
                       {'name':'Shipping agency','value':'shipAgency','j':'c'},{'name':'ETD','value':'etd','j':'c'},
-                      {'name':'ETA', 'value':'eta','j':'c'}, {'name':'Remakr','value':'remark','j':'c'},
-                      {'name':'Updated On','value':'updatedOn','j':'c'}];
+                      {'name':'ETA', 'value':'eta','j':'c'},{'name':'ATA', 'value':'ata','j':'c'},
+                      {'name':'Remakr','value':'remark','j':'c'},{'name':'Updated On','value':'updatedOn','j':'c'}];
       
         this.activeShippingId = this.route.snapshot.params['id'];
         this.loadAll(this.activeShippingId);
         this.populateYear();
         this.getActiveOrder();
         this.getAllShippingAgency();
+        this.getAllTerminals();
 
         jQuery(this.el.nativeElement).find('#monthSelector li').on('click',function(){  
           jQuery('#monthBtn').html(jQuery(this).text().trim()); 
           jQuery('#monthBtn').attr('value',jQuery(this).text().trim());       
         });
 
-        console.log(this.route.snapshot.params['id']);
   } 
   
 populateYear() {
@@ -115,8 +119,6 @@ updateNameBrand(nameBrand){
 }
 
 getActiveOrder(){
-    var setRev :boolean;
-    // if(this.activeShippingId=='all'){
       this.orderService.getAllOrders('all') 
       .subscribe(
           response => {
@@ -127,21 +129,24 @@ getActiveOrder(){
                console.error("order not found!");          
           }
         );
-    // }else{
-    //  this.orderService.getOrderById(this.activeShippingId) 
-    //   .subscribe(
-    //       response => {
-    //           this.activeOrder = response; 
-    //       },
-    //       error => {
-    //            console.error("order not found!");          
-    //       }
-    //     );
-    // }
 }
 
+
+getAllTerminals(){
+    this.miscSettingService.getTerminals()
+    .subscribe(
+        response => {
+            this.terminals = response; 
+        },
+        error => {
+              console.error("terminals not found!");          
+        }
+      );
+}
+
+
 getAllShippingAgency(){
-        this.shipService.getAllAgency()
+      this.shipService.getAllAgency()
       .subscribe(
           response => {
               this.allAgencies = response; 
@@ -154,7 +159,6 @@ getAllShippingAgency(){
 
 triggerDelModal(event){
     event.preventDefault();
-    console.log("triigered");
     var modalInfo = {"title" : "Order", "msg" : 'Shipment with Bill of loading '+ this.activeProductHeader.split('-')[1],"task" :"myTask"};
     this.utilService.showModalState(modalInfo);
 }
@@ -212,10 +216,21 @@ updateBaseUnit(unit){
 
     addUpdate(event){
       event.preventDefault();
+
+        if(this.itemDetail['contQnt'] == null){
+           this.popAlert("Error","danger","Invalid Container qty, is Please select Inv from the list!");
+          return;
+        }
+        if(this.itemDetail['terminal'] == "Select Terminal"){
+           this.popAlert("Error","danger","Please select Terminal!");
+          return;
+        }
+
         if(this.itemDetail['shipAgency']=='Select Agency'){
            this.popAlert("Error","danger","Please select Agency!");
           return;
         }
+       
         var checkInv = this.allOrders.filter(item => (
             (item.invNo.toLowerCase() == this.itemDetail['invNo'])));
             console.log("checkInv"  + checkInv);
@@ -260,6 +275,7 @@ updateBaseUnit(unit){
       var today = new Date();
       this.itemDetail['year'] = today.getFullYear();
       this.itemDetail['shipAgency'] ='Select Agency';
+      this.itemDetail['terminal'] ="Select Terminal";
     }
 
     popAlert(type,label,msg){

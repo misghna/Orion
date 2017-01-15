@@ -110,3 +110,11 @@
 
     display: inline-block;
 }
+
+.agencyEl{
+    cursor: pointer;
+}
+
+#trackTable{
+    font-size: 10;
+}

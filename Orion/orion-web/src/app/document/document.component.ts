@@ -38,19 +38,13 @@ export class DocumentComponent implements OnInit {
   constructor(private utilService :UtilService,private docService:DocumentService, private el: ElementRef,
               public route: ActivatedRoute,public router: Router,private orderService:OrdersService) {
 
-    this.optionsList = [{'name':'Add New Payment','value':'addNew'}];
+    this.optionsList = [{'name':'Upload New Document','value':'addNew'}];
     this.utilService.setToolsContent(this.optionsList);
-    
-    this.monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN","JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
-    
+        
     this.pageName;
 
     this.alertHidden=true;  
     this.hideAddNewForm=true;
-    this.rangeSelectorHidden=true;
-    this.selectedMonth = "Select Month";
-    this.selectedYear = "Select Year";
-    this.years = [];
     this.todayDate = this.getDate(new Date());
 
     // tools listener
@@ -88,7 +82,7 @@ export class DocumentComponent implements OnInit {
 
   ngOnInit() {
       this.headers = [{'name':'No','value':'id','j':'x'},{'name':'Type','value':'type','j':'l'},
-                      {'name':'Order Invoice No','value':'invNo','j':'c'},
+                      {'name':'Order Invoice No','value':'invNo','j':'c'},{'name':'Bill No','value':'bl','j':'c'},
                       {'name':'Remark','value':'remark','j':'c'},{'name':'Updated On','value':'updatedOn','j':'c'}];
           var activeOrderId = this.route.snapshot.params['id'];
           if(this.activeDocId.indexOf("orderRef")>=0){

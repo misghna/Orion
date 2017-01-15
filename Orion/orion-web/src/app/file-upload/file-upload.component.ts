@@ -27,12 +27,13 @@ export class FileUploadComponent implements OnInit {
   //  this.URL = Utils.getBaseUrl() + 'api/user/uploadFile/';
 
     this.alertWin = {'alertHidden':true,'type':'','label':'','msg':''}
-    this.optionsList = [{'name':'Upload Document','value':'addNew'}];
+    // this.optionsList = [{'name':'Upload Document','value':'addNew'}];
+    // this.utilService.setToolsContent(this.optionsList);
+
     this.docTypes = ['Bill of Loading','Commerical Invoice','CNCA','Certificate of Health','Certificate of Origin','Certificate of Analise',
                       'Certificate of Fumigation','Certificate of Quality',
                       'Certificate of Insurance','Du License','Inspection','Local Phytosanitary','Packing List','Proforma Invoice','Other'];
 
-    this.utilService.setToolsContent(this.optionsList);
     
     utilService.currentToolsOptCont$.subscribe(
       opt => {  
@@ -45,9 +46,9 @@ export class FileUploadComponent implements OnInit {
       if(this.activeDocId != newRouteParam){
           this.activeDocId = newRouteParam;
           if(newRouteParam.indexOf("orderRef")>=0){
-            this.utilService.setToolsContent(this.optionsList);
+//            this.utilService.setToolsContent(this.optionsList);
           }else{
-            this.utilService.setToolsContent(null);
+//            this.utilService.setToolsContent(null);
           }
       }
         

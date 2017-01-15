@@ -22,9 +22,6 @@ public interface StatusDAO {
 	
 	public List<String> listName(long orderRef, String type);
 	
-
-
-
-
+	
 	
 }

@@ -22,6 +22,11 @@ export class ShippingService {
   }
 
 
+  trackShipping(bl) {
+    var url = this.baseUrl + 'api/user/ship/track/' + bl;
+    return this.http.get(url,[{ withCredentials: true }]);
+  }
+
 
   getAllAgency() {
     var url = this.baseUrl + 'api/user/agency';

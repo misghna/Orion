@@ -51,6 +51,8 @@ public class DocumentController {
 		List<DocView> docs =null;
 		if(state.indexOf("orderRef")>=0){
 			docs = docDao.listByOrderRef(Long.parseLong(state.split("-")[1].toString()));
+		}else if (state.indexOf("all")>=0){
+			docs = docDao.listAll();
 		}else{
 			docs = docDao.listByDocType(state.replaceAll("_", " "));
 		}

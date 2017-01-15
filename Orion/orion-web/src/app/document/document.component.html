@@ -21,44 +21,6 @@
   </div>
 </div>
 
-<div id="rangeSelector" [class.hidden]="rangeSelectorHidden"><br>
-    <table>
-      <tr>
-      <td>
-        <div class="dropdown">
-        <button class="btn btn-default dropdown-toggle" type="button" id="yearBtn" #yearBtn data-toggle="dropdown"
-        aria-haspopup="true" aria-expanded="true" style="min-width:150px">
-        {{selectedYear}}
-          <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" id="yearSelector">
-          <li *ngFor ="let year of years;">
-            <a (click)="selectedYear = year">{{year}}</a>
-          </li>
-        </ul>
-      </div>
-    </td>
-  
-  <td>
-    <div class="dropdown">
-        <button class="btn btn-default dropdown-toggle" type="button" id="monthBtn" #monthBtn style="min-width:150px"
-        data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" >
-            {{selectedMonth}}
-            <span class="caret"></span>
-          </button>
-          <ul id="monthSelector" #monthSelector class="dropdown-menu " aria-labelledby="dropdownMenu2" >
-            <li *ngFor ="let month of monthNames"><a (click)="selectedMonth = month">{{month}}</a></li>
-          </ul>
-      </div>
-    </td>
-
-  <td>
-     <button #bntOption1 class="btn btn-default" (click)="execute(bntOption1.value)" value ="{{bntOption}}" >{{bntOption}}</button>
-  </td>
-  </tr>
-</table>
-</div>
-
 <form (submit)="addUpdate($event)">
 <table class="table table-striped tableFont" [mfData]="data" #mf="mfDataTable" [mfRowsOnPage]="20" >
     <thead>
