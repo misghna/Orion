@@ -45,12 +45,6 @@ public class DuLicenseView {
 	@Column(name="expire_date")
 	private Date expireDate;
 	
-	@Column(name = "courier")
-	private String courier;
-	
-	@Column(name = "tracking_id")
-	private String trackingId;
-
 	
 	public Long getId() {
 		return id;
@@ -124,22 +118,7 @@ public class DuLicenseView {
 		this.expireDate = expireDate;
 	}
 
-	public String getCourier() {
-		return courier;
-	}
 
-	public void setCourier(String courier) {
-		this.courier = courier;
-	}
-
-	public String getTrackingId() {
-		return trackingId;
-	}
-
-	public void setTrackingId(String trackingId) {
-		this.trackingId = trackingId;
-	}
-	
 	
 	
 }

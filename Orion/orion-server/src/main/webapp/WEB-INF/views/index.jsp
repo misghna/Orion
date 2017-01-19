@@ -24,5 +24,5 @@
   <body>
     
     <app-root></app-root>
-  <script type="text/javascript" src="inline.js"></script><script type="text/javascript" src="styles.574ffab380bc9d1d16ef.bundle.js"></script><script type="text/javascript" src="main.cf546faa58dff7a2fef8.bundle.js"></script></body>
+  <script type="text/javascript" src="inline.js"></script><script type="text/javascript" src="styles.574ffab380bc9d1d16ef.bundle.js"></script><script type="text/javascript" src="main.fa8d5434c296a69669bb.bundle.js"></script></body>
 </html>

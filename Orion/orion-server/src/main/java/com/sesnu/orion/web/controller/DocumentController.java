@@ -134,8 +134,23 @@ public class DocumentController {
 	
 	
 	@ResponseBody
-	@RequestMapping(value = "/documents/{docName}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
-	public byte[] getDoc(@PathVariable("docName") String docName, HttpServletResponse resp) throws IOException {
+	@RequestMapping(value = "/documents/image/{docName}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
+	public byte[] getImage(@PathVariable("docName") String docName, HttpServletResponse resp)
+			throws IOException {
+	    TCPResponse response = util.readFromS3(docName);
+	    if(response.getCode()==200){
+			InputStream in = (InputStream) util.readFromS3(docName).getResponse();
+		    return IOUtils.toByteArray(in);
+	    }else{
+	    	resp.sendError(400,"error when retriving document");
+	    	return null;
+	    }
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/documents/pdf/{docName}", method = RequestMethod.GET, produces = MediaType.APPLICATION_PDF_VALUE)
+	public byte[] getPdf(@PathVariable("docName") String docName, HttpServletResponse resp) 
+			throws IOException {
 	    TCPResponse response = util.readFromS3(docName);
 	    if(response.getCode()==200){
 			InputStream in = (InputStream) util.readFromS3(docName).getResponse();

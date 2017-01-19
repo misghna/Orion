@@ -20,6 +20,9 @@ import { MiscComponent } from './misc/misc.component';
 import { CurrencyComponent } from './currency/currency.component';
 import { LicenseComponent } from './license/license.component';
 import { ClientComponent } from './client/client.component';
+import { DocTrackingComponent } from './doc-tracking/doc-tracking.component';
+import { TerminalComponent } from './terminal/terminal.component';
+import { EstimateComponent } from './estimate/estimate.component';
 
 import { BudgetComponent } from './budget/budget.component';
 
@@ -40,11 +43,14 @@ export const routes: Routes = [
   { path: 'setting/misc',  component: MiscComponent },
   { path: 'setting/currency',  component: CurrencyComponent },
   { path: 'setting/clients',  component: ClientComponent },
+  { path: 'setting/terminal',  component: TerminalComponent },
+  
 
   { path: 'status/:id',  component: StatusComponent },
   { path: 'finance/approval/:id',  component: ApprovalComponent },
   { path: 'finance/payment/:id',  component: PaymentComponent },
-  { path: 'budget/:id',  component: BudgetComponent },
+  { path: 'finance/estimator/:id',  component: EstimateComponent },
+  { path: 'finance/budget/:id',  component: BudgetComponent },
   
   
   { path: 'import/order/:id',  component: OrdersComponent },
@@ -53,7 +59,9 @@ export const routes: Routes = [
   { path: 'import/bid/:id',  component: BidComponent },
   
   { path: 'document/license/:id',  component: LicenseComponent },
+  { path: 'document/docTracking/:id',  component: DocTrackingComponent },
   { path: 'document/uploaded/:id',  component: DocumentComponent },
+  
 
   { path: 'open/register',  component: RegisterComponent },
   { path: 'open/passrenew',  component: PassRenewComponent },

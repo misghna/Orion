@@ -80,10 +80,13 @@
             'hidden' : tableHeader.j=='x'
             }"
          *ngFor="let tableHeader of headers; let i = index">
-         <div *ngIf = "tableHeader.value != 'selected'"> 
+         <div *ngIf = "tableHeader.value != 'selected' && tableHeader.j != 'cr'"> 
             {{item[tableHeader.value]}}
           </div>
-          <div *ngIf = "tableHeader.value == 'selected' && item.selected== true" > 
+           <div *ngIf = "tableHeader.j == 'cr'"> 
+                {{item[tableHeader.value] | number:'.2-2'}}
+          </div>
+          <div *ngIf = "tableHeader.value == 'selected' && item.selected== true && tableHeader.j != 'cr'" > 
             <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
           </div>
             </td>
@@ -116,7 +119,7 @@
     <tfoot>
       
       <tr [class.hidden]="hideAddNewForm" class="inputFormTr">
-        <td class="text-center" ><span class="glyphicon glyphicon-plus" aria-hidden="true" style="margin-top:5px"></span></td>
+        <td class="text-center" ><span class="glyphicon glyphicon-remove-circle closeAddForm" aria-hidden="true" style="margin-top:5px"></span></td>
         <td>
          <div class="dropdown">
           <textarea id="invNo" #invNo class="dropdown-toggle form-control txt-flat" data-toggle="dropdown" rows="2"  
@@ -129,6 +132,8 @@
             </ul>        
           </div>    
         </td> 
+        <td><textarea #unit class="form-control txt-flat" rows="2"  placeholder="Proforma Inv" 
+              required [(ngModel)]="itemDetail.proformaInvNo" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td><textarea #unit class="form-control txt-flat" rows="2"  placeholder="Supplier" 
               required [(ngModel)]="itemDetail.supplier" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td>

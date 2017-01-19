@@ -83,11 +83,14 @@
             'hidden' : tableHeader.j=='x'
             }"
          *ngFor="let tableHeader of headers; let i = index">
-              <div *ngIf = "tableHeader.value != 'paymentDate'"> 
+              <div *ngIf = "tableHeader.j == 'c' || tableHeader.j == 'l' || tableHeader.j == 'x' "> 
                 {{item[tableHeader.value]}}
               </div>
-              <div *ngIf = "tableHeader.value == 'paymentDate'"> 
+              <div *ngIf = "tableHeader.j == 'cd'"> 
                 {{item[tableHeader.value] | date: 'dd/MM/yyyy'}}
+              </div>
+               <div *ngIf = "tableHeader.j == 'cr'"> 
+                {{item[tableHeader.value] | number:'.2-2'}}
               </div>
             </td>
         <td class="text-center" >
@@ -115,7 +118,7 @@
     <tfoot>
       
       <tr [class.hidden]="hideAddNewForm" class="inputFormTr">
-        <td class="text-center" ><span class="glyphicon glyphicon-plus" aria-hidden="true" style="margin-top:5px"></span></td>
+        <td class="text-center" ><span class="glyphicon glyphicon-remove-circle closeAddForm" aria-hidden="true" style="margin-top:5px"></span></td>
         
           <td>  
           <div class="dropdown">
@@ -131,7 +134,7 @@
                    <th class="text-center">Bill of Loading</th>
                    </tr></thead>
                 <tr *ngFor = "let order of allOrders" 
-                  (click)="itemDetail.invNo = order.invNo;itemDetail.bl=order.bl;activeOrderId=order.id;itemDetail.orderRef=order.id">
+                  (click)="itemDetail.invNo = order.invNo;itemDetail.bl=order.bl;activeOrderId=order.id;itemDetail.orderRef=order.id;getContainers(order.id)">
                   <td >{{order.invNo}}</td>
                   <td>{{order.bl}}</td>
                 </tr>
@@ -153,7 +156,7 @@
                    <th class="text-center">Bill of Loading</th>
                    </tr></thead>
                 <tr *ngFor = "let order of allOrders" 
-                  (click)="itemDetail.invNo = order.invNo;itemDetail.bl=order.bl;activeOrderId=order.id;itemDetail.orderRef=order.id">
+                  (click)="itemDetail.invNo = order.invNo;itemDetail.bl=order.bl;activeOrderId=order.id;itemDetail.orderRef=order.id;getContainers(order.id)">
                   <td >{{order.invNo}}</td>
                   <td>{{order.bl}}</td>
                 </tr>
@@ -162,6 +165,17 @@
             </ul>
            
           </div>    
+        </td>
+        <td>
+            <div class="btn-group ">
+            <button type="button" class="btn btn-default dropdown-toggle editFormMargin noBorder"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{itemDetail.contId}} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li ><a (click)="itemDetail.contId = 'All'">All</a></li>          
+                <li *ngFor ="let cont of containers"><a (click)="itemDetail.contId = cont.contNo">{{cont.contNo}}</a></li>          
+            </ul>
+            </div>
         </td>
         <td>
             <div class="btn-group ">
@@ -248,7 +262,7 @@
                     placeholder="{{approversPlaceHolder}}" readonly
                     [(ngModel)]="itemDetail.approver" [ngModelOptions]="{standalone: true}"></textarea>              
                 <ul class="dropdown-menu item-name">
-                <li *ngFor ="let aprv of approversList" (click)="itemDetail.approver=aprv"><a> {{aprv}}</a></li>                      
+                <li *ngFor ="let aprv of approversList" (click)="itemDetail.approver=aprv;"><a> {{aprv}}</a></li>                      
                 </ul>           
             </div> 
         </div>

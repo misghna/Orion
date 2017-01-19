@@ -113,7 +113,7 @@ public class TrackingService {
 	
 	public String TrackHDL(String trackingId) 
 			throws ClientProtocolException, IOException, ParseException{
-		
+		JSONObject resultObj = new JSONObject();
 	    Long time = System.currentTimeMillis();
 	    String url = "http://www.dhl.com/shipmentTracking?AWB="+trackingId+"&countryCode=g0&languageCode=en&_=" + time.toString();
 	    HttpUriRequest request = new HttpGet(url);
@@ -130,8 +130,17 @@ public class TrackingService {
 	    	res.put("Destination" , ((JSONObject)jo.get("destination")).get("value"));
 	    	JSONObject ckpts = (JSONObject) ((JSONArray) jo.get("checkpoints")).get(0);
 	    	res.put("last known location ", ckpts.get("date") + " @ " +  ckpts.get("time") + " " + ckpts.get("description"));
+	    }else{
+		    resultObj.put("type", "HTML");
+		    resultObj.put("data", "Tracking history not found");
+		    return resultObj.toJSONString();
 	    }
-	    return res.toJSONString();
+	    JSONArray resultArray = new JSONArray();
+	    resultArray.add(res);
+	    resultObj.put("type", "JSON");
+	    resultObj.put("data", resultArray);
+
+	    return resultObj.toJSONString();
 	}
 	
 	//https://www.tnt.com/api/v1/shipment?con=7465679678&locale=en_US&searchType=CON

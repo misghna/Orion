@@ -28,6 +28,9 @@ public class PayView {
 	@Column(name = "name")
 	private String name;
 	
+	@Column(name = "cont_id")
+	private String contId;
+	
 	@Column(name = "transaction_id")
 	private String transactionId;
 	
@@ -193,6 +196,16 @@ public class PayView {
 	public void setDeposit(double deposit) {
 		this.deposit = deposit;
 	}
+
+	public String getContId() {
+		return contId;
+	}
+
+	public void setContId(String contId) {
+		this.contId = contId;
+	}
+
+
 	
 	
 

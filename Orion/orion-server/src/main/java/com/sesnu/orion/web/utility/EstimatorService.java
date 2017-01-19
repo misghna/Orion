@@ -6,10 +6,12 @@ import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.sesnu.orion.dao.BidDAO;
 import com.sesnu.orion.dao.ExchangeDAO;
 import com.sesnu.orion.dao.MiscSettingDAO;
 import com.sesnu.orion.dao.PortFeeDAO;
 import com.sesnu.orion.dao.ShippingDAO;
+import com.sesnu.orion.dao.TerminalDAO;
 import com.sesnu.orion.web.model.Bid;
 import com.sesnu.orion.web.model.Estimate;
 import com.sesnu.orion.web.model.Exchange;
@@ -18,7 +20,9 @@ import com.sesnu.orion.web.model.Order;
 import com.sesnu.orion.web.model.OrderView;
 import com.sesnu.orion.web.model.Payment;
 import com.sesnu.orion.web.model.PortFee;
+import com.sesnu.orion.web.model.Shipping;
 import com.sesnu.orion.web.model.ShippingView;
+import com.sesnu.orion.web.model.Terminal;
 
 @SuppressWarnings("unchecked")
 @Component
@@ -29,6 +33,15 @@ public class EstimatorService {
 	@Autowired private PortFeeDAO portFeeDAO;
 	@Autowired private MiscSettingDAO miscDao;
 	@Autowired private ExchangeDAO exchangeDao;
+	@Autowired private TerminalDAO terminalDao;
+	@Autowired private BidDAO bidDao;
+	
+	private JSONObject addTotal(Estimate est){
+		JSONObject j =est.getDetails();
+		j.put("Total", est.getValue());
+//		j.put("size", j.size());
+		return j;
+	}
 	
 	public Estimate totalEstimate(OrderView order, Payment pay, Bid bid,Item item) {
 		Estimate est =null;
@@ -38,60 +51,83 @@ public class EstimatorService {
 		// legalization
 		est = legalization(order,pay);
 		total += est.getValue();
-		pd.put("Legalization", est.getDetails());
+		pd.put("Shipping Agency", addTotal(est));
 		
 		// license
-		est = license(order.getContQnt());
+		est = license(order);
 		total += est.getValue();
-		pd.put("License", est.getDetails());
+		pd.put("License", addTotal(est));
 
 		// customs
 		est = customs(bid.getTotalBid(),bid.getCurrency(), item);
 		total += est.getValue();
-		pd.put("Customs", est.getDetails());
+		pd.put("Customs", addTotal(est));
 		
 		// bromangol
-		est = bromangol(order.getContQnt(),order.getBaseSize());
+		est = bromangol(order);
 		total += est.getValue();
-		pd.put("Bromangol", est.getDetails());
+		pd.put("Bromangol", addTotal(est));
 		
 		// transport
-		est = transport(order.getContQnt(),order.getBaseSize());
+		est = transport(order);
 		total += est.getValue();
-		pd.put("Transport", est.getDetails());
+		pd.put("Transport", addTotal(est));
 		
 		// terminal
-		est = terminal(order.getContQnt(),order.getBaseSize(),order.getTerminal());
-		total += est.getValue();
-		pd.put("Terminal", est.getDetails());
+		List<Bid> bids = bidDao.getBidWinner(order.getId());
+		if(bids.size()>0){
+			est = terminal(order,bids.get(0).getTotalBid());
+			pd.put("Terminal",addTotal(est));
+			total += est.getValue();
+		}else{
+			pd.put("Terminal", "{\"Status\":\"final proforma not set\"}");
+		}
 		
 		// port
-		est = port(order.getContQnt(),order.getBaseSize());
+		est = port(order);
 		total += est.getValue();
-		pd.put("Port", est.getDetails());
+		pd.put("Port", addTotal(est));
 		
 		// certificateOfQuality
-		est = certificateOfQuality(order.getContQnt(),order.getBaseSize());
+		est = certificateOfQuality();
 		total += est.getValue();
-		pd.put("Certificate Of Quality", est.getDetails());
+		pd.put("Certificate Of Quality", addTotal(est));
 		
 		// certificateOfHealth
-		est = certificateOfHealth(order.getContQnt(),order.getBaseSize());
+		est = certificateOfHealth();
 		total += est.getValue();
-		pd.put("Certificate Of Quality", est.getDetails());
+		pd.put("Certificate Of Health", addTotal(est));
 				
 		// phytosanitary
 		est = phytosanitary();
 		total += est.getValue();
-		pd.put("Certificate Of Quality", est.getDetails());
+		pd.put("Local Phytosanitary", addTotal(est));
 
 		// forwardingAgent
-		est = forwardingAgent(bid.getTotalBid(),bid.getCurrency());
+		est = forwardingAgent(bid);
 		total += est.getValue();
-		pd.put("Forwarding Agent", est.getDetails());
+		pd.put("Forwarding Agent", addTotal(est));
 		
+		Exchange cur = exchangeDao.get("Other", "Other","USD", "AOA");
+		if(cur==null){
+			cur = exchangeDao.get("Customs", "Customs","USD", "AOA");
+			if(cur==null){
+				return null;
+			}
+		}
 		
-		return  new Estimate(total,pd);
+		JSONObject summary = new JSONObject();
+		double totalInvAmount = bid.getTotalBid() * cur.getRate();
+		summary.put("TotalInvoiceAmount", totalInvAmount);
+		summary.put("TotalFees", total);
+		summary.put("TotalCost", total + totalInvAmount);
+		summary.put("CostPerContainer", (total + totalInvAmount)/order.getContQnt());
+		double costPerPack = (total + totalInvAmount)/order.getContQnt()/order.getPckPerCont();
+		summary.put("CostPerPack", costPerPack);
+		summary.put("pricePerPack", costPerPack*1.12);
+		summary.put("costCifRatio", (total + totalInvAmount)/totalInvAmount *100);
+				
+		return  new Estimate(total,pd,summary);
 	}
 	
 	
@@ -129,14 +165,13 @@ public class EstimatorService {
 		
 		pd.put("Consumer Tax",  portFees.getConsumerTax()/100 * total);
 		total += portFees.getConsumerTax()/100 * total;  // add consumer tax
-
+		
 		return new Estimate(total,pd);
 
 	}
 	
 	
 	public Estimate customs(Double totalCnfValue,String currency,Item item){
-		System.out.println("**************** currency " + currency);
 		Exchange cur = exchangeDao.get("Customs", "Custom",currency, "AOA");
 		if(cur==null){
 			cur = exchangeDao.get("Other", "Other",currency, "AOA");
@@ -149,7 +184,7 @@ public class EstimatorService {
 		double totalTaxPercent = item.getFinancialServices() + item.getStampTax() + 
 								 item.getConsumerTax() + item.getFees() + item.getOthers();
 	
-		total = totalCnfValue * totalTaxPercent * cur.getRate();
+		total = totalCnfValue * totalTaxPercent/100 * cur.getRate();
 		pd.put("Financial Service", item.getFinancialServices() * totalCnfValue* cur.getRate());
 		pd.put("Stamp tax",item.getStampTax()*totalCnfValue* cur.getRate());
 		pd.put("Consumer tax",item.getConsumerTax()*totalCnfValue* cur.getRate());
@@ -159,7 +194,8 @@ public class EstimatorService {
 		return new Estimate(total,pd);
 	}
 	
-	public Estimate transport(Integer contQty,Integer contSize){
+	public Estimate transport(OrderView order){
+		Integer contQty=order.getContQnt();Integer contSize = order.getContSize();
 		double total=0;JSONObject pd = new JSONObject();
 		if(contSize==20){
 			total = Double.parseDouble(miscDao.getByName("Container Transport Fee 20ft(Est/cont-AOA)").getValue())*contQty;
@@ -171,10 +207,14 @@ public class EstimatorService {
 	}
 	
 	
-	public Estimate terminal(Integer contQty,Integer contSize,String terminalName){
+	public Estimate terminal(OrderView order,Double totalCnfValue){
+		Integer contQty=order.getContQnt();Integer contSize = order.getContSize();
 		Double rate =0d;double tmp=0;
 
-		Exchange cur = exchangeDao.get("Terminal", terminalName,"USD", "AOA");
+		Exchange cur = null;
+		if(order.getTerminal()!=null){
+			cur= exchangeDao.get("Terminal", order.getTerminal(),"USD", "AOA");
+		}
 		if(cur!=null){
 			rate = cur.getRate();
 		}
@@ -190,28 +230,100 @@ public class EstimatorService {
 			}
 		}
 		
+		Terminal terminal =null;
+		
+		if(order.getTerminal()!=null){
+			terminal = terminalDao.getByName(order.getTerminal());
+		}
+		
+		if(terminal==null){
+			List<Terminal> ts = terminalDao.listAll();
+			terminal = ts.get(0);
+		}
+		
+		if(terminal==null){
+			return null;
+		}
+		
 		double total=0;JSONObject pd = new JSONObject();
+		
+		pd.put("Terminal Name",terminal.getName());		
+		pd.put("Terminal Free Days",terminal.getFreeDays());
+		
+		long diffDays =0;
+		List<ShippingView> sps = shipDao.listByOrderId(order.getId());
+		if(sps.size()>0 && sps.get(0).getEta()!=null){
+			pd.put("ETA",Util.parseDate(sps.get(0).getEta()));
+			long diff = Math.abs(System.currentTimeMillis() - sps.get(0).getEta().getTime());
+			diffDays = diff / (24 * 60 * 60 * 1000);
+			pd.put("Paid Days",diffDays+terminal.getFreeDays());
+		}
+		if(diffDays<=0){
+			diffDays = 10;
+			pd.put("Estimated Paid Days",diffDays);
+		}
+		
 		if(contSize==20){
-			tmp = Double.parseDouble(miscDao.getByName("Terminal Offloading tariff 20ft(Est/cont-USD)").getValue())*rate * contQty;
+			tmp = terminal.getOffloadFee20ft()*rate * contQty;
 		}else {
-			tmp = Double.parseDouble(miscDao.getByName("Terminal Offloading tariff 40ft(Est/cont-USD)").getValue())*rate * contQty;
+			tmp =  terminal.getOffloadFee40ft()*rate * contQty;
 		}	
-		pd.put("Offloading Tariff",tmp);
+		pd.put("Offloading",tmp);
 		total +=tmp;
 		
-		tmp = Double.parseDouble(miscDao.getByName("Terminal TVA & Tax %(Est/bill-AOA)").getValue()) * tmp/100;
-		pd.put("TVA & Tax",tmp);
+		tmp = terminal.getAdminServiceCharge() * rate;
+		pd.put("Admin & Service Charge",tmp);
 		total +=tmp;
 		
-		tmp = Double.parseDouble(miscDao.getByName("Terminal Admin & service charge(Est/bill-AOA)").getValue());
-		pd.put("Admin & service charge",tmp);
+		tmp = calcStorage(terminal,contSize,diffDays,rate);
+		pd.put("Storage",tmp);	
+		total +=tmp;
+		
+		tmp = terminal.getTransport() * contQty * rate;
+		pd.put("Transport ",tmp);
+		total +=tmp;
+			
+		tmp = terminal.getImportTarrif()* contQty * rate;
+		pd.put("Tariff ",tmp);
+		total +=tmp;
+		
+		tmp = terminal.getOtherPercent()* totalCnfValue * rate/100;
+		pd.put("Others(% from total) ",tmp);
 		total +=tmp;
 		
 		return new Estimate(total,pd);
 	}
 	
+	private double calcStorage(Terminal terminal, Integer contSize, long daysInTerminal, double rate){
+		double total=0;
+		if (daysInTerminal <= terminal.getFreeDays()){
+			return total;
+		}
+		
+		if(contSize==20){
+			if(daysInTerminal-terminal.getFreeDays() > terminal.getStorageFirstRangeDays()){
+				total = (terminal.getStorageFirstRangeDays()-terminal.getStorageFirstRangeFee20ft())*rate;
+				long daysInSecondStorage = daysInTerminal - terminal.getStorageFirstRangeDays()-terminal.getFreeDays();
+					total += daysInSecondStorage*terminal.getStorageSecondRangeFee20ft()*rate;	
+			}else{
+				total = (daysInTerminal-terminal.getFreeDays())*terminal.getStorageFirstRangeFee20ft()*rate;
+			}
+
+		}
+		else{
+			if(daysInTerminal-terminal.getFreeDays() > terminal.getStorageFirstRangeDays()){
+				total = (terminal.getStorageFirstRangeDays()-terminal.getStorageFirstRangeFee20ft())*rate;
+				long daysInSecondStorage = daysInTerminal - terminal.getStorageFirstRangeDays()-terminal.getFreeDays();
+					total += daysInSecondStorage*terminal.getStorageSecondRangeFee20ft()*rate;	
+			}else{
+				total = (daysInTerminal-terminal.getFreeDays())*terminal.getStorageFirstRangeFee20ft()*rate;
+			}
+		}
+		return total;
+	}
 	
-	public Estimate port(Integer contQty,Integer contSize){
+	public Estimate port(OrderView order){
+		Integer contQty=order.getContQnt();Integer contSize = order.getContSize();
 		Exchange cur = exchangeDao.get("Port", "Port","USD", "AOA");
 		if(cur==null){
 			cur = exchangeDao.get("Other", "Other","USD", "AOA");
@@ -240,23 +352,24 @@ public class EstimatorService {
 	}
 	
 	
-	public Estimate certificateOfQuality(Integer contQty,Integer contSize){
+	public Estimate certificateOfQuality(){
 		double total=0;JSONObject pd = new JSONObject();
 		total = Double.parseDouble(miscDao.getByName("Certificate of Quality fee(Est/cont-AOA)").getValue());
 		pd.put("Certificate of Quality",total);
 		return new Estimate(total,pd);
 	}
 	
-	public Estimate certificateOfHealth(Integer contQty,Integer contSize){
+	public Estimate certificateOfHealth(){
 		double total=0;JSONObject pd = new JSONObject();
 		total = Double.parseDouble(miscDao.getByName("Certificate Of Health (Est/cont-AOA)").getValue());
 		pd.put("Certificate of Health",total);
 		return new Estimate(total,pd);
 	}
 	
-	public Estimate bromangol(Integer contQty,Integer contSize){
+	public Estimate bromangol(OrderView order){
 		double total=0;double temp=0;JSONObject pd = new JSONObject();		
-		Integer sampleQty = Integer.parseInt(miscDao.getByName("Bromangol samples(Est/bill-#)").getValue());
+		Double sampleRatio = Double.parseDouble(miscDao.getByName("Bromangol Cont to samples(ratio-#)").getValue());
+		double sampleQty = Math.ceil(order.getContQnt()/sampleRatio);
 		temp = Double.parseDouble(miscDao.getByName("Bromangol Process Fee(Est/sample-AOA)").getValue()) * sampleQty;
 		pd.put("Processing",temp);
 		total += temp;
@@ -280,28 +393,28 @@ public class EstimatorService {
 		return new Estimate(total,pd);
 	}
 	
-	public Estimate license(Integer contQty){
+	public Estimate license(OrderView order){
 		double total=0;JSONObject pd = new JSONObject();
-		total = Double.parseDouble(miscDao.getByName("Certificate of License fee(Est/cont-AOA)").getValue())*contQty;
+		total = Double.parseDouble(miscDao.getByName("Certificate of License fee(Est/cont-AOA)").getValue())*order.getContQnt();
 		pd.put("Certificate of License",total);
 		return new Estimate(total,pd);
 	}
 	
-	public Estimate forwardingAgent(Double totalAmount,String currency){
+	public Estimate forwardingAgent(Bid bid){
 		double total=0;JSONObject pd = new JSONObject();
-		Exchange cur = exchangeDao.get("Customs", "Customs",currency, "AOA");
+		Exchange cur = exchangeDao.get("Customs", "Customs",bid.getCurrency(), "AOA");
 		if(cur==null){
-			cur = exchangeDao.get("Other", "Other",currency, "AOA");
+			cur = exchangeDao.get("Other", "Other",bid.getCurrency(), "AOA");
 			if(cur==null){
 				return null;
 			}
 		}
-		total = Double.parseDouble(miscDao.getByName("Forwarding agent %(Est/bill-AOA)").getValue()) * cur.getRate()/100;
+		total = Double.parseDouble(miscDao.getByName("Forwarding agent %(Est/bill-AOA)").getValue()) * bid.getTotalBid() * cur.getRate()/100;
 		pd.put("Forwarding agent",total);
 		return new Estimate(total,pd);
 	}
 	
-	public Estimate penality(Integer contQty,Integer contSize){
+	public Estimate penality(OrderView order){
 //		double total=0;JSONObject pd = new JSONObject();
 //		if (daysInPort >0 && portFees.getContFreeDays() - daysInPort > 0){ // add penality if exists
 //			total += portFees.getDailyPenality() * (portFees.getContFreeDays() - daysInPort);

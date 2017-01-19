@@ -3,9 +3,11 @@ package com.sesnu.orion.web.controller;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.joda.time.Interval;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,10 +19,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sesnu.orion.dao.ContainerDAO;
 import com.sesnu.orion.dao.OrderDAO;
+import com.sesnu.orion.dao.ShippingDAO;
 import com.sesnu.orion.web.model.Container;
 import com.sesnu.orion.web.model.ContainerView;
 import com.sesnu.orion.web.model.Order;
 import com.sesnu.orion.web.model.OrderView;
+import com.sesnu.orion.web.model.ShippingView;
 import com.sesnu.orion.web.utility.Util;
 
 @CrossOrigin(origins = "http://localhost:4200")
@@ -31,7 +35,7 @@ public class ContainerController {
 	@Autowired
 	ContainerDAO contDao;
 	@Autowired OrderDAO orderDao;
-
+	@Autowired ShippingDAO shipDao;
 	@Autowired Util util;
 	
 
@@ -71,6 +75,11 @@ public class ContainerController {
 			return null;
 		}
 		
+		container = setTotalDays(container);
+		if(container==null){
+			response.sendError(400,Util.parseError("Invalid date range"));
+			return null;
+		}
 		container.setUpdatedOn(Util.parseDate(new Date(),"/"));
 		container.setId(null);
 		contDao.saveOrUpdate(container);
@@ -90,6 +99,27 @@ public class ContainerController {
 
 	}
 	
+	private Container setTotalDays(Container container){
+		List<ShippingView> shippings= shipDao.listByOrderId(container.getOrderRef());
+		Long interval =null;
+		if(container.getContReturnDate()!=null && shippings.size()>0){
+			long retDate = container.getContReturnDate().getTime();
+			if(shippings.get(0).getAta()!=null){
+				 if(shippings.get(0).getAta().getTime() >= retDate){
+					 return null;
+				 }
+				 interval = (new Interval(shippings.get(0).getAta().getTime(), retDate)).toDuration().getStandardDays();
+			}else if(shippings.get(0).getEta()!=null){
+				 if(shippings.get(0).getEta().getTime() >= retDate){
+					 return null;
+				 }
+				 interval = (new Interval(shippings.get(0).getEta().getTime(), retDate)).toDuration().getStandardDays();
+			}
+		}		
+		container.setTotalDays(Integer.parseInt(interval.toString()));
+		return container;
+	}
+	
 	
 	@RequestMapping(value = "/api/user/cont/{state}", method = RequestMethod.PUT)
 	public @ResponseBody List<ContainerView> updateItem(HttpServletResponse response,
@@ -101,7 +131,12 @@ public class ContainerController {
 			response.sendError(400,Util.parseError("Bad data, try again"));
 			return null;
 		}
-				
+		
+		container = setTotalDays(container);	
+		if(container==null){
+			response.sendError(400,Util.parseError("Invalid eta/return date range"));
+			return null;
+		}
 		container.setUpdatedOn(Util.parseDate(new Date(),"/"));
 		contDao.saveOrUpdate(container);
 		

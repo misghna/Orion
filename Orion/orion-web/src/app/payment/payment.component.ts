@@ -8,6 +8,7 @@ import { Router,ActivatedRoute, Params } from '@angular/router';
 import { UserService } from '../users/users.service';
 import { ApprovalService } from '../approval/approval.service';
 import { CurrencyService } from '../currency/currency.service';
+import { ContainerService } from '../container/container.service';
 
 
 
@@ -40,7 +41,7 @@ export class PaymentComponent implements OnInit {
   headers = [];
   filterQuery = "";
   bntOption = "Search";
-  selectedDate;
+  selectedDate;containers;
   activeOrder= {}; filteredSalesPlanList=[];allPaymentList;
   approversList;approversPlaceHolder;approvalAlert={};
   responseCurrency;currencies;
@@ -49,7 +50,7 @@ export class PaymentComponent implements OnInit {
   constructor(private utilService :UtilService,private payService:PaymentService, private el: ElementRef,
               private orderService:OrdersService ,public route: ActivatedRoute,public router : Router,
               private userService :UserService,private approvalService :ApprovalService,private rd: Renderer,
-              private currencyService : CurrencyService) {
+              private currencyService : CurrencyService,private contService :ContainerService) {
 
     this.approvalAlert['hidden']=true;
     utilService.currentSearchTxt$.subscribe(txt => {this.search(txt);});
@@ -148,10 +149,11 @@ export class PaymentComponent implements OnInit {
     this.activeOrderId = this.route.snapshot.params['id'];
 
       this.headers = [{'name':'No','value':'id','j':'x'},{'name':'Inv No','value':'invNo','j':'c'},{'name':'BL','value':'bl','j':'c'},
-                      {'name':'Payed For','value':'name','j':'c'},{'name':'Payment Method','value':'paymentMethod','j':'l'},
-                      {'name':'Currency','value':'curr','j':'c'},{'name':'Deposit', 'value':'deposit','j':'c'},
-                      {'name':'Estimated Amount', 'value':'estimate','j':'c'},{'name':'Actual Amount', 'value':'paymentAmount','j':'c'}, 
-                      {'name':'Payment Date','value':'paymentDate','j':'c'},{'name':'Remakr','value':'remark','j':'c'},
+                      {'name':'Cont Id','value':'contId','j':'c'},{'name':'Payed For','value':'name','j':'c'},
+                      {'name':'Payment Method','value':'paymentMethod','j':'l'},
+                      {'name':'Currency','value':'curr','j':'c'},{'name':'Deposit', 'value':'deposit','j':'cr'},
+                      {'name':'Estimated Amount', 'value':'estimate','j':'cr'},{'name':'Actual Amount', 'value':'paymentAmount','j':'cr'}, 
+                      {'name':'Payment Date','value':'paymentDate','j':'cd'},{'name':'Remakr','value':'remark','j':'c'},
                       {'name':'Status','value':'status','j':'c'},{'name':'Updated On','value':'updatedOn','j':'c'}];
       
         this.activeOrderId = this.route.snapshot.params['id'];
@@ -226,9 +228,19 @@ triggerDelModal(event){
 }
 
 
+getContainers(orderId){
+       this.contService.get(orderId)
+      .subscribe(
+          response => {
+              this.containers = response; 
+              console.log(JSON.stringify(response));
+          },
+          error => {
+            console.error("Containers not found");
+          }
+        );
+}
   getAllCurrencies(){
-
-    var setRev :boolean;
      this.currencyService.getCurrency()
       .subscribe(
           response => {
@@ -430,6 +442,8 @@ updateBaseUnit(unit){
         (item.name!=null && item.name.toLowerCase().indexOf(searchObj.searchTxt.toLowerCase()) !== -1) || 
         (item.bl!=null && item.bl.toLowerCase().indexOf(searchObj.searchTxt.toLowerCase()) !== -1) || 
         (item.invNo!=null && item.invNo.toLowerCase().indexOf(searchObj.searchTxt.toLowerCase()) !== -1) || 
+        (item.status!=null && item.status.toLowerCase().indexOf(searchObj.searchTxt.toLowerCase()) !== -1) || 
+        (item.contId!=null && item.contId.toLowerCase().indexOf(searchObj.searchTxt.toLowerCase()) !== -1) || 
         (item.paymentMethod!=null && item.paymentMethod.toLowerCase().indexOf(searchObj.searchTxt) !== -1)
         ));
     }

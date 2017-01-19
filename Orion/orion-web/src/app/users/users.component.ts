@@ -66,7 +66,6 @@ export class UsersComponent implements OnInit {
               this.approvalList.push({'type' :el, 'selected' : false});
             }
       });
-
     
   }
 

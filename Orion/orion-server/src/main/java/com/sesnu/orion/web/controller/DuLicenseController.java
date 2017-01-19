@@ -1,6 +1,7 @@
 package com.sesnu.orion.web.controller;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sesnu.orion.dao.DuLicenseDAO;
+import com.sesnu.orion.dao.MiscSettingDAO;
 import com.sesnu.orion.dao.OrderDAO;
 import com.sesnu.orion.web.model.DuLicense;
 import com.sesnu.orion.web.model.DuLicenseView;
@@ -30,7 +32,7 @@ public class DuLicenseController {
 	DuLicenseDAO licDAO;
 	@Autowired Util util;
 	@Autowired OrderDAO orderDao;
-	
+	@Autowired private MiscSettingDAO miscDao;
 
 	@RequestMapping(value = "/api/user/lic/{orderRef}", method = RequestMethod.GET)
 	public @ResponseBody List<DuLicenseView> items(@PathVariable("orderRef") String orderRef,
@@ -61,7 +63,14 @@ public class DuLicenseController {
 			response.sendError(400,Util.parseError("Invalid Inv No, please select from the list"));
 			return null;
 		}
-				
+		
+		if(lic.getIssueDate()==null){
+			response.sendError(400,Util.parseError("Please select issue date"));
+			return null;
+		}
+
+		lic = setExpireDate(lic);
+		
 		lic.setId(null);
 		licDAO.saveOrUpdate(lic);
 
@@ -80,6 +89,14 @@ public class DuLicenseController {
 
 	}
 	
+	private DuLicense setExpireDate(DuLicense lic){
+		Integer licDays = Integer.parseInt(miscDao.getByName("License validity duration(days-#)").getValue());
+		Calendar c = Calendar.getInstance();
+		c.setTime(lic.getIssueDate());
+		c.add(Calendar.DATE, licDays);
+		lic.setExpireDate(c.getTime());
+		return lic;
+	}
 	
 	@RequestMapping(value = "/api/user/lic/{state}", method = RequestMethod.PUT)
 	public @ResponseBody List<DuLicenseView> updateItem(HttpServletResponse response,
@@ -93,7 +110,7 @@ public class DuLicenseController {
 			return null;
 		}
 		
-		
+		lic2 = setExpireDate(lic2);
 		licDAO.saveOrUpdate(lic2);
 		List<DuLicenseView> licenses=null;
 	

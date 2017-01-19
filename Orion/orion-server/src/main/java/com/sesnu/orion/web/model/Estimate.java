@@ -6,9 +6,17 @@ public class Estimate {
 	
 	private double value;
 	private JSONObject details;
+	private JSONObject summary;
 	
 	
 	
+	public Estimate(double value, JSONObject details, JSONObject summary) {
+		this.value = value;
+		this.details = details;
+		this.summary = summary;
+	}
+
+
 	public Estimate(double value, JSONObject details) {
 		this.value = value;
 		this.details = details;
@@ -26,6 +34,16 @@ public class Estimate {
 	}
 	public void setDetails(JSONObject details) {
 		this.details = details;
+	}
+
+
+	public JSONObject getSummary() {
+		return summary;
+	}
+
+
+	public void setSummary(JSONObject summary) {
+		this.summary = summary;
 	}
 	
 	

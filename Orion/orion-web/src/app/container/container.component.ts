@@ -77,8 +77,9 @@ export class ContainerComponent implements OnInit {
   ngOnInit() {
       this.headers = [{'name':'No','value':'id','j':'x'},{'name':'BL','value':'bl','j':'l'},
                       {'name':'Cont Size','value':'contSize','j':'c'},{'name':'Container Id','value':'contNo','j':'l'},
-                      {'name':'Transporter','value':'transporter','j':'c'},
-                      {'name':'Destination','value':'destination','j':'c'},{'name':'Cont return date','value':'contReturnDate','j':'l'},
+                      {'name':'Transporter','value':'transporter','j':'c'},{'name':'Destination','value':'destination','j':'c'},
+                      {'name':'Offload Date','value':'offloadDate','j':'cd'},{'name':'Recv. Voucher No','value':'recvVoucherNo','j':'c'},
+                      {'name':'Cont return date','value':'contReturnDate','j':'cd'},{'name':'Used Days','value':'totalDays','j':'c'},
                       {'name':'Remark','value':'remark','j':'c'},{'name':'Updated On','value':'updatedOn','j':'c'}];
         
         this.activeShippingId = this.route.snapshot.params['id'];

@@ -26,7 +26,7 @@ public class Container {
 	
 	@Column(name = "cont_size")
 	private Integer contSize;
-	
+		
 	@Column(name = "cont_no")
 	private String contNo;
 	
@@ -42,8 +42,18 @@ public class Container {
 	@Column(name = "destination")
 	private String destination;
 	
+	@Column(name = "receive_voucher_no")
+	private String recvVoucherNo;
+	
+	
 	@Column(name = "cont_return_date")
-	private Date contReturnDate;;
+	private Date contReturnDate;
+	
+	@Column(name = "total_days")
+	private Integer totalDays;
+	
+	@Column(name = "offload_date")
+	private Date offloadDate;
 	
 	@Column(name = "df")
 	private boolean df;
@@ -128,6 +138,30 @@ public class Container {
 
 	public void setContReturnDate(Date contReturnDate) {
 		this.contReturnDate = contReturnDate;
+	}
+
+	public Integer getTotalDays() {
+		return totalDays;
+	}
+
+	public void setTotalDays(Integer totalDays) {
+		this.totalDays = totalDays;
+	}
+
+	public Date getOffloadDate() {
+		return offloadDate;
+	}
+
+	public void setOffloadDate(Date offloadDate) {
+		this.offloadDate = offloadDate;
+	}
+
+	public String getRecvVoucherNo() {
+		return recvVoucherNo;
+	}
+
+	public void setRecvVoucherNo(String recvVoucherNo) {
+		this.recvVoucherNo = recvVoucherNo;
 	}
 	
 	

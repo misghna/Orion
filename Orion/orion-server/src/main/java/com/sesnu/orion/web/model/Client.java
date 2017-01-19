@@ -27,6 +27,12 @@ public class Client {
 
 	@Column(name="phone")
 	private String phone;
+	
+	@Column(name="city")
+	private String city;
+	
+	@Column(name="manager")
+	private String manager;
 
 	public Long getId() {
 		return id;
@@ -58,6 +64,22 @@ public class Client {
 
 	public void setPhone(String phone) {
 		this.phone = phone;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getManager() {
+		return manager;
+	}
+
+	public void setManager(String manager) {
+		this.manager = manager;
 	}
 	
 	

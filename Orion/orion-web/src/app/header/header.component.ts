@@ -37,6 +37,10 @@ export class HeaderComponent implements OnInit {
         this.navHidden = !state;
     });
 
+     $(this.el.nativeElement).on('click','.closeAddForm',function(){
+        alert("click");
+     });
+
     this.subscription = utilService.currentAdminState$.subscribe(
       state => {  
         this.regUser = !state;
@@ -74,6 +78,7 @@ export class HeaderComponent implements OnInit {
 
 
    }
+
 
   ngOnInit() {
       var access = JSON.parse(localStorage.getItem('accessDetail'));

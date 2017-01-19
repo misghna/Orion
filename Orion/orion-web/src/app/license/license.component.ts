@@ -64,25 +64,24 @@ export class LicenseComponent implements OnInit {
       if(this.activeDocId != newRouteParam){
         this.activeDocId = newRouteParam;
           this.loadAll(this.activeDocId);
-          // if(this.activeDocId.indexOf("orderRef")>=0){
-          //   this.getActiveOrder()
-          // }else{
-          //   this.activeOrder = null;
-          //   this.docType = this.activeDocId.replace(/\_/g,' ')
-          // }
+          if(this.activeDocId.indexOf("all")<0){
+            this.getActiveOrder()
+          }else{
+            this.activeOrder = null;
+            this.docType = this.activeDocId.replace(/\_/g,' ')
+          }
       }
         
     });
 
    }
-
+//{'name':'Courier','value':'courier','j':'c'},{'name':'Tracking Id','value':'trackingId','j':'c'}
   ngOnInit() {
       this.headers = [{'name':'No','value':'id','j':'x'},
                       {'name':'Order Invoice No','value':'invNo','j':'c'},{'name':'Bill No','value':'bl','j':'c'},
-                      {'name':'GIT','value':'git','j':'l'},{'name':'Du No','value':'duNo','j':'l'},
-                      {'name':'Pedidu No','value':'pediduNo','j':'l'},{'name':'Issue Date','value':'issueDate','j':'l'},
-                      {'name':'Expire Date','value':'expireDate','j':'c'},{'name':'Courier','value':'courier','j':'c'},
-                      {'name':'Tracking Id','value':'trackingId','j':'c'}];
+                      {'name':'Pedidu No','value':'pediduNo','j':'l'},{'name':'DU No','value':'duNo','j':'l'},
+                      {'name':'GIT','value':'git','j':'l'},{'name':'Issue Date','value':'issueDate','j':'cd'},
+                      {'name':'Expire Date','value':'expireDate','j':'cd'}];
 
         var activeOrderId = this.route.snapshot.params['id'];
         this.getAllOrders();

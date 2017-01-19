@@ -73,13 +73,14 @@
     <tfoot>
       
       <tr [class.hidden]="hideAddNewForm" class="inputFormTr">
-        <td class="text-center" ><span class="glyphicon glyphicon-plus" aria-hidden="true" style="margin-top:5px"></span></td>
+        <td class="text-center" ><span class="glyphicon glyphicon-remove-circle closeAddForm" aria-hidden="true" style="margin-top:5px"></span></td>
         <td><textarea #unit class="form-control txt-flat" rows="2"  placeholder="Agency Name" required [(ngModel)]="itemDetail.agency" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td><textarea #unit class="form-control txt-flat middletext" rows="2" numberonly placeholder="Legalization" required [(ngModel)]="itemDetail.legalizationFee" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td><textarea #unit class="form-control txt-flat middletext" rows="2" numberonly placeholder="Cont Lift" required [(ngModel)]="itemDetail.contLiftFee" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td><textarea #unit class="form-control txt-flat middletext" rows="2" numberonly placeholder="Deposit 20'" required [(ngModel)]="itemDetail.depositCont20" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td><textarea #unit class="form-control txt-flat middletext" rows="2" numberonly placeholder="Deposit 40''" required [(ngModel)]="itemDetail.depositCont40" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td><textarea #unit class="form-control txt-flat middletext" rows="2" numberonly placeholder="Consumer Tax''" required [(ngModel)]="itemDetail.consumerTax" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <td><textarea #unit class="form-control txt-flat middletext" rows="2" numberonly placeholder="Cont Free Days'" required [(ngModel)]="itemDetail.contFreeDays" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td><textarea #unit class="form-control txt-flat middletext" rows="2" numberonly placeholder="Daily penality'" required [(ngModel)]="itemDetail.dailyPenality" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td><textarea #updatedOn class="form-control txt-flat middletext" readonly rows="2"  placeholder="auto">{{todayDate}}</textarea></td> 
         <td class="text-left" ><input type="submit" class="btn btn-success" value="{{taskType}}"/></td>

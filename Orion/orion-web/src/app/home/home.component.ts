@@ -78,8 +78,7 @@ trackShipment(bl){
     return;
   }
 
-  this.trackData = [{"Vessel":"JPO LEO","ETA":"","Equip.":"20ST","Container Ref.":"CMAU2158941","Container Status":"Container to consignee","Loc.":"LUANDA","Voyage":"172MUE","* Favorite Containers":"* You must be logged to mark this container as favourite","Movement Date":"1\/9\/2017 12:45 PM"},{"Vessel":"JPO LEO","ETA":"","Equip.":"20ST","Container Ref.":"APZU3682623","Container Status":"Container to consignee","Loc.":"LUANDA","Voyage":"172MUE","* Favorite Containers":"* You must be logged to mark this container as favourite","Movement Date":"1\/9\/2017 12:45 PM"}];
-
+  this.trackData = []
  this.headerNames =[];
 
   
@@ -147,11 +146,15 @@ trackShipment(bl){
 
 addColor(data){
    var newData = []
-    data.forEach(item => {
-       item['txtColor']= this.setTxtColor(item);
-       item['bckColor']= this.setBckGraColor(item);
-       newData.push(item);
-    });
+   if(data.length>0){
+      data.forEach(item => {
+        if(item!=null){
+          item['txtColor']= this.setTxtColor(item);
+          item['bckColor']= this.setBckGraColor(item);
+          newData.push(item);
+        }
+      });
+   }
     return newData;
 }
 

@@ -42,6 +42,9 @@ public class Shipping {
 	@Column(name = "eta")
 	private Date eta;
 	
+	@Column(name = "ata")
+	private Date ata;
+	
 	@Column(name = "updated_on")
 	private String updatedOn;
 	
@@ -139,6 +142,14 @@ public class Shipping {
 
 	public void setTerminal(String terminal) {
 		this.terminal = terminal;
+	}
+
+	public Date getAta() {
+		return ata;
+	}
+
+	public void setAta(Date ata) {
+		this.ata = ata;
 	}
 	
 

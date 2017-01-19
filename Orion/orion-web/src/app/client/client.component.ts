@@ -56,9 +56,9 @@ export class ClientComponent implements OnInit {
     }
 
   ngOnInit() {
-      this.headers = [{'name':'No','value':'id','j':'x'},{'name':'Name','value':'name','j':'l'},
-                      {'name':'Address','value':'address','j':'c'},
-                      {'name':'Phone No','value':'phone','j':'c'}];
+      this.headers = [{'name':'No','value':'id','j':'x'},{'name':'Client/WH Name','value':'name','j':'l'},
+                      {'name':'Manager','value':'manager','j':'l'},{'name':'Phone No','value':'phone','j':'c'},
+                      {'name':'Address','value':'address','j':'c'},{'name':'City','value':'city','j':'l'}];
         
         this.activeShippingId = this.route.snapshot.params['id'];
         this.loadAll();
@@ -70,7 +70,6 @@ export class ClientComponent implements OnInit {
           jQuery('#monthBtn').attr('value',jQuery(this).text().trim());       
         });
 
-        console.log(this.route.snapshot.params['id']);
   } 
 
 

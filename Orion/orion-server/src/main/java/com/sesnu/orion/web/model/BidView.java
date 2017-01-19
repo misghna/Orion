@@ -36,6 +36,9 @@ public class BidView {
 	
 	@Column(name="payment_method")
 	private String paymentMethod;
+	
+	@Column(name="proforma_inv_no")
+	private String proformaInvNo;
 
 	@Column(name="currency")
 	private String currency;
@@ -183,6 +186,14 @@ public class BidView {
 
 	public void setInvNo(String invNo) {
 		this.invNo = invNo;
+	}
+
+	public String getProformaInvNo() {
+		return proformaInvNo;
+	}
+
+	public void setProformaInvNo(String proformaInvNo) {
+		this.proformaInvNo = proformaInvNo;
 	}
 
 	

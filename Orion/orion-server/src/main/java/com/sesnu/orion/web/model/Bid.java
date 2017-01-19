@@ -40,6 +40,9 @@ public class Bid {
 	@Column(name="currency")
 	private String currency;
 	
+	@Column(name="proforma_inv_no")
+	private String proformaInvNo;
+	
 	@Column(name = "updated_on")
 	private String updatedOn;
 	
@@ -172,6 +175,14 @@ public class Bid {
 
 	public void setCurrency(String currency) {
 		this.currency = currency;
+	}
+
+	public String getProformaInvNo() {
+		return proformaInvNo;
+	}
+
+	public void setProformaInvNo(String proformaInvNo) {
+		this.proformaInvNo = proformaInvNo;
 	}
 
 	

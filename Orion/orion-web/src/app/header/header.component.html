@@ -42,7 +42,8 @@
           <ul class="dropdown-menu">           
             <li><a routerLink="/finance/payment/all" routerLinkActive="active" >All Payments</a></li> 
             <li><a routerLink="/finance/approval/all" routerLinkActive="active" > All Approvals</a></li>
-            <li><a routerLink="/budget/all" routerLinkActive="Active" >Budget Estimate</a></li>
+            <li><a routerLink="/finance/estimator/search" routerLinkActive="Active" >Order Estimator</a></li>
+            <li><a routerLink="/finance/budget/all" routerLinkActive="Active" >Budget Estimate</a></li>
           </ul>
         </li>
 
@@ -50,6 +51,7 @@
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Documents <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a routerLink="/document/license/all" routerLinkActive="active" >License</a></li> 
+            <li><a routerLink="/document/docTracking/all" routerLinkActive="active" >Document Tracking</a></li>  
             <li><a routerLink="/document/uploaded/all" routerLinkActive="active" >Uploaded Documents</a></li> 
             <!--<li role="separator" class="divider"></li>
             <li><a routerLink="/document/Bill_of_Loading" routerLinkActive="active" >Bill of Loading</a></li>               
@@ -103,6 +105,7 @@
             <li><a routerLink="/setting/legalization" routerLinkActive="active" (click)="activePageName='Legalization/offload'">Shipping Agency</a></li>
             <li><a routerLink="/setting/currency" routerLinkActive="active" (click)="activePageName='Currency Exchange'">Currency Exchange</a></li>
             <li><a routerLink="/setting/clients" routerLinkActive="active" (click)="activePageName='Clients/WH'">Clients/WH</a></li>
+            <li><a routerLink="/setting/terminal" routerLinkActive="active" (click)="activePageName='Terminals'">Terminals</a></li>
             <li><a routerLink="/setting/misc" routerLinkActive="active" (click)="activePageName='Misc Settings'">Others</a></li>
           </ul>
         </li>

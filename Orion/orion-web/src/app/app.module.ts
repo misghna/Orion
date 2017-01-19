@@ -57,6 +57,13 @@ import { LicenseService } from './license/license.service';
 import { ClientComponent } from './client/client.component';
 import { ClientService } from './client/client.service';
 import { BudgetComponent } from './budget/budget.component';
+import { DocTrackingComponent } from './doc-tracking/doc-tracking.component';
+import { DocTrackingService } from './doc-tracking/doc-tracking.service';
+import { TerminalComponent } from './terminal/terminal.component';
+import { TerminalService } from './terminal/terminal.service';
+import { EstimateComponent } from './estimate/estimate.component';
+import { EstimateService } from './estimate/estimate.service';
+
 
 
 
@@ -78,13 +85,14 @@ import { BudgetComponent } from './budget/budget.component';
                 ItemsComponent,FilterNamePipe, SalesPlanComponent, OrdersComponent, FileUploadComponent,
                 BidComponent, PaymentComponent, ShippingComponent,LicenseComponent,
                 FileSelectDirective, FileDropDirective, DocumentComponent,DigitsOnly,NumberOnly, ContainerComponent,
-                PortFeeComponent, StatusComponent, ApprovalComponent, MiscComponent, CurrencyComponent, ClientComponent, BudgetComponent
+                PortFeeComponent, StatusComponent, ApprovalComponent, MiscComponent, CurrencyComponent, ClientComponent, BudgetComponent, DocTrackingComponent, TerminalComponent, EstimateComponent
                  ],
   providers:[AuthGuard,UtilService,UserService,AppSettings,MiscService,
             SalesPlanService,OrdersService,DocumentService,
             BidService,PaymentService,ShippingService,HomeService,
             ContainerService,PortFeeService,ApprovalService,StatusService,
             MiscSettingService,CurrencyService,ClientService,LicenseService,
+            DocTrackingService,TerminalService,EstimateService,
         {
           provide: Http,
           useFactory: (backend: XHRBackend, defaultOptions: RequestOptions, utilService:UtilService) => {

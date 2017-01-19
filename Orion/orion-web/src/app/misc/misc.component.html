@@ -72,7 +72,7 @@
     <tfoot>
       
       <tr [class.hidden]="hideAddNewForm" class="inputFormTr">
-        <td class="text-center" ><span class="glyphicon glyphicon-plus" aria-hidden="true" style="margin-top:5px"></span></td>
+        <td class="text-center" ><span class="glyphicon glyphicon-remove-circle closeAddForm" aria-hidden="true" style="margin-top:5px"></span></td>
         <td><textarea #unit class="form-control txt-flat" rows="2" readonly placeholder="Name" required [(ngModel)]="itemDetail.name" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td><textarea #unit class="form-control txt-flat middletext" rows="2" placeholder="comma separated values" required [(ngModel)]="itemDetail.value" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td><textarea #updatedOn class="form-control txt-flat middletext" readonly rows="2"  placeholder="auto">{{todayDate}}</textarea></td> 

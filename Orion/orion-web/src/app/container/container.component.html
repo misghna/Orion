@@ -44,10 +44,10 @@
             'hidden' : tableHeader.j=='x'
             }"
          *ngFor="let tableHeader of headers; let i = index">
-              <div *ngIf = "tableHeader.value != 'eta' && tableHeader.value != 'etd' "> 
+              <div *ngIf = "tableHeader.j != 'cd'"> 
                 {{item[tableHeader.value]}}
               </div>
-              <div *ngIf = "tableHeader.value == 'eta' || tableHeader.value == 'etd'"> 
+              <div *ngIf = "tableHeader.j == 'cd'"> 
                 {{item[tableHeader.value] | date: 'dd/MM/yyyy'}}
               </div>
             </td>
@@ -73,7 +73,7 @@
     <tfoot>
       
       <tr [class.hidden]="hideAddNewForm" class="inputFormTr">
-        <td class="text-center" ><span class="glyphicon glyphicon-plus" aria-hidden="true" style="margin-top:5px"></span></td>
+        <td class="text-center" ><span class="glyphicon glyphicon-remove-circle closeAddForm" aria-hidden="true" style="margin-top:5px"></span></td>
         <td>
          <div class="dropdown">
           <textarea id="bl" #bl class="dropdown-toggle form-control txt-flat" data-toggle="dropdown" rows="2" required
@@ -124,7 +124,11 @@
             </ul>
             </div>
         </td>
+         
+        <td><input type="date" class="form-control txt-flat middletext"  [(ngModel)]="itemDetail.offloadDate" [ngModelOptions]="{standalone: true}"/></td>
+        <td><textarea #destinationPort class="form-control txt-flat middletext" rows="2"  placeholder="Recv Voucher no" [(ngModel)]="itemDetail.recvVoucherNo" [ngModelOptions]="{standalone: true}"></textarea></td>
         <td><input type="date" class="form-control txt-flat middletext"  [(ngModel)]="itemDetail.contReturnDate" [ngModelOptions]="{standalone: true}"/></td>
+        <td><textarea #destinationPort class="form-control txt-flat middletext" readonly rows="2"  placeholder="auto" [(ngModel)]="itemDetail.totalDays" [ngModelOptions]="{standalone: true}"></textarea></td>
         <td><textarea #destinationPort class="form-control txt-flat middletext" rows="2"  placeholder="Remark" [(ngModel)]="itemDetail.remark" [ngModelOptions]="{standalone: true}"></textarea></td>
         <td><textarea #updatedOn class="form-control txt-flat middletext" readonly rows="2"  placeholder="auto">{{todayDate}}</textarea></td> 
         <td class="text-left" ><input type="submit" class="btn btn-success" value="{{taskType}}"/></td>

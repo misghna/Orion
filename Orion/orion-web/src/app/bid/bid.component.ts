@@ -82,10 +82,11 @@ export class BidComponent implements OnInit {
    }
 
   ngOnInit() {
-      this.headers = [{'name':'No','value':'id','j':'x'},{'name':'Inv. No','value':'invNo','j':'l'},
+      this.headers = [{'name':'No','value':'id','j':'x'},{'name':'Order Inv. No','value':'invNo','j':'l'},
+                      {'name':'Proforma Inv. No','value':'proformaInvNo','j':'l'},
                       {'name':'Supplier','value':'supplier','j':'l'},{'name':'Currency','value':'currency','j':'l'},
-                      {'name':'FOB','value':'fob','j':'c'},{'name':'CIF','value':'cifCnf','j':'c'},
-                      {'name':'Total (CNF)', 'value':'totalBid','j':'c'}, 
+                      {'name':'FOB','value':'fob','j':'cr'},{'name':'CIF','value':'cifCnf','j':'cr'},
+                      {'name':'Total (CNF)', 'value':'totalBid','j':'cr'}, 
                       {'name':'Payment Method','value':'paymentMethod','j':'c'},
                       {'name':'Est Transit Days','value':'estTransitDays','j':'c'},
                       {'name':'Selected','value':'selected','j':'c'},{'name':'Approval','value':'approval','j':'c'},
