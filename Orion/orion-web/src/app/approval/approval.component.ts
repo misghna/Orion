@@ -95,11 +95,13 @@ triggerDelModal(event){
       .subscribe(
           response => {
               this.responseData=response;
-              this.data = response;     
+              this.data = response;    
           },
           error => {
             if(error.status==404){
                this.popAlert("Info","Info","Shipping Details is not yet added for this order!");          
+            }else if(error.status==400){
+              this.popAlert("Error","danger",this.utilService.getErrorMsg(error));
             }else{
                this.popAlert("Error","danger","Something went wrong, please try again later!");          
             }

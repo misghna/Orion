@@ -1,17 +1,3 @@
-.txt-flat {
-    overflow:hidden;
-    min-width: 100%;
-    resize: none;
-    border: none;
-    outline: none;
-
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
-
-    padding-left: 0px;
-    padding-right: 0px;
-}
 
 .inputFormTr{
     border:2pt solid #09a586;
@@ -30,16 +16,29 @@
     color:green;
 }
 
-.tableFont{
-    font-size: 13px;
-}
 
 #rangeSelector{
     width:350px;
+}
+
+ .txt-flat {
+    overflow:hidden;
+    min-width: 100%;
+    resize: none;
+    border: none;
+    outline: none;
+
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+
+    padding-left: 0px;
+    padding-right: 0px;
 }
 
 .noBorder{
     border: none;
     background: none;
 }
+
 /*.alert-auto {display:inline-block;}*/

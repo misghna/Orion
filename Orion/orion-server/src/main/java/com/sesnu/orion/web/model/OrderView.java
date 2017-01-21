@@ -83,6 +83,26 @@ public class OrderView {
 	@Column(name = "updated_on")
 	private String updatedOn;
 
+	public OrderView() {}
+	
+
+
+
+	public OrderView(SalesView sp) {
+		this.setItemId(sp.getItemId());
+		this.setItem(sp.getName());
+		this.setBaseSize(sp.getBaseSize());
+		this.setBaseUnit(sp.getBaseUnit());
+		this.setBrand(sp.getBrand());
+		this.setContQnt(sp.getContQnt());
+		this.setContSize(sp.getContSize());
+		this.setDestinationPort(sp.getDestinationPort());
+		this.setQtyPerPack(sp.getQtyPerPack());
+		this.setPckPerCont(sp.getPckPerCont());
+		this.setItemType(sp.getItemType());
+		this.setId(0l);
+	}
+
 	public Long getId() {
 		return id;
 	}

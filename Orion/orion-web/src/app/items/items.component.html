@@ -6,7 +6,7 @@
       'alert-success' : alertType == 'Info'
     }"
 >
-<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+<a  class="close" aria-label="close" (click)="alertObj.alertHidden = true">x</a>
   <strong>{{alertType}}!</strong> {{itemMsg}}
 </div>
 

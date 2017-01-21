@@ -14,10 +14,6 @@ public interface SalesPlanDAO {
 	
 	public List<SalesPlan> getPlanByTime(int year,String month);
 	
-//	public List<SalesPlan> getSalesPlanBy(String productName);
-		
-//	public SalesPlan getItemByHsCode(long hsCode);
-	
 	public SalesPlan get(long id);
 
 	public void saveOrUpdate(SalesPlan item);

@@ -18,7 +18,7 @@
       'alert-success' : alertWin.type == 'Info'
     }"
   >
-<a  class="close" data-dismiss="alert" aria-label="close">&times;</a>
+<a  class="close" aria-label="close" (click)="alertWin.alertHidden = true">x</a>
   <strong>{{alertWin.type}}!</strong> {{alertWin.msg}}
 </div>
 

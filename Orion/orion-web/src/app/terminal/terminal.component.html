@@ -12,7 +12,7 @@
 
 <div id="wrapper" style="text-align: center"> 
   <div class="dropdown pull-center">
-    Clients/WH Table
+    Terminal Setting Table (All IN USD)
   </div>
 </div>
 
@@ -71,17 +71,27 @@
     </tbody>
     
     <tfoot>    
+
       <tr [class.hidden]="hideAddNewForm" class="inputFormTr">
         <td class="text-center" ><span class="glyphicon glyphicon-remove-circle closeAddForm" aria-hidden="true" style="margin-top:5px"></span></td>
-        <td><textarea #unit class="form-control txt-flat" rows="2" placeholder="Name" required [(ngModel)]="itemDetail.name" [ngModelOptions]="{standalone: true}"></textarea></td> 
-        <td><textarea #unit class="form-control txt-flat" rows="2" placeholder="Manager" required [(ngModel)]="itemDetail.manager" [ngModelOptions]="{standalone: true}"></textarea></td> 
-        <td><textarea #unit class="form-control txt-flat middletext" rows="2" placeholder="Phone No" required [(ngModel)]="itemDetail.phone" [ngModelOptions]="{standalone: true}"></textarea></td> 
-        <td><textarea #unit class="form-control txt-flat" rows="2" placeholder="Address" required [(ngModel)]="itemDetail.address" [ngModelOptions]="{standalone: true}"></textarea></td> 
-        <td><textarea #unit class="form-control txt-flat" rows="2" placeholder="City" required [(ngModel)]="itemDetail.city" [ngModelOptions]="{standalone: true}"></textarea></td> 
-        <td class="text-left" ><input type="submit" class="btn btn-success" value="{{taskType}}"/></td>
+        <td><textarea  class="form-control txt-flat" rows="2" placeholder="Name" required [(ngModel)]="itemDetail.name" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <td><textarea  class="form-control txt-flat" rows="2" digitsonly placeholder="Offload Fee 20'/cont" required [(ngModel)]="itemDetail.offloadFee20ft" [ngModelOptions]="{standalone: true}"></textarea></td>       
+        <td><textarea  class="form-control txt-flat middletext" digitsonly rows="2" placeholder="Offload Fee 40'/cont" required [(ngModel)]="itemDetail.offloadFee40ft" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <td><textarea  class="form-control txt-flat" rows="2" digitsonly placeholder="Admin & Service Charge/bill" required [(ngModel)]="itemDetail.adminServiceCharge" [ngModelOptions]="{standalone: true}"></textarea></td> 
+         <td><textarea  class="form-control txt-flat" rows="2" numberonly placeholder="Free days" required [(ngModel)]="itemDetail.freeDays" [ngModelOptions]="{standalone: true}"></textarea></td>        
+         <td><textarea  class="form-control txt-flat" rows="2" numberonly placeholder="1st Storage days" required [(ngModel)]="itemDetail.storageFirstRangeDays" [ngModelOptions]="{standalone: true}"></textarea></td>        
+          <td><textarea  class="form-control txt-flat" rows="2" digitsonly placeholder="1st Range Rate/cont 20''" required [(ngModel)]="itemDetail.storageFirstRangeFee20ft" [ngModelOptions]="{standalone: true}"></textarea></td>      
+          <td><textarea  class="form-control txt-flat" rows="2" digitsonly placeholder="1st Range Rate/cont 40''" required [(ngModel)]="itemDetail.storageFirstRangeFee40ft" [ngModelOptions]="{standalone: true}"></textarea></td>      
+          <td><textarea  class="form-control txt-flat" rows="2" numberonly placeholder="2nd Storage days" required [(ngModel)]="itemDetail.storageSecondRangeDays" [ngModelOptions]="{standalone: true}"></textarea></td> 
+         <td><textarea  class="form-control txt-flat" rows="2" digitsonly placeholder="2nd Range Rate/cont 20''" required [(ngModel)]="itemDetail.storageSecondRangeFee20ft" [ngModelOptions]="{standalone: true}"></textarea></td>       
+         <td><textarea  class="form-control txt-flat" rows="2" digitsonly placeholder="2nd Range Rate/cont 40''" required [(ngModel)]="itemDetail.storageSecondRangeFee40ft" [ngModelOptions]="{standalone: true}"></textarea></td>       
+           <td><textarea  class="form-control txt-flat" rows="2" digitsonly placeholder="Transport fees/cont" required [(ngModel)]="itemDetail.transport" [ngModelOptions]="{standalone: true}"></textarea></td> 
+         <td><textarea  class="form-control txt-flat" rows="2" digitsonly placeholder="Tarrif/cont" required [(ngModel)]="itemDetail.importTarrif" [ngModelOptions]="{standalone: true}"></textarea></td> 
+           <td><textarea  class="form-control txt-flat" rows="2" digitsonly placeholder="Other %" required [(ngModel)]="itemDetail.otherPercent" [ngModelOptions]="{standalone: true}"></textarea></td> 
+         <td class="text-left" ><input type="submit" class="btn btn-success" value="{{taskType}}"/></td>
       </tr>      
     <tr>
-        <td colspan="17" > <font class ="tbl-header">
+        <td colspan="16" > <font class ="tbl-header">
             <mfBootstrapPaginator [rowsOnPageSet]="[5,20,25]"></mfBootstrapPaginator></font>
         </td>
     </tr>

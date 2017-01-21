@@ -146,6 +146,7 @@ trackShipment(bl){
 
 addColor(data){
    var newData = []
+
    if(data.length>0){
       data.forEach(item => {
         if(item!=null){
@@ -160,6 +161,13 @@ addColor(data){
 
 setTxtColor(item){
    var txtColor;
+
+   if(localStorage.getItem('homeHeaders')!=null || localStorage.getItem('homeHeaders')!='undefined'){
+      this.colorSettings  = JSON.parse(localStorage.getItem('homeColor'));
+    }
+    if(this.colorSettings==null || this.colorSettings.length==0){
+      return;
+    }
     this.colorSettings.forEach(color => {
         if(item[color.colValue] > color.greater && item[color.colValue]< color.less){        
           txtColor= color.txtColor;
@@ -273,9 +281,6 @@ sorter(a, b){
 
 
   ngOnInit() {
-      if(localStorage.getItem('homeColor')!='undefined'){
-        this.colorSettings = JSON.parse(localStorage.getItem('homeColor'));
-      }
      this.getAllData();
      this.getOrderStat();
   }

@@ -6,7 +6,7 @@
       'alert-success' : alertObj.alertType == 'Info'
     }"
   >
-<a  class="close" data-dismiss="alert" aria-label="close">&times;</a>
+<a  class="close" aria-label="close" (click)="alertObj.alertHidden = true">x</a>
   <strong>{{alertObj.alertType}}!</strong> {{alertObj.itemMsg}}
 </div>
 
@@ -86,7 +86,7 @@
     <div class="modal-dialog custom-class">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" (click)="close()" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <button type="button" (click)="close()" class="close" data-dismiss="modal" aria-hidden="true">x</button>
                 <h3 class="modal-header-text">PREVIEW</h3>
             </div>
             <div class="modal-body" id="reportModalDiv">

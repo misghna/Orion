@@ -63,6 +63,7 @@ import { TerminalComponent } from './terminal/terminal.component';
 import { TerminalService } from './terminal/terminal.service';
 import { EstimateComponent } from './estimate/estimate.component';
 import { EstimateService } from './estimate/estimate.service';
+import { BudgetService } from './budget/budget.service';
 
 
 
@@ -92,7 +93,7 @@ import { EstimateService } from './estimate/estimate.service';
             BidService,PaymentService,ShippingService,HomeService,
             ContainerService,PortFeeService,ApprovalService,StatusService,
             MiscSettingService,CurrencyService,ClientService,LicenseService,
-            DocTrackingService,TerminalService,EstimateService,
+            DocTrackingService,TerminalService,EstimateService,BudgetService,
         {
           provide: Http,
           useFactory: (backend: XHRBackend, defaultOptions: RequestOptions, utilService:UtilService) => {

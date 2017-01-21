@@ -12,10 +12,10 @@
 
 <div id="wrapper" style="text-align: center"> 
   <div *ngIf="activeOrder != null" class="dropdown pull-center">
-    License For : {{activeOrder.item + '(' + activeOrder.brand + ') ordered on '}} {{ activeOrder.createdOn | date: 'dd/MM/yyyy'}}
+    Document Tracking For : {{activeOrder.item + '(' + activeOrder.brand + ') ordered on '}} {{ activeOrder.createdOn | date: 'dd/MM/yyyy'}}
   </div>
   <div *ngIf="activeOrder==null" class="dropdown pull-center">
-    All Licenses
+    Document Tracking [All]
   </div>
 </div>
 
@@ -45,10 +45,14 @@
             'hidden' : tableHeader.j=='x'
             }"
          *ngFor="let tableHeader of headers; let i = index">
-              <div *ngIf = "tableHeader.j!='cd'"> 
+         
+               <div *ngIf = "tableHeader.value=='trackingId'"> 
+                <a (click)="trackItem(item['id'])"> {{item[tableHeader.value]}}</a>
+              </div>
+              <div *ngIf = "tableHeader.j!='cd' && tableHeader.value!='trackingId'"> 
                 {{item[tableHeader.value]}}
               </div>
-              <div *ngIf = "tableHeader.j=='cd'"> 
+              <div *ngIf = "tableHeader.j=='cd' && tableHeader.value!='trackingId'"> 
                 {{item[tableHeader.value] | date: 'dd/MM/yyyy'}}
               </div>
             </td>
@@ -118,17 +122,41 @@
               </li>
             </ul>           
           </div>    
-        <td><textarea class="form-control txt-flat middletext" rows="2"  placeholder="Pedidu No"  required [(ngModel)]="itemDetail.pediduNo" [ngModelOptions]="{standalone: true}"></textarea></td> 
-        <td><textarea class="form-control txt-flat middletext" rows="2"  placeholder="Du No"   [(ngModel)]="itemDetail.duNo" [ngModelOptions]="{standalone: true}"></textarea></td> 
-        <td><textarea class="form-control txt-flat middletext" rows="2"  placeholder="GIT"   [(ngModel)]="itemDetail.git" [ngModelOptions]="{standalone: true}"></textarea></td> 
-        <td><input type="date" class="form-control txt-flat middletext"  [(ngModel)]="itemDetail.issueDate" [ngModelOptions]="{standalone: true}"/></td>
-        <td><textarea  class="form-control txt-flat middletext" rows="2" readonly placeholder="auto" [(ngModel)]="itemDetail.expireDate" [ngModelOptions]="{standalone: true}"></textarea></td>
-        <!--<td><textarea  class="form-control txt-flat middletext" rows="2" placeholder="Courier" [(ngModel)]="itemDetail.courier" [ngModelOptions]="{standalone: true}"></textarea></td>
-        <td><textarea  class="form-control txt-flat middletext" rows="2" placeholder="Tracking Id" [(ngModel)]="itemDetail.trackingId" [ngModelOptions]="{standalone: true}"></textarea></td>-->
+         <td>
+             <div class="dropdown">
+                <textarea id="tDocs" class="dropdown-toggle form-control txt-flat" data-toggle="dropdown" rows="2"  
+                    placeholder="select Documents" readonly (click)="getRichList(itemDetail.documents)" 
+                    [(ngModel)]="itemDetail.documents" [ngModelOptions]="{standalone: true}"></textarea>              
+                <ul class="dropdown-menu item-name" style="width: 300px !important;">
+                   <li *ngFor ="let doc of richDocList"> 
+                       <input #ck type="checkbox" class="approveList" [(ngModel)]="doc.selected" 
+                            [ngModelOptions]="{standalone: true}" (mouseup)="updateSelected(doc.type,ck.checked)"/>{{doc.type}}
+                   </li>                      
+                </ul>           
+            </div> 
+        </td>
+        <td>
+            <div class="btn-group  ">
+            <button type="button" class="btn btn-default dropdown-toggle editFormMargin noBorder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{itemDetail.courier}} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a (click)="itemDetail.courier = 'DHL'">DHL</a></li>
+                <li><a (click)="itemDetail.courier = 'FedEx'">FedEx</a></li>
+                <li><a (click)="itemDetail.courier = 'TNT'">TNT</a></li>
+                <li><a (click)="itemDetail.courier = 'Other'">Other</a></li>
+            </ul>
+            </div>
+        </td>
+        <td><textarea class="form-control txt-flat middletext" rows="2"  placeholder="Tracking Id"   [(ngModel)]="itemDetail.trackingId" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <td><input type="date" class="form-control txt-flat middletext"  [(ngModel)]="itemDetail.receivedOn" [ngModelOptions]="{standalone: true}"/></td>
+        <td><textarea  class="form-control txt-flat middletext" rows="2" placeholder="Received By" [(ngModel)]="itemDetail.receivedBy" [ngModelOptions]="{standalone: true}"></textarea></td>
+        <td><textarea  class="form-control txt-flat middletext" rows="2" placeholder="Remark" [(ngModel)]="itemDetail.remark" [ngModelOptions]="{standalone: true}"></textarea></td>
+        <td><textarea  class="form-control txt-flat middletext" rows="2" readonly placeholder="auto" [(ngModel)]="itemDetail.updatedOn" [ngModelOptions]="{standalone: true}"></textarea></td>     
         <td class="text-left" ><input type="submit" class="btn btn-success" value="{{taskType}}"/></td>
       </tr>  
     <tr>
-        <td colspan="9" > <font class ="tbl-header">
+        <td colspan="11" > <font class ="tbl-header">
             <mfBootstrapPaginator [rowsOnPageSet]="[5,20,25]"></mfBootstrapPaginator></font>
         </td>
     </tr>
@@ -137,3 +165,37 @@
 
 </form>
 
+
+   <!-- Modal -->
+<div class="modal fade" id="reportModal">
+    <div class="modal-dialog custom-class">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                <h3 class="modal-header-text">Tracking Info</h3>
+            </div>
+            <div class="modal-body" >
+             <div id="htmlTracking"></div>   
+                    <table class="table" id="trackTable" *ngIf="trackData!=null">
+                        <thead>
+                        <tr>
+                            <th *ngFor="let header of headerNames">{{header}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let track of trackData">
+                            <td class="text-center" *ngFor="let header of headerNames; let i = index">
+                                    {{track[header]}}
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<button #reportModalBtn data-toggle="modal" data-target="#reportModal" hidden></button>

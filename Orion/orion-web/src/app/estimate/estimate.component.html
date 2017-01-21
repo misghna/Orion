@@ -1,0 +1,97 @@
+<div  class="alert alert-auto" alert-dismissible
+    [ngClass]="{
+      'hidden' : alertObj.alertHidden,
+      'alert-danger' :  alertObj.alertType == 'Error',
+      'alert-success' : alertObj.alertType == 'Info'
+    }"
+  >
+<a  class="close" aria-label="close" (click)="alertObj.alertHidden = true">x</a>
+  <strong>{{alertObj.alertType}}!</strong> {{alertObj.itemMsg}}
+</div>
+
+
+<div style="width:100%">
+<table border="0px" style="width:100%">
+  <tr>
+    <td style ="width:300px;vertical-align:top">
+
+      <div class="sideMenu" >
+         <font size=2> Search by Invoice No or Bill Of Loading</font>
+          <br><br>
+          <div class="dropdown">
+          <textarea id="filterTxt" #filterTxt class="dropdown-toggle form-control txt-flat" data-toggle="dropdown" rows="2" required
+                placeholder="Invoice No - Bill of loading" (keyup)="filterOrder(filterTxt.value)" [ngModel]="activeOrderId"></textarea> 
+            <ul class="dropdown-menu item-name">
+              <li >
+                <table class="table table-striped tableFont" style="width:250px">
+                  <thead> <tr>
+                      <th class="text-center">Inv No</th>
+                      <th class="text-center">Bill of Loading</th>
+                   </tr></thead>
+                   
+                   <tr *ngFor = "let order of allOrders" 
+                  (click)="assignOrder(order)">
+                      <td >{{order.invNo}}</td>
+                      <td>{{order.bl}}</td>
+                </tr>
+                </table> 
+              </li>                         
+            </ul>        
+          </div>  
+          <br> 
+          <br>
+          <button class="btn btn-success btn-block" (click)="getEstimate()">Open Status</button>
+
+          <br><br><br><br><br>
+  
+          <div class="pie_progress" [class.hidden]="statusHidden">
+            <div style="font-size:20px;margin-bottom:15px">Estimate Summary in Kuwanza</div> 
+            <div class="labelDiv">Total Invoice Amount(CIF)</div>          
+            <div class="amountDiv">{{estimates?.summary.TotalInvoiceAmount | number:'.2-2'}}</div>
+            <div class="labelDiv">Total Fees</div>          
+            <div class="amountDiv">{{estimates?.summary.TotalCost | number:'.2-2'}}</div>
+            <div class="labelDiv">Total cost</div>          
+            <div class="amountDiv">{{estimates?.summary.TotalFees | number:'.2-2'}}</div>
+            <div class="labelDiv">Cost/CIF Ratio</div>          
+            <div class="amountDiv">{{(estimates?.summary.costCifRatio | number:'.0-0') + '%'}}</div>
+            <div class="labelDiv">Total cost per container</div>          
+            <div class="amountDiv">{{estimates?.summary.CostPerContainer | number:'.2-2'}}</div>
+            <div class="labelDiv">Total cost per pack</div>          
+            <div class="amountDiv">{{estimates?.summary.CostPerPack | number:'.2-2'}}</div>
+            <div class="labelDiv">Price per pack (12% margin)</div>          
+            <div class="amountDiv">{{estimates?.summary.pricePerPack | number:'.2-2'}}</div>
+
+          </div>
+
+      </div>
+    </td>
+
+   <td style ="vertical-align:top">
+        <div class="statusBox" [class.hidden]="statusHidden">
+          <div class="statusContent">
+              <ul>
+                  <li *ngFor= "let est of parsedResult" style="margin-top:20px;font-size:18px">
+                          {{est.name}}
+                          <ul>
+                            <li *ngFor= "let key of est.keys">
+                               <span *ngIf="key!='Total' && key!='Terminal Name' && key!='ETA' && key!='Paid Days'"> {{key + ' : ' +  (estimates?.details[est.name][key] | number:'.2-2')}}</span>
+                                <span *ngIf="key=='Total' || key=='Terminal Name' || key=='ETA' || key=='Paid Days'"> {{key + ' : ' +  estimates?.details[est.name][key]}}</span>
+                            </li>
+                            <li><span style="color:red"> {{'Total : ' + (est.total | number:'.2-2') + ' AOA'}} </span></li>
+                          </ul>
+                    </li>
+              </ul>
+          </div>
+        </div>  
+
+ 
+
+
+   </td>
+  </tr>
+
+
+
+</table>
+</div>
+

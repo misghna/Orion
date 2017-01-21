@@ -1,7 +1,7 @@
 .statusBox {
     width: 98%;
     min-height: 100px;
-    background-color: white;
+    background-color: #FFFAFA;
      box-shadow:0.2px 0.2px 0.2px 0.2px #C9C9C9;
  	-webkit-box-shadow:0.2px 0.2px 0.2px 0.2px #C9C9C9;
 	 -moz-box-shadow:0.2px 0.2px 0.2px 0.2px #C9C9C9;
@@ -32,7 +32,7 @@ span {
 .statusBox2 {
     width: 400px;
     height: 730px;
-    background-color: white;
+    background-color: #F7F7F7;
      box-shadow:0.2px 0.2px 0.2px 0.2px #C9C9C9;
  	-webkit-box-shadow:0.2px 0.2px 0.2px 0.2px #C9C9C9;
 	 -moz-box-shadow:0.2px 0.2px 0.2px 0.2px #C9C9C9;
@@ -43,12 +43,11 @@ span {
 
 .statusTitle{
     color : #818181;
-	font-size:25px;
-    font-family:"serif";
+	font-size:30px;
+    font-family:"Comic Sans MS";
     width: 100%;
     margin: 0 auto; 
-    margin-top:20px;
-    margin-left:20px;
+    margin-top:18px;
     text-align: left;
 }
 
@@ -62,7 +61,7 @@ span {
 
 .cntStyle{
 	color : black;
-	font-size:18px;
+	font-size:25px;
     font-family:"serif";
 }
 
@@ -72,10 +71,7 @@ span {
 	padding-bottom : 10px;
 }
 
-.progress{
-    width:98%;
-   
-}
+.progress{width:98%}
 
 .statusContainer{
     height : calc(100% - 100px);
@@ -88,4 +84,16 @@ span {
     width:280px;
     margin-top:20px;
     margin-left:10px;
+}
+
+
+.amountDiv{
+    color:red;
+    margin-bottom:10px;
+    font-style: italic;
+}
+
+
+.labelDiv{
+    color:grey;
 }

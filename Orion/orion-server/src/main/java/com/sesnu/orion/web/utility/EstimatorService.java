@@ -34,12 +34,10 @@ public class EstimatorService {
 	@Autowired private MiscSettingDAO miscDao;
 	@Autowired private ExchangeDAO exchangeDao;
 	@Autowired private TerminalDAO terminalDao;
-	@Autowired private BidDAO bidDao;
 	
 	private JSONObject addTotal(Estimate est){
 		JSONObject j =est.getDetails();
 		j.put("Total", est.getValue());
-//		j.put("size", j.size());
 		return j;
 	}
 	
@@ -74,14 +72,11 @@ public class EstimatorService {
 		pd.put("Transport", addTotal(est));
 		
 		// terminal
-		List<Bid> bids = bidDao.getBidWinner(order.getId());
-		if(bids.size()>0){
-			est = terminal(order,bids.get(0).getTotalBid());
-			pd.put("Terminal",addTotal(est));
-			total += est.getValue();
-		}else{
-			pd.put("Terminal", "{\"Status\":\"final proforma not set\"}");
-		}
+
+		est = terminal(order,bid.getTotalBid());
+		pd.put("Terminal",addTotal(est));
+		total += est.getValue();
+
 		
 		// port
 		est = port(order);
@@ -118,6 +113,7 @@ public class EstimatorService {
 		
 		JSONObject summary = new JSONObject();
 		double totalInvAmount = bid.getTotalBid() * cur.getRate();
+		summary.put("TotalCIFUSD", bid.getTotalBid());
 		summary.put("TotalInvoiceAmount", totalInvAmount);
 		summary.put("TotalFees", total);
 		summary.put("TotalCost", total + totalInvAmount);
@@ -126,6 +122,7 @@ public class EstimatorService {
 		summary.put("CostPerPack", costPerPack);
 		summary.put("pricePerPack", costPerPack*1.12);
 		summary.put("costCifRatio", (total + totalInvAmount)/totalInvAmount *100);
+		summary.put("pricePerPackUsd", costPerPack*1.2/cur.getRate());
 				
 		return  new Estimate(total,pd,summary);
 	}
@@ -332,21 +329,21 @@ public class EstimatorService {
 			}
 		}
 		double total=0;double temp=0;JSONObject pd = new JSONObject();
-		temp = Double.parseDouble(miscDao.getByName("Port documentation and Copy fee(Est/bill-USD)").getValue());
-		pd.put("documentation and Copy",temp*cur.getRate());
+		temp = Double.parseDouble(miscDao.getByName("Port documentation and Copy fee(Est/bill-USD)").getValue())*cur.getRate();
+		pd.put("documentation and Copy",temp);
 		total += temp;
 		
-		temp = Double.parseDouble(miscDao.getByName("Port Other Fee(Est/bill-USD)").getValue());
-		pd.put("Other",temp*cur.getRate());
+		temp = Double.parseDouble(miscDao.getByName("Port Other Fee(Est/bill-USD)").getValue())*cur.getRate();
+		pd.put("Other",temp);
 		total += temp;
 			
 		if(contSize==20){
-			temp = Double.parseDouble(miscDao.getByName("Port expenses Fee 20ft(Est/Cont-USD)").getValue());
+			temp = Double.parseDouble(miscDao.getByName("Port expenses Fee 20ft(Est/Cont-USD)").getValue())*contQty*cur.getRate();
 		}else {
-			temp = Double.parseDouble(miscDao.getByName("Port expenses Fee 40ft(Est/Cont-USD)").getValue());
+			temp = Double.parseDouble(miscDao.getByName("Port expenses Fee 40ft(Est/Cont-USD)").getValue())*contQty*cur.getRate();
 		}
 		
-		pd.put("expenses",temp*contQty*cur.getRate());
+		pd.put("expenses",temp);
 		total += temp;
 		return new Estimate(total,pd);
 	}

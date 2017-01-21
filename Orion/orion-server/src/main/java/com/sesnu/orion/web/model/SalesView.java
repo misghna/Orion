@@ -52,6 +52,9 @@ public class SalesView {
 	@Column(name = "destination_port")
 	private String destinationPort;
 	
+	@Column(name = "type")
+	private String itemType;
+	
 	@Column(name = "month")
 	private String month;
 	
@@ -191,6 +194,14 @@ public class SalesView {
 
 	public void setMon(int mon) {
 		this.mon = mon;
+	}
+
+	public String getItemType() {
+		return itemType;
+	}
+
+	public void setItemType(String itemType) {
+		this.itemType = itemType;
 	}
 	
 	

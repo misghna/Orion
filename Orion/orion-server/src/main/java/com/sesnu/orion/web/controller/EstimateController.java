@@ -168,7 +168,7 @@ public class EstimateController {
 		if(bid.size()>0){
 			return bid.get(0);
 		}else{
-				response.sendError(400, "Bid winner not found");
+				response.sendError(400, Util.parseError("Bid winner not found"));
 				return null;
 		}
 	}
