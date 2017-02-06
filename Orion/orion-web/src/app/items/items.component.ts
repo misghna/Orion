@@ -54,8 +54,8 @@ export class ItemsComponent implements OnInit {
 
   ngOnInit() {
       this.headers = [{'name':'Id','value':'id','j':'x'}, {'name':'Product','value':'name','j':'l'},{'name':'Brand','value':'brand','j':'l'},
-                      {'name':'Food','value':'food','j':'l'},
-                     {'name':'HSCode', 'value':'hsCode','j':'c'}, {'name':'Financial Service','value':'financialServices','j':'c'},
+                      {'name':'Type','value':'type','j':'l'},
+                      {'name':'HSCode', 'value':'hsCode','j':'c'}, {'name':'Financial Service','value':'financialServices','j':'c'},
                       {'name':'Consumer Tax','value':'consumerTax','j':'c'},{'name':'Stamp tax','value': 'stampTax','j':'c'},
                       {'name':'Fees','value':'fees','j':'c'}, {'name':'Others','value':'others','j':'c'},{'name':'Total','value':'total','j':'c'},
                        {'name':'Updated On','value':'updatedOn','j':'l'}];
@@ -238,11 +238,7 @@ export class ItemsComponent implements OnInit {
     }
 
     search(searchObj){
-      if(searchObj.searchTxt==null) return this.responseData;
-      this.data= this.responseData.filter(item => (
-        (item.name.toLowerCase().indexOf(searchObj.searchTxt.toLowerCase()) !== -1) || 
-        (item.hsCode.toString().indexOf(searchObj.searchTxt) !== -1)
-        ));
+      this.data= this.utilService.search(searchObj,this.responseData,this.headers);
     }
 
 

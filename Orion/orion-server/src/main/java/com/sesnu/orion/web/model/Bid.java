@@ -29,7 +29,7 @@ public class Bid {
 	private double cifCnf;
 	
 	@Column(name="total_bid")
-	private double totalBid;
+	private Double totalBid;
 	
 	@Column(name="order_ref")
 	private long orderRef;
@@ -93,11 +93,11 @@ public class Bid {
 		this.cifCnf = cifCnf;
 	}
 
-	public double getTotalBid() {
+	public Double getTotalBid() {
 		return totalBid;
 	}
 
-	public void setTotalBid(double totalBid) {
+	public void setTotalBid(double Double) {
 		this.totalBid = totalBid;
 	}
 

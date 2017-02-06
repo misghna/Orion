@@ -35,7 +35,7 @@ export class TerminalComponent implements OnInit {
 
   constructor(private utilService :UtilService,private el: ElementRef,
               private terminalService:TerminalService ,public route: ActivatedRoute,public router:Router) {
-          
+          utilService.currentSearchTxt$.subscribe(txt => {this.search(txt);});
           utilService.currentdelItem$.subscribe(opt => { this.delete();}); 
           this.optionsList = [{'name':'Add Terminal','value':'addNew'}];
           this.utilService.setToolsContent(this.optionsList);
@@ -59,9 +59,9 @@ export class TerminalComponent implements OnInit {
       this.headers = [{'name':'No','value':'id','j':'x'},{'name':'Terminal Name','value':'name','j':'l'},
                       {'name':"Offload Fee 20'/cont",'value':'offloadFee20ft','j':'l'},{'name':"Offload Fee 40'/cont",'value':'offloadFee40ft','j':'c'},
                       {'name':'Admin & Service Charge/bill','value':'adminServiceCharge','j':'c'},{'name':'Free days','value':'freeDays','j':'l'},
-                      {'name':'1st Storage days','value':'storageFirstRangeDays','j':'l'},{'name':"1st Range Rate/cont20'",'value':'storageFirstRangeFee20ft','j':'c'},
+                      {'name':'1st Range Storage days','value':'storageFirstRangeDays','j':'l'},{'name':"1st Range Rate/cont20'",'value':'storageFirstRangeFee20ft','j':'c'},
                       {'name':"1st Range Rate/cont40'",'value':'storageFirstRangeFee40ft','j':'c'},
-                      {'name':'2nd Storage days','value':'storageSecondRangeDays','j':'l'},{'name':'2nd Storage Rate/cont20','value':'storageSecondRangeFee20ft','j':'l'},
+                      {'name':'2nd Range Storage days','value':'storageSecondRangeDays','j':'l'},{'name':'2nd Storage Rate/cont20','value':'storageSecondRangeFee20ft','j':'l'},
                       {'name':'2nd Range Rate/cont40','value':'storageSecondRangeFee40ft','j':'l'},
                       {'name':'Transport fees/cont','value':'transport','j':'l'},{'name':'Tarrif/cont','value':'importTarrif','j':'l'},
                       {'name':'Others %','value':'otherPercent','j':'l'}];
@@ -224,12 +224,7 @@ triggerDelModal(event){
 
 
     search(searchObj){
-      this.data= this.responseData.filter(item => (
-        (item.name.toLowerCase().indexOf(searchObj.searchTxt.toLowerCase()) !== -1) || 
-        (item.brand.toLowerCase().indexOf(searchObj.searchTxt) !== -1) || 
-        (item.itemOrigin.toLowerCase().indexOf(searchObj.searchTxt) !== -1) || 
-        (item.destinationPort.toLowerCase().indexOf(searchObj.searchTxt) !== -1)
-        ));
+      this.data= this.utilService.search(searchObj,this.responseData,this.headers);
     }
 
 

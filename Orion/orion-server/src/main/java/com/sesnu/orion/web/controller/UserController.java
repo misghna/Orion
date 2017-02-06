@@ -58,7 +58,8 @@ public class UserController {
 	}
 	
 	@RequestMapping(value = "/api/user/user", method = RequestMethod.GET)
-	public @ResponseBody JSONObject getUser(ModelMap model,HttpServletRequest request,HttpServletResponse response) {	
+	public @ResponseBody JSONObject getUser(ModelMap model,HttpServletRequest request,
+			HttpServletResponse response) {	
 		JSONObject jo = new JSONObject();	
 		try {
 			
@@ -103,6 +104,7 @@ public class UserController {
 		jo.put("buildTime", Util.getBuildTime(context));
 		jo.put("homeHeaders", user.getHomeHeaders());
 		jo.put("homeColor", user.getHomeColor());
+		jo.put("notifications", user.getNotification());
 		return jo;
 	}
 	
@@ -176,6 +178,18 @@ public class UserController {
 		return filterUsers(userDao.list());
 	}	
 
+	
+	@RequestMapping(value = "/api/user/notification", method = RequestMethod.PUT)
+	public @ResponseBody JSONArray notification(HttpServletRequest request,@RequestBody String notification)
+			throws Exception {
+		
+		User activeUser = util.getActiveUser(request, userDao);
+		activeUser.setNotification(notification);
+		userDao.saveOrUpdate(activeUser);		
+		return new JSONArray();
+	}	
+	
+	
 	
 	@RequestMapping(value = "/api/admin/deleteUser/{id}", method = RequestMethod.DELETE)
 	public @ResponseBody JSONArray deleteUser(@PathVariable("id") long id)

@@ -38,7 +38,7 @@ public class DuLicense {
 
 	@Column(name="expire_date")
 	private Date expireDate;
-	
+		
 	
 	public Long getId() {
 		return id;
@@ -96,6 +96,7 @@ public class DuLicense {
 	public void setExpireDate(Date expireDate) {
 		this.expireDate = expireDate;
 	}
+
 
 	
 	

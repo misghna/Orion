@@ -85,8 +85,8 @@ public class BudgetController {
 		budget.setTerminal(Double.parseDouble(((JSONObject)detail.get("Terminal")).get("Total").toString()));		
 		budget.setPort(Double.parseDouble(((JSONObject)detail.get("Port")).get("Total").toString()));		
 		budget.setCertQuality(Double.parseDouble(((JSONObject)detail.get("Certificate Of Quality")).get("Total").toString()));		
-		budget.setCertHealth(Double.parseDouble(((JSONObject)detail.get("Certificate Of Health")).get("Total").toString()));		
-		budget.setLocalPhytosanitary(Double.parseDouble(((JSONObject)detail.get("Local Phytosanitary")).get("Total").toString()));	
+		budget.setCertHealth(Double.parseDouble(((JSONObject)detail.get("Agriculture Phyto.")).get("Total").toString()));		
+		budget.setLocalPhytosanitary(Double.parseDouble(((JSONObject)detail.get("Phytosanitary")).get("Total").toString()));	
 		budget.setForwardAgency(Double.parseDouble(((JSONObject)detail.get("Forwarding Agent")).get("Total").toString()));
 
 		JSONObject summary = est.getSummary();

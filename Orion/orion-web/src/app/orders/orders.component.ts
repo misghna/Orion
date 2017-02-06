@@ -45,7 +45,7 @@ export class OrdersComponent implements OnInit {
           this.activeOrderId = this.route.snapshot.params['id'];
           this.optionsList = [{'name':'Add New Order','value':'addNew'}];
           this.utilService.setToolsContent(this.optionsList);
-
+         
           // tools listener
           utilService.currentToolsOptCont$.subscribe(opt => { this.option(opt);}); 
 
@@ -500,11 +500,7 @@ getCustomOrder(state){
 
 
     search(searchObj){
-      this.data= this.responseData.filter(order => (
-        (order.item.toLowerCase().indexOf(searchObj.searchTxt.toLowerCase()) !== -1) || 
-        (order.brand.toLowerCase().indexOf(searchObj.searchTxt) !== -1) || 
-        (order.destinationPort.toLowerCase().indexOf(searchObj.searchTxt) !== -1)
-        ));
+      this.data= this.utilService.search(searchObj,this.responseData,this.headers);
     }
 
 

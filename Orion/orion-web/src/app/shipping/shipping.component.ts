@@ -38,7 +38,7 @@ export class ShippingComponent implements OnInit {
               private orderService:OrdersService ,public route: ActivatedRoute,public router:Router,
               private miscSettingService :MiscSettingService) {
     
-
+    utilService.currentSearchTxt$.subscribe(txt => {this.search(txt);});
     utilService.currentdelItem$.subscribe(opt => { this.delete();}); 
     this.optionsList = [{'name':'Add Shipping','value':'addNew'}];
     this.utilService.setToolsContent(this.optionsList);
@@ -353,12 +353,7 @@ updateBaseUnit(unit){
 
 
     search(searchObj){
-      this.data= this.responseData.filter(item => (
-        (item.name.toLowerCase().indexOf(searchObj.searchTxt.toLowerCase()) !== -1) || 
-        (item.brand.toLowerCase().indexOf(searchObj.searchTxt) !== -1) || 
-        (item.itemOrigin.toLowerCase().indexOf(searchObj.searchTxt) !== -1) || 
-        (item.destinationPort.toLowerCase().indexOf(searchObj.searchTxt) !== -1)
-        ));
+      this.data= this.utilService.search(searchObj,this.responseData,this.headers);
     }
 
 

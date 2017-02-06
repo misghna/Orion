@@ -23,16 +23,17 @@ import com.sesnu.orion.dao.OrderDAO;
 import com.sesnu.orion.dao.PaymentDAO;
 import com.sesnu.orion.dao.PortFeeDAO;
 import com.sesnu.orion.dao.ShippingDAO;
+import com.sesnu.orion.dao.StatusDAO;
 import com.sesnu.orion.web.model.Bid;
+import com.sesnu.orion.web.model.Estimate;
 import com.sesnu.orion.web.model.Item;
-import com.sesnu.orion.web.model.Order;
 import com.sesnu.orion.web.model.OrderView;
 import com.sesnu.orion.web.model.PayView;
 import com.sesnu.orion.web.model.Payment;
-import com.sesnu.orion.web.model.Estimate;
 import com.sesnu.orion.web.model.PortFee;
-import com.sesnu.orion.web.model.Shipping;
+import com.sesnu.orion.web.model.Required;
 import com.sesnu.orion.web.model.ShippingView;
+import com.sesnu.orion.web.utility.EstimatorService;
 import com.sesnu.orion.web.utility.Util;
 
 @CrossOrigin(origins = "http://localhost:4200")
@@ -48,6 +49,9 @@ public class PaymentController {
 	@Autowired OrderDAO orderDAO;
 	@Autowired ItemDAO itemDAO;
 	@Autowired BidDAO bidDao;
+	@Autowired StatusDAO statDao;
+	@Autowired private EstimatorService estService;
+	@Autowired private ItemDAO itemDao;
 	
 
 	@RequestMapping(value = "/api/user/pay/{orderRef}", method = RequestMethod.GET)
@@ -68,16 +72,27 @@ public class PaymentController {
 	}
 	
 	
+	@RequestMapping(value = "/api/user/pay/list", method = RequestMethod.GET)
+	public @ResponseBody List<Required> list(
+			HttpServletResponse response) throws IOException {
+			List<Required> req =statDao.listRequiredByType("Payment");
+
+		return req;
+	}
+	
+	
 	@RequestMapping(value = "/api/user/pay", method = RequestMethod.POST)
 	public @ResponseBody List<PayView> addItem(HttpServletResponse response,@RequestBody Payment pay)
 			throws Exception {
+		
 		List<ShippingView> ships = shipDao.listByOrderId(pay.getOrderRef());
-		if(ships.size()==0 && pay.getName().equals("Legalization")){
-			response.sendError(400, "Item not yet shipped");
+		if(ships.size()==0 || !pay.getName().equals("DU License")){
+			response.sendError(400, Util.parseError("Item not yet marked as shipped"));
 			return null;
 		}
+		OrderView order = orderDAO.get(pay.getOrderRef());
 		
-		pay.setEstimate(calcEstimate(pay,ships.get(0)).getValue());
+		pay.setEstimate(calcEstimate(order,pay).getValue());
 		pay.setUpdatedOn(Util.parseDate(new Date(),"/"));
 		pay.setId(null);
 		payDao.saveOrUpdate(pay);
@@ -88,25 +103,6 @@ public class PaymentController {
 		}
 		response.sendError(404);
 		return null;
-
-	}
-	
-	@RequestMapping(value = "/api/user/pay/estimate", method = RequestMethod.POST)
-	public @ResponseBody JSONObject getestimate(HttpServletResponse response,@RequestBody Payment pay)
-			throws Exception {
-		List<ShippingView> ships = shipDao.listByOrderId(pay.getOrderRef());
-		if(ships.size()==0 && pay.getName().equals("Legalization")){
-			response.sendError(400, "Item not yet shipped");
-			return null;
-		}else if(pay.getName().equals("Customs")){
-			List<Bid> bid = bidDao.getBidWinner(pay.getOrderRef());
-			if(bid.size()==0){
-				response.sendError(400, "Supplier not yet selected, total Amount unknow");
-				return null;
-				}
-			}
-		
-		return calcEstimate(pay,ships.get(0)).getDetails();
 
 	}
 	
@@ -150,55 +146,66 @@ public class PaymentController {
 		response.sendError(400);
 		return null;
 	}
-	
+
 	
 	@SuppressWarnings("unchecked")
-	private Estimate calcEstimate(Payment pay, ShippingView ship){
-		Date d = new Date();
-		Date arrival = ship.getEta()!=null? ship.getEta():ship.getEta();
-		long diff = d.getTime() - arrival.getTime();
-		long daysInPort = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
-		OrderView order = orderDAO.get(pay.getOrderRef());
-		double total = 0.0;
-		JSONObject pd = new JSONObject();
-		if(pay.getName().equals("Legalization")){
-			
-			PortFee portFees = portFeeDAO.getByName(ship.getShipAgency());
-			total += portFees.getLegalizationFee();		// add legalization
-			pd.put("Legalization", portFees.getLegalizationFee());
-			
-			total += portFees.getContLiftFee() * order.getContQnt(); // add container lift fee
-			pd.put("Container Lift", portFees.getContLiftFee() * order.getContQnt());
-			
-			if (pay.getDeposit()==0 &&  order.getContSize()==20){
-				total += portFees.getDepositCont20()* order.getContQnt(); // container charge for 20
-				pd.put("Container service Charge", portFees.getDepositCont20()* order.getContQnt());
-			}else if (pay.getDeposit()==0 &&  order.getContSize()==40){
-				total += portFees.getDepositCont40()* order.getContQnt(); // container charge for 40
-				pd.put("Container service Charge", portFees.getDepositCont40()* order.getContQnt());
-			}
-			
-			pd.put("Consumer Tax",  portFees.getConsumerTax()/100 * total);
-			total += portFees.getConsumerTax()/100 * total;  // add consumer tax
-
-			if (daysInPort >0 && portFees.getContFreeDays() - daysInPort > 0){ // add penality if exists
-				total += portFees.getDailyPenality() * (portFees.getContFreeDays() - daysInPort);
-				pd.put("Penality", portFees.getDailyPenality() * (portFees.getContFreeDays() - daysInPort));
-			}
-			
-		}else if(pay.getName().equals("Customs")){
-			Item item = itemDAO.get(order.getItemId());
-			List<Bid> bid = bidDao.getBidWinner(order.getId());
-			double totalTaxPercent = item.getFinancialServices() + item.getStampTax() + item.getConsumerTax() + item.getFees() + item.getOthers();
-			total = bid.get(0).getTotalBid() * totalTaxPercent;
-			pd.put("Customs", total);
+	private Estimate calcEstimate(OrderView order, Payment pay){
+		Estimate est=null;
+		Bid bid = null;
+		switch(pay.getName()){
+			case "DU Licence" :
+				return estService.license(order);
+			case "Phytosanitary" :
+				return estService.phytosanitary();
+			case "Agriculture Phyto." :
+				return estService.certificateOfHealth();
+			case "Min of Industry cert." :
+				return null;
+			case "Item Cost" :
+				return estService.itemCost(order,pay);
+			case "Bromangol" :
+				return estService.bromangol(order);
+			case "Shipping Agency Fee" :
+				return estService.legalization(order,pay);
+			case "Customs Fee" :
+				 bid = getBidWinner(order.getId());
+				if(bid !=null){
+					Item item = itemDao.get(order.getItemId());
+					return estService.customs(bid.getTotalBid(),bid.getCurrency(), item);
+				}
+				return null;
+			case "Port Fee" :
+				return estService.port(order);
+			case "Terminal Fee" :
+				 bid = getBidWinner(order.getId());
+				if(bid !=null){
+					return estService.terminal(order, bid.getTotalBid());
+				}
+				return null;
+			case "Transpiration Fee" :
+				return estService.transport(order);
+			case "Detention Fee" :
+				return estService.penality(order);
+			case "Closing FA Fee" :
+				 bid = getBidWinner(order.getId());
+				if(bid !=null){
+					return estService.forwardingAgent(bid);
+				}
+				return null;
+			default:
+					break;			
 		}
 		
-		Estimate paymentEstimate = new Estimate(total,pd);
-		
-		return paymentEstimate;
+		return est;
 	}
 	
+	private Bid getBidWinner(long orderId){
+		List<Bid> bids = bidDao.getBidWinner(orderId);
+		if(bids.size()>0){
+			return bids.get(0);
+		}
+		return null;
+	}
 		
 
 }

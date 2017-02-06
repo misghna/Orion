@@ -153,7 +153,7 @@ export class PaymentComponent implements OnInit {
                       {'name':'Payment Method','value':'paymentMethod','j':'l'},
                       {'name':'Currency','value':'curr','j':'c'},{'name':'Deposit', 'value':'deposit','j':'cr'},
                       {'name':'Estimated Amount', 'value':'estimate','j':'cr'},{'name':'Actual Amount', 'value':'paymentAmount','j':'cr'}, 
-                      {'name':'Payment Date','value':'paymentDate','j':'cd'},{'name':'Remakr','value':'remark','j':'c'},
+                      {'name':'Payment Date','value':'paymentDate','j':'cd'},{'name':'Remark','value':'remark','j':'c'},
                       {'name':'Status','value':'status','j':'c'},{'name':'Updated On','value':'updatedOn','j':'c'}];
       
         this.activeOrderId = this.route.snapshot.params['id'];
@@ -161,7 +161,7 @@ export class PaymentComponent implements OnInit {
         this.populateYear();
         this.setTitle();
         this.getAllOrders();
-        this.allPaymentList = this.payService.getPaymentList();
+        this.getAllPayList();
         this.getAllCurrencies();
 
         jQuery(this.el.nativeElement).find('#monthSelector li').on('click',function(){  
@@ -171,6 +171,17 @@ export class PaymentComponent implements OnInit {
 
   } 
   
+getAllPayList(){
+    this.payService.getPaymentList() 
+    .subscribe(
+        response => {
+            this.allPaymentList = response;
+        },
+        error => {
+              console.error("order not found!");          
+        }
+      );
+}
 populateYear() {
    var d = new Date();
    var cYear= d.getFullYear();
@@ -285,11 +296,7 @@ updateBaseUnit(unit){
               this.setData(response);    
           },
           error => {
-            if(error.status==404){
-               this.popAlert("Info","Info","Payment is not yet added for this order!");          
-            }else{
-               this.popAlert("Error","danger","Something went wrong, please try again later!");          
-            }
+              this.sendError(error);
           }
         );
   }
@@ -327,7 +334,7 @@ updateBaseUnit(unit){
                     this.hideAddNewForm = true;  
                 },
                 error => {
-                    this.popAlert("Error","danger","Something went wrong, please try again later!");
+                      this.sendError(error);
                 }
               );
         }else if(this.taskType=="Update"){
@@ -407,11 +414,22 @@ updateBaseUnit(unit){
                     this.setData(response);     
                 },
                 error => {      
-                    this.popAlert("Error","danger","Something went wrong, please try again later!");
+                    this.sendError(error);
                 }
               );
     }
 
+
+   sendError(error){
+        if(error.status==404){
+          this.popAlert("Info","Info","Payment is not yet added for this order!");  
+          this.setData([]);        
+        }else if(error.status==400){
+          this.popAlert("Error","danger",this.utilService.getErrorMsg(error));          
+        }else{
+          this.popAlert("Error","danger","Something went wrong, please try again later!");   
+        }
+   }
 
     filterName(txt){
       
@@ -438,14 +456,7 @@ updateBaseUnit(unit){
    }
 
     search(searchObj){
-      this.data= this.responseData.filter(item => (
-        (item.name!=null && item.name.toLowerCase().indexOf(searchObj.searchTxt.toLowerCase()) !== -1) || 
-        (item.bl!=null && item.bl.toLowerCase().indexOf(searchObj.searchTxt.toLowerCase()) !== -1) || 
-        (item.invNo!=null && item.invNo.toLowerCase().indexOf(searchObj.searchTxt.toLowerCase()) !== -1) || 
-        (item.status!=null && item.status.toLowerCase().indexOf(searchObj.searchTxt.toLowerCase()) !== -1) || 
-        (item.contId!=null && item.contId.toLowerCase().indexOf(searchObj.searchTxt.toLowerCase()) !== -1) || 
-        (item.paymentMethod!=null && item.paymentMethod.toLowerCase().indexOf(searchObj.searchTxt) !== -1)
-        ));
+      this.data= this.utilService.search(searchObj,this.responseData,this.headers);
     }
 
 

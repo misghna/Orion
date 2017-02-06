@@ -47,7 +47,7 @@ import com.sesnu.orion.web.utility.Util;
 public class StatusController {
 
 	static List<String> MUST_DOCS = Arrays.asList(new String []{"Order Initiated","Proforma Invoice","Supplier Selected",
-																"Order Authorized","Commercial Invoice","Item Shipped"});
+																"Order Authorization","Commercial Invoice","Item Shipped"});
 
 	
 	@Autowired
@@ -85,6 +85,15 @@ public class StatusController {
 		return docStat;
 	}
 	
+	
+	@RequestMapping(value = "/api/user/required/{type}", method = RequestMethod.GET)
+	public @ResponseBody List<Required> requiredAll(@PathVariable("type") String type,
+				HttpServletResponse response) throws IOException {
+
+		List<Required> required = statusDao.listRequiredByType(type);
+			return required;
+
+	}
 	
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/api/user/status/payment/{orderRefId}", method = RequestMethod.GET)

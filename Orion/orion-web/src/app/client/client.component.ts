@@ -35,7 +35,7 @@ export class ClientComponent implements OnInit {
 
   constructor(private utilService :UtilService,private el: ElementRef,
               private clientService:ClientService ,public route: ActivatedRoute,public router:Router) {
-          
+          utilService.currentSearchTxt$.subscribe(txt => {this.search(txt);});
           utilService.currentdelItem$.subscribe(opt => { this.delete();}); 
           this.optionsList = [{'name':'Add Client/WH','value':'addNew'}];
           this.utilService.setToolsContent(this.optionsList);
@@ -56,8 +56,9 @@ export class ClientComponent implements OnInit {
     }
 
   ngOnInit() {
-      this.headers = [{'name':'No','value':'id','j':'x'},{'name':'Client/WH Name','value':'name','j':'l'},
-                      {'name':'Manager','value':'manager','j':'l'},{'name':'Phone No','value':'phone','j':'c'},
+      this.headers = [{'name':'No','value':'id','j':'x'},{'name':'Name','value':'name','j':'l'},
+                      {'name':'Type','value':'type','j':'l'},{'name':'Manager','value':'manager','j':'l'},
+                      {'name':'Phone No','value':'phone','j':'c'}, {'name':'Email','value':'email','j':'c'},
                       {'name':'Address','value':'address','j':'c'},{'name':'City','value':'city','j':'l'}];
         
         this.activeShippingId = this.route.snapshot.params['id'];
@@ -215,12 +216,7 @@ triggerDelModal(event){
 
 
     search(searchObj){
-      this.data= this.responseData.filter(item => (
-        (item.name.toLowerCase().indexOf(searchObj.searchTxt.toLowerCase()) !== -1) || 
-        (item.brand.toLowerCase().indexOf(searchObj.searchTxt) !== -1) || 
-        (item.itemOrigin.toLowerCase().indexOf(searchObj.searchTxt) !== -1) || 
-        (item.destinationPort.toLowerCase().indexOf(searchObj.searchTxt) !== -1)
-        ));
+      this.data= this.utilService.search(searchObj,this.responseData,this.headers);
     }
 
 
@@ -242,7 +238,7 @@ triggerDelModal(event){
     }
 
     capitalizeFirstLetter(string) {
-     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+         return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
     }
 
 }

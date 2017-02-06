@@ -16,7 +16,20 @@ export class ClientService {
 
 
   get(){
-    var url = this.baseUrl + 'api/user/clients'
+    var url = this.baseUrl + 'api/user/addressBook/all'
+    return this.http.get(url,[{ withCredentials: true }])
+      .map(res => res.json());
+  }
+
+  getDestinations(){
+    var url = this.baseUrl + 'api/user/addressBook/destinations'
+    return this.http.get(url,[{ withCredentials: true }])
+      .map(res => res.json());
+  }
+
+
+  getFWAgents(){
+    var url = this.baseUrl + 'api/user/addressBook/fwAgents'
     return this.http.get(url,[{ withCredentials: true }])
       .map(res => res.json());
   }
@@ -25,19 +38,19 @@ export class ClientService {
     console.log(body);
     let headerContent = new Headers();
     headerContent.append("Content-Type", "application/json");
-    return this.http.post(this.baseUrl + 'api/user/client', body, { headers: headerContent })
+    return this.http.post(this.baseUrl + 'api/user/addressBook', body, { headers: headerContent })
             .map(res => res.json());
   }
 
   update(body){
     let headerContent = new Headers();
     headerContent.append("Content-Type", "application/json");
-    return this.http.put(this.baseUrl + 'api/user/client', body, { headers: headerContent })
+    return this.http.put(this.baseUrl + 'api/user/addressBook', body, { headers: headerContent })
             .map(res => res.json());
   }
  
   deleteById(id) {
-    return this.http.delete(this.baseUrl + 'api/user/client/' + id)
+    return this.http.delete(this.baseUrl + 'api/user/addressBook/' + id)
       .map(res => res.json());
   }
 

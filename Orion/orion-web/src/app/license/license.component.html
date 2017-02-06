@@ -31,6 +31,7 @@
          *ngFor="let tableHeader of headers; let i = index"> 
             <mfDefaultSorter by="{{tableHeader.value}}"><font class ="tbl-header">{{tableHeader.name}}</font></mfDefaultSorter>
         </th>
+        <th class ="text-center tbl-header">Remaining Days</th>
         <th style="width: 5%;" class ="tbl-header">Action</th>
     </tr>
     </thead>
@@ -51,7 +52,8 @@
               <div *ngIf = "tableHeader.j=='cd'"> 
                 {{item[tableHeader.value] | date: 'dd/MM/yyyy'}}
               </div>
-            </td>
+          </td>
+            <td class="text-center">{{item.expireDate | dateDiff}}</td>
         <td class="text-center" >
             <div class="dropdown" style="border: 0">
             <button id= "{{item.id.toString() + '-' + item.type}}" #dropButton class="btn btn-default dropdown-toggle"
@@ -123,12 +125,11 @@
         <td><textarea class="form-control txt-flat middletext" rows="2"  placeholder="GIT"   [(ngModel)]="itemDetail.git" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td><input type="date" class="form-control txt-flat middletext"  [(ngModel)]="itemDetail.issueDate" [ngModelOptions]="{standalone: true}"/></td>
         <td><textarea  class="form-control txt-flat middletext" rows="2" readonly placeholder="auto" [(ngModel)]="itemDetail.expireDate" [ngModelOptions]="{standalone: true}"></textarea></td>
-        <!--<td><textarea  class="form-control txt-flat middletext" rows="2" placeholder="Courier" [(ngModel)]="itemDetail.courier" [ngModelOptions]="{standalone: true}"></textarea></td>
-        <td><textarea  class="form-control txt-flat middletext" rows="2" placeholder="Tracking Id" [(ngModel)]="itemDetail.trackingId" [ngModelOptions]="{standalone: true}"></textarea></td>-->
+        <td><textarea  class="form-control txt-flat middletext" rows="2" readonly placeholder="auto" [(ngModel)]="itemDetail.test" [ngModelOptions]="{standalone: true}"></textarea></td>
         <td class="text-left" ><input type="submit" class="btn btn-success" value="{{taskType}}"/></td>
       </tr>  
     <tr>
-        <td colspan="9" > <font class ="tbl-header">
+        <td colspan="10" > <font class ="tbl-header">
             <mfBootstrapPaginator [rowsOnPageSet]="[5,20,25]"></mfBootstrapPaginator></font>
         </td>
     </tr>

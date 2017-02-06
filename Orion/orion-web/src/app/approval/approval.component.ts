@@ -17,7 +17,7 @@ export class ApprovalComponent implements OnInit {
 
   constructor(public route: ActivatedRoute,private appovalService :ApprovalService, public router :Router,
               private utilService :UtilService,private rd: Renderer) {
-       
+          utilService.currentSearchTxt$.subscribe(txt => {this.search(txt);});
           this.headers = [{'name':'No','value':'id','j':'x'},{'name':'Inv No','value':'invNo','j':'c'},
                       {'name':'BL','value':'bl','j':'c'},{'name':'Approval Type','value':'type','j':'l'},{'name':'For','value':'forName','j':'l'},
                       {'name':'Requested By','value':'requestedBy','j':'c'},{'name':'Requested On','value':'requestedOn','j':'c'},
@@ -139,6 +139,11 @@ approve(){
         );
 
 }
+
+
+    search(searchObj){
+      this.data= this.utilService.search(searchObj,this.responseData,this.headers);
+    }
 
 
 }

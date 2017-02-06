@@ -5,6 +5,7 @@ import { LicenseService } from './license.service';
 import { UtilService } from '../service/util.service';
 import { OrdersService } from '../orders/orders.service';
 import { Router,ActivatedRoute, Params } from '@angular/router';
+import { DateDiffPipe } from '../pipes/pipe.dateDiff';
 
 declare var jQuery : any;
 

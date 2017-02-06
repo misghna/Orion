@@ -43,8 +43,14 @@ export class PaymentService {
 
 
   getPaymentList(){
-      return ['Frwd. Agent Fee','Bromangol','Customs','Legalization','Port','Seller','Terminal','Transport','Container delay Penality'];
-  }
+   //   return ['Frwd. Agent Fee','Bromangol','Customs','Legalization','Port','Seller','Terminal','Transport','Container delay Penality'];
 
+     var url = this.baseUrl + 'api/user/pay/list';
+     return this.http.get(url,[{ withCredentials: true }])
+      .map(res => res.json());
+      // return ['DU Licence','Phytosanitary','Import Permit','Agriculture Phyto.','Min of Industry cert.',
+      //         'CNCA Fee','Item Cost','Ocean Fright Fee','Bromangol','Shipping Agency Fee','Customs Fee',
+      //         'Port Fee','Terminal Fee','Transpiration Fee','Detention Charges','Closing FA Fee']
+  }
   
 }

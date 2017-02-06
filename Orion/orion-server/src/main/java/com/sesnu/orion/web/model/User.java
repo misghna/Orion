@@ -31,6 +31,9 @@ public class User {
 	@Column(name="home_color")
 	private String homeColor;
 	
+	@Column(name="notification")
+	private String notification;
+	
 	
 	public long getId() {
 		return id;
@@ -120,6 +123,14 @@ public class User {
 
 	public void setHomeColor(String homeColor) {
 		this.homeColor = homeColor;
+	}
+
+	public String getNotification() {
+		return notification;
+	}
+
+	public void setNotification(String notification) {
+		this.notification = notification;
 	}
 
 

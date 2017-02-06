@@ -35,7 +35,7 @@ export class BudgetComponent implements OnInit {
 
   constructor(private budgetService:BudgetService, private el: ElementRef,
              private miscService : MiscService,private utilService : UtilService,private miscSettingService: MiscSettingService) {
-
+    utilService.currentSearchTxt$.subscribe(txt => {this.search(txt);});
     this.subscription = utilService.currentSearchTxt$.subscribe(txt => {this.search(txt);});
 
     this.optionsList = [{'name':'Recalculate Budget','value':'addNew'}];
@@ -70,7 +70,7 @@ export class BudgetComponent implements OnInit {
                       {'name':'Cont Size','value':'contSize','j':'c'},{'name':'Cont Qnt','value': 'contQnt','j':'c'},
                       {'name':'CIF($)','value':'cif','j':'c'},{'name':'Total CIF($)','value':'totalCif','j':'cr'},
                       {'name':'Shipping Agency Fees','value':'shippingAgency','j':'cr'}, {'name':'Customs','value':'customs','j':'cr'}, 
-                      {'name':'Bromangol','value':'bromangol','j':'cr'}, {'name':'Local Phytosanitary','value':'localPhytosanitary','j':'cr'}, 
+                      {'name':'Bromangol','value':'bromangol','j':'cr'}, {'name':'Phytosanitary','value':'localPhytosanitary','j':'cr'}, 
                       {'name':'Cert. Health','value':'certHealth','j':'cr'}, {'name':'Cert. Quality','value':'certQuality','j':'cr'}, 
                       {'name':'Port','value':'port','j':'cr'}, 
                       {'name':'Terminal','value':'terminal','j':'cr'}, {'name':'License','value':'license','j':'cr'}, 
@@ -245,16 +245,8 @@ estimateDetails(id){
 }
 
 
-
-
-
     search(searchObj){
-      if(searchObj.searchTxt==null) return this.responseData;
-      this.data= this.responseData.filter(item => (
-        (item.name.toLowerCase().indexOf(searchObj.searchTxt.toLowerCase()) !== -1) || 
-        (item.brand.toLowerCase().indexOf(searchObj.searchTxt) !== -1) || 
-        (item.destinationPort.toLowerCase().indexOf(searchObj.searchTxt) !== -1)
-        ));
+      this.data= this.utilService.search(searchObj,this.responseData,this.headers);
     }
 
 

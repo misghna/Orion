@@ -14,7 +14,7 @@ import com.sesnu.orion.dao.DuLicenseDAO;
 import com.sesnu.orion.dao.OrderDAO;
 import com.sesnu.orion.web.model.Bid;
 import com.sesnu.orion.web.model.BidView;
-import com.sesnu.orion.web.model.Client;
+import com.sesnu.orion.web.model.AddressBook;
 import com.sesnu.orion.web.model.DuLicense;
 import com.sesnu.orion.web.model.DuLicenseView;
 import com.sesnu.orion.web.model.Order;
@@ -29,32 +29,56 @@ public class ClientDAOImpl implements ClientDAO {
 	public ClientDAOImpl() {
 	}
 
-
+	
 	@Override
-	public List<Client> listAll() {
-		String hql = "from Client";
+	public List<AddressBook> listAllDest() {
+		String hql = "from AddressBook where type = 'Client' or type = 'WH'";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
-		return (List<Client>) query.list();
+		return (List<AddressBook>) query.list();
+	}
+	
+	@Override
+	public List<AddressBook> listAllFWAgents() {
+		String hql = "from AddressBook where type = 'For. Agent'";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		return (List<AddressBook>) query.list();
+	}
+
+	@Override
+	public List<AddressBook> listAll() {
+		String hql = "from AddressBook";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		return (List<AddressBook>) query.list();
+	}
+
+	
+	@Override
+	public AddressBook getByName(String name) {
+		String hql = "from AddressBook where name = :name";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql)
+				.setString("name", name);
+		if(query.list().size()>0){
+			return (AddressBook) query.list().get(0);
+		}
+		return null;
 	}
 
 
-
 	@Override
-	public Client get(long id) {
-		return (Client) sessionFactory.getCurrentSession().get(Client.class, id);
-
+	public AddressBook get(long id) {
+		return (AddressBook) sessionFactory.getCurrentSession().get(AddressBook.class, id);
 	}
 
 
 	@Override
-	public void saveOrUpdate(Client client) {
+	public void saveOrUpdate(AddressBook client) {
 		sessionFactory.getCurrentSession().saveOrUpdate(client);
 		
 	}
 
 
 	@Override
-	public void delete(Client client) {
+	public void delete(AddressBook client) {
 		sessionFactory.getCurrentSession().delete(client);	
 		
 	}	

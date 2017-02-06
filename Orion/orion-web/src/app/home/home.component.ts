@@ -178,11 +178,13 @@ setTxtColor(item){
 
 setBckGraColor(item){
     var bckColor;
-    this.colorSettings.forEach(color => {
-        if(item[color.colValue]>color.greater && item[color.colValue]< color.less){
-          bckColor= color.bckColor;
-        }
-    });
+    if(this.colorSettings!=null){
+      this.colorSettings.forEach(color => {
+          if(item[color.colValue]>color.greater && item[color.colValue]< color.less){
+            bckColor= color.bckColor;
+          }
+      });
+    }
     return bckColor;
 }
 
@@ -231,15 +233,17 @@ if(i>-1){
         }
 
         var selHeaders = [];
-        headArray.forEach(element => {
-            if(activeHeaderVals.indexOf(element.value)>-1){
-              selHeaders.push(element);
-              element.selected=true;
-            }else{
-              element.selected=false;
-            }
+        if(activeHeaderVals!=null && activeHeaderVals.length>0){
+          headArray.forEach(element => {
+              if(activeHeaderVals.indexOf(element.value)>-1){
+                selHeaders.push(element);
+                element.selected=true;
+              }else{
+                element.selected=false;
+              }
 
-        });
+          });
+        }
         this.selectedHeaders = selHeaders;
         this.allHeaders = headArray;
       }

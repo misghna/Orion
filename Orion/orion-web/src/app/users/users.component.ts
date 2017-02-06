@@ -69,13 +69,10 @@ export class UsersComponent implements OnInit {
     
   }
 
-   search(searchObj){
-     if(searchObj.searchTxt==null) return this.allUsersResponse;
-      this.allUsers= this.allUsersResponse.filter(user => (
-        (user.fullname.toLowerCase().indexOf(searchObj.searchTxt.toLowerCase()) !== -1) || 
-        (user.department.toString().indexOf(searchObj.searchTxt) !== -1)||
-        (user.phone.toString().indexOf(searchObj.searchTxt) !== -1)
-        ));
+
+
+     search(searchObj){
+      this.allUsers= this.utilService.search(searchObj,this.allUsersResponse,this.headerNames);
     }
 
   edit(header){ 

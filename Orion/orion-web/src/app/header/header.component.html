@@ -20,8 +20,7 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
         <li id="homeMenu"><a routerLink="/" routerLinkActive="active" >Home <span class="sr-only">(current)</span></a></li>
-         <li id="statusMenu"><a routerLink="/status/search" routerLinkActive="active" >Status <span class="sr-only">(current)</span></a></li>
-       
+         <li id="statusMenu"><a routerLink="/status/search" routerLinkActive="active" >Status <span class="sr-only">(current)</span></a></li>      
         <li class="dropdown" id="importMenu">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Import <span class="caret"></span></a>
           <ul class="dropdown-menu">           
@@ -37,6 +36,21 @@
           </ul>
         </li>
 
+        <!--<li>
+            <div class="btn-group navbar-btn">
+              <div type="button" class="btn btn-default" style="border:none">Hello</div>   
+              <button type="button" class="btn btn-default dropdown-toggle" 
+                      data-toggle="dropdown" style="border:none"> 
+                <span class="caret"></span>
+                <span class="sr-only">Toggle Dropdown</span>
+                &nbsp;
+              </button>   
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="#">Status</a></li>
+                <li><a href="#">Notification</a></li>
+              </ul>
+            </div>
+        </li>-->
         <li id="financeMenu" class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Finance <span class="caret"></span></a>
           <ul class="dropdown-menu">           
@@ -52,7 +66,8 @@
           <ul class="dropdown-menu">
             <li><a routerLink="/document/license/all" routerLinkActive="active" >License</a></li> 
             <li><a routerLink="/document/docTracking/all" routerLinkActive="active" >Document Tracking</a></li>  
-            <li><a routerLink="/document/uploaded/all" routerLinkActive="active" >Uploaded Documents</a></li> 
+            <li><a routerLink="/document/uploaded/all" routerLinkActive="active" >Uploaded Documents</a></li>
+            <li><a routerLink="/document/handover/all" routerLinkActive="active" >Document Handover</a></li>  
             <!--<li role="separator" class="divider"></li>
             <li><a routerLink="/document/Bill_of_Loading" routerLinkActive="active" >Bill of Loading</a></li>               
             <li><a routerLink="/document/Commercial_Invoice" routerLinkActive="active" >Commerical Invoice</a></li>
@@ -85,7 +100,7 @@
             <li><a href="#">One more Report</a></li>
           </ul>
         </li>-->
-
+        <li id="statusMenu"><a routerLink="/notification" routerLinkActive="active" >Notifications<span class="sr-only">(current)</span></a></li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tools<span class="caret"></span></a>
           <ul *ngIf = "toolsList !=null" class="dropdown-menu">
@@ -104,7 +119,7 @@
             <li><a routerLink="/setting/items" routerLinkActive="active" (click)="activePageName='Items'" >Items/Fees</a></li>
             <li><a routerLink="/setting/legalization" routerLinkActive="active" (click)="activePageName='Legalization/offload'">Shipping Agency</a></li>
             <li><a routerLink="/setting/currency" routerLinkActive="active" (click)="activePageName='Currency Exchange'">Currency Exchange</a></li>
-            <li><a routerLink="/setting/clients" routerLinkActive="active" (click)="activePageName='Clients/WH'">Clients/WH</a></li>
+            <li><a routerLink="/setting/addressBook" routerLinkActive="active" (click)="activePageName='Clients/WH'">Address Book</a></li>
             <li><a routerLink="/setting/terminal" routerLinkActive="active" (click)="activePageName='Terminals'">Terminals</a></li>
             <li><a routerLink="/setting/misc" routerLinkActive="active" (click)="activePageName='Misc Settings'">Others</a></li>
           </ul>

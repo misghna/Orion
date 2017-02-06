@@ -65,6 +65,21 @@ public class StatusDAOImpl implements StatusDAO {
 		.setString("type", type);
 		return (List<Required>) query.list();
 	}
+	
+	@Override
+	public List<Required> listRequiredByType(String type) {
+		String hql = "from Required where type = :type order by id";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql)
+		.setString("type", type);
+		return (List<Required>) query.list();
+	}
+	
+	@Override
+	public List<Required> listAllRequired() {
+		String hql = "from Required order by type";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		return (List<Required>) query.list();
+	}
 
 
 	@Override

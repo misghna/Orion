@@ -57,8 +57,6 @@ public class ReportService {
 		
 		String orginalHtml = conf.getFile("orderAuth.html");
 		Estimate est = estService.totalEstimate(order, null, bid, item);
-		System.out.println(est.getDetails().toJSONString());
-		Double pricePerPack = est.getValue()/order.getContQnt()/order.getPckPerCont();
 
 		String editedHtml = orginalHtml.replace("ORDER_DATE", Util.parseDate(order.getCreatedOn()));
 		editedHtml = setPaths(editedHtml,state);
@@ -106,7 +104,11 @@ public class ReportService {
 		if(cur==null){
 			return null;
 		}
+		
+		editedHtml = editedHtml.replace("TOTAL_CNF_USD",Util.parseCurrency(bid.getTotalBid()));
+		Double pricePerPack = (bid.getTotalBid() * cur.getRate() + est.getValue())/order.getContQnt()/order.getPckPerCont();
 		pricePerPack = pricePerPack/cur.getRate();
+		pricePerPack = (double) (Math.round (pricePerPack * 100.0)/100);
 		editedHtml = editedHtml.replace("LANDED_COST_TO_WH",pricePerPack.toString());
 		Double totalEstPrice = pricePerPack * 1.12;
 		editedHtml = editedHtml.replace("COST_PLUS_MRG",totalEstPrice.toString());

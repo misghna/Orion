@@ -61,6 +61,14 @@ getUser() {
       .map(res => res.json());
   }
 
+
+  updateNotifications(body) {
+    let headerContent = new Headers();
+    headerContent.append("Content-Type", "application/json");
+    return this.http.put(this.baseUrl + 'api/user/notification', body, { headers: headerContent })
+      .map(res => res.json());
+  }
+
   reqVCode(emailId) {
     var body = {'email':emailId};
     let headerContent = new Headers();

@@ -34,10 +34,12 @@ export class DocumentComponent implements OnInit {
   bntOption = "Search";
   selectedDate;docType;
   activeOrder= {}; filteredSalesPlanList=[];
-
+  compId=0;
   constructor(private utilService :UtilService,private docService:DocumentService, private el: ElementRef,
               public route: ActivatedRoute,public router: Router,private orderService:OrdersService) {
-
+    this.compId= Math.random();
+    utilService.setDocInstId(this.compId);
+    utilService.currentSearchTxt$.subscribe(txt => {this.search(txt);});
     this.optionsList = [{'name':'Upload New Document','value':'addNew'}];
     this.utilService.setToolsContent(this.optionsList);
         
@@ -74,16 +76,16 @@ export class DocumentComponent implements OnInit {
             this.activeOrder = null;
             this.docType = this.activeDocId.replace(/\_/g,' ')
           }
-      }
-        
+      }       
     });
 
    }
 
   ngOnInit() {
-      this.headers = [{'name':'No','value':'id','j':'x'},{'name':'Type','value':'type','j':'l'},
-                      {'name':'Order Invoice No','value':'invNo','j':'c'},{'name':'Bill No','value':'bl','j':'c'},
-                      {'name':'Remark','value':'remark','j':'c'},{'name':'Updated On','value':'updatedOn','j':'c'}];
+      this.headers = [{'name':'No','value':'id','j':'x'},
+                      {'name':'Order Inv. No','value':'invNo','j':'c'},{'name':'Bill No','value':'bl','j':'c'},
+                      {'name':'Type','value':'type','j':'l'},{'name':'Remark','value':'remark','j':'c'},
+                      {'name':'Updated On','value':'updatedOn','j':'c'}];
           var activeOrderId = this.route.snapshot.params['id'];
           if(this.activeDocId.indexOf("orderRef")>=0){
             this.getActiveOrder()
@@ -93,10 +95,6 @@ export class DocumentComponent implements OnInit {
           }
         this.loadAll(this.activeDocId);
 
-        jQuery(this.el.nativeElement).find('#monthSelector li').on('click',function(){  
-          jQuery('#monthBtn').html(jQuery(this).text().trim()); 
-          jQuery('#monthBtn').attr('value',jQuery(this).text().trim());       
-        });
   } 
   
 
@@ -240,27 +238,41 @@ triggerDelModal(event){
 
 
     search(searchObj){
-      this.data= this.responseData.filter(item => (
-        (item.name.toLowerCase().indexOf(searchObj.searchTxt.toLowerCase()) !== -1) || 
-        (item.brand.toLowerCase().indexOf(searchObj.searchTxt) !== -1) || 
-        (item.itemOrigin.toLowerCase().indexOf(searchObj.searchTxt) !== -1) || 
-        (item.destinationPort.toLowerCase().indexOf(searchObj.searchTxt) !== -1)
-        ));
+      this.data= this.utilService.search(searchObj,this.responseData,this.headers);
     }
 
 
+    // option(options){
+    //   var selected = options.optionName;
+    //   var countDash = (selected.match(/-/g) || []).length;
+    //   switch(true){
+    //     case (selected == 'addNew') :
+    //        this.showAddForm();
+    //       break;
+    //     default:
+    //       console.log(selected);
+    //   }
+    // }
+
+   openUploaderWindow(){
+     jQuery(this.el.nativeElement).find("#fileSelector").click();
+  //   this.lastFileOpenerTime=0;
+  }
+
     option(options){
+      var date = new Date();
       var selected = options.optionName;
       var countDash = (selected.match(/-/g) || []).length;
       switch(true){
-        case (selected == 'addNew') :
-           this.showAddForm();
+        case (selected == 'addNew') :        
+           if(this.router.url.indexOf('document/uploaded')>0 && this.compId==this.utilService.getDocInstId()){
+             this.openUploaderWindow();           
+           }
           break;
         default:
           console.log(selected);
       }
     }
-
 
     replaceAll(string,old,newStr){
       return string.split('old').join('newStr');

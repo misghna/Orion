@@ -3,7 +3,7 @@ import { FileUploader } from 'ng2-file-upload';
 import { UtilService } from '../service/util.service';
 import Utils  from '../service/utility';
 import { Router,ActivatedRoute, Params } from '@angular/router';
-
+import { OrdersService } from '../orders/orders.service';
 
 declare var $ :any;
 
@@ -21,9 +21,10 @@ export class FileUploadComponent implements OnInit {
   public hasBaseDropZoneOver:boolean = false;
   public hasAnotherDropZoneOver:boolean = false;
 
-  optionsList;fData=[]; alertWin={};
-  docTypes;uploadType;activeDocId;URL;
-  constructor(private el : ElementRef,private utilService: UtilService,public route: ActivatedRoute,public router: Router){
+  optionsList;fData=[]; alertWin={};  lastFileOpenerTime=0;
+  docTypes;uploadType;activeDocId;URL;allOrdersResponse;allOrders;itemDetail={};
+  constructor(private el : ElementRef,private utilService: UtilService,public route: ActivatedRoute,public router: Router,
+  private orderService :OrdersService){
   //  this.URL = Utils.getBaseUrl() + 'api/user/uploadFile/';
 
     this.alertWin = {'alertHidden':true,'type':'','label':'','msg':''}
@@ -35,10 +36,10 @@ export class FileUploadComponent implements OnInit {
                       'Certificate of Insurance','Du License','Inspection','Local Phytosanitary','Packing List','Proforma Invoice','Other'];
 
     
-    utilService.currentToolsOptCont$.subscribe(
-      opt => {  
-        this.option(opt);
-    });
+    // utilService.currentToolsOptCont$.subscribe(
+    //   opt => {  
+    //     this.option(opt);
+    // });
 
 
     router.events.subscribe((val) => {
@@ -73,8 +74,10 @@ export class FileUploadComponent implements OnInit {
       var attachDoc = this.getFileDate(fileItem.file.name)
       // console.log(JSON.stringify(attachDoc));
       form.append('data', JSON.stringify(attachDoc[0]));
-      form.append('orderRef', this.activeDocId.split("-")[1]);
+      form.append('orderRef', this.itemDetail['orderRef']);
     };
+
+    this.getAllOrders();
 
     this.uploader.onAfterAddingFile =(fileItem: any) => {
        this.fData.push({'file':fileItem.file.name,'name' : '' , 'type' :'Select Type','remark':''});
@@ -97,10 +100,40 @@ changeType(i,type){
 }
 
 
+   getAllOrders(){
+     this.orderService.getAllOrders('all')
+      .subscribe(
+          response => {
+              this.allOrdersResponse =response;  
+              this.allOrders =response;     
+          },
+          error => {      
+              console.error("Something went wrong, please try again later!");
+          }
+        );
+   }
+
+  filterOrder(txt){
+      if(txt.length==0) {
+        this.allOrders = this.allOrdersResponse
+      }
+      this.allOrders = this.allOrdersResponse.filter(order => {
+        if(order!=null && ((order.bl!=null && order.bl.toLowerCase().indexOf(txt.toLowerCase())>-1) || 
+                            (order.invNo !=null &&  order.invNo.toLowerCase().indexOf(txt.toLowerCase()))>-1 ))
+            return order;
+      });
+
+  }
+
   uploadAllFiles(event){
-       event.preventDefault();
-       this.uploadType='multi';
+      event.preventDefault();
+      this.uploadType='multi';
       var dataInvalid = false;
+      console.log(JSON.stringify(this.itemDetail));
+      if((JSON.stringify(this.itemDetail)) == '{}'){
+        this.popAlert("Error","Danger","select InvNo or BL & try again!"); 
+         return;
+      }
       this.fData.forEach((data, index) => {
           if(data.type=='Select Type'){
             this.popAlert("Error","Danger","select Type for all the document!"); 
@@ -116,6 +149,12 @@ changeType(i,type){
 uploadOneFile(item){
     this.uploadType='single';
     var dataInvalid = false;
+
+    if((JSON.stringify(this.itemDetail)) == '{}'){
+      this.popAlert("Error","Danger","select InvNo or BL & try again!"); 
+        return;
+    }
+
     this.fData.forEach((data, index) => {
         if(data.file == item.file.name && data.type=='Select Type'){
           this.popAlert("Error","Danger","select Type for the documents!"); 
@@ -147,14 +186,21 @@ getFileDate(fileName){
 
   openUploaderWindow(){
      $(this.el.nativeElement).find("#fileSelector").click();
+  //   this.lastFileOpenerTime=0;
   }
 
     option(options){
+      var date = new Date();
       var selected = options.optionName;
       var countDash = (selected.match(/-/g) || []).length;
       switch(true){
-        case (selected == 'addNew') :
-           this.openUploaderWindow();
+        case (selected == 'addNew') :        
+           var diff = date.getTime() - this.lastFileOpenerTime;
+           console.log(diff);
+           if(this.router.url.indexOf('document/uploaded')>0 && (this.lastFileOpenerTime==0)){
+             this.lastFileOpenerTime = date.getTime();
+             this.openUploaderWindow();           
+           }
           break;
         default:
           console.log(selected);

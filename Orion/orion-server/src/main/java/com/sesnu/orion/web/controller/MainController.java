@@ -46,7 +46,7 @@ public class MainController {
 		return "healthy";
 	}
 	
-	@RequestMapping(value = {"/","/setting/**","/import/**","/other/**","/document/**","/open/**"},
+	@RequestMapping(value = {"/","/status/**","/finance/**","/setting/**","/import/**","/other/**","/document/**","/open/**"},
 			method = RequestMethod.GET)
 	public String allPageRequests(HttpServletRequest request,ModelMap model) {
 		

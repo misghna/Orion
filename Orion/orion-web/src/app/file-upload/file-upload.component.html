@@ -28,6 +28,8 @@
                 <thead>
                 <tr class="tbl-header">
                     <th >No</th>
+                    <th >Inv No</th>
+                    <th >BL</th>
                     <th >File</th>
                     <th >Type</th>
                     <th >Description</th>
@@ -41,6 +43,52 @@
                 <tbody>
                 <tr *ngFor="let item of uploader.queue; let i = index">
                     <td>{{ i+1 }}</td>
+                    <td>  
+                        <div class="dropdown">
+                            <textarea id="inv" #inv class="dropdown-toggle form-control txt-flat" data-toggle="dropdown" rows="2"  
+                                placeholder="Inv No" required (keyup)="filterOrder(inv.value)" 
+                                [(ngModel)]="itemDetail.invNo" [ngModelOptions]="{standalone: true}"></textarea>
+                            
+                            <ul class="dropdown-menu item-name">
+                            <li >
+                                <table class="table table-striped tableFont" style="width:250px">
+                                <thead><tr>
+                                <th class="text-center">Inv No</th>
+                                <th class="text-center">Bill of Loading</th>
+                                </tr></thead>
+                                <tr *ngFor = "let order of allOrders" 
+                                (click)="itemDetail.invNo = order.invNo;itemDetail.bl=order.bl;itemDetail.orderRef=order.id;">
+                                <td >{{order.invNo}}</td>
+                                <td>{{order.bl}}</td>
+                                </tr>
+                                </table> 
+                            </li>                          
+                            </ul>           
+                        </div>    
+                        </td>
+                        <td>
+                        <div class="dropdown">
+                            <textarea id="bill" #bill class="dropdown-toggle form-control txt-flat" data-toggle="dropdown" rows="2"  
+                                placeholder="Inv No" (keyup)="filterOrder(bill.value)" 
+                                [(ngModel)]="itemDetail.bl" [ngModelOptions]="{standalone: true}"></textarea>           
+                            <ul class="dropdown-menu item-name">
+                            <li >
+                                <table class="table table-striped tableFont" style="width:250px">
+                                <thead><tr>
+                                <th class="text-center">Inv No</th>
+                                <th class="text-center">Bill of Loading</th>
+                                </tr></thead>
+                                <tr *ngFor = "let order of allOrders" 
+                                (click)="itemDetail.invNo = order.invNo;itemDetail.bl=order.bl;itemDetail.orderRef=order.id;">
+                                <td >{{order.invNo}}</td>
+                                <td>{{order.bl}}</td>
+                                </tr>
+                                </table> 
+                            </li>
+                            </ul>
+                        
+                        </div>    
+                        </td>
                     <td>{{ item?.file?.name }}</td>
                     <td>
                         <div class="btn-group">

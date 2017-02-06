@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sesnu.orion.dao.ClientDAO;
 import com.sesnu.orion.dao.OrderDAO;
-import com.sesnu.orion.web.model.Client;
+import com.sesnu.orion.web.model.AddressBook;
 import com.sesnu.orion.web.utility.Util;
 
 @CrossOrigin(origins = "http://localhost:4200")
@@ -30,10 +30,10 @@ public class ClientController {
 	@Autowired OrderDAO orderDao;
 	
 
-	@RequestMapping(value = "/api/user/clients", method = RequestMethod.GET)
-	public @ResponseBody List<Client> items(HttpServletResponse response) throws IOException {
+	@RequestMapping(value = "/api/user/addressBook/all", method = RequestMethod.GET)
+	public @ResponseBody List<AddressBook> items(HttpServletResponse response) throws IOException {
 
-		List<Client> clients= clientDAO.listAll();
+		List<AddressBook> clients= clientDAO.listAll();
 
 		if(clients.size()>0){
 			return clients;
@@ -43,17 +43,41 @@ public class ClientController {
 	}
 	
 
+	@RequestMapping(value = "/api/user/addressBook/fwAgents", method = RequestMethod.GET)
+	public @ResponseBody List<AddressBook> fwAgents(HttpServletResponse response) throws IOException {
+
+		List<AddressBook> clients= clientDAO.listAllFWAgents();
+
+		if(clients.size()>0){
+			return clients;
+		}
+		response.sendError(404);
+		return null;
+	}
 	
-	@RequestMapping(value = "/api/user/client", method = RequestMethod.POST)
-	public @ResponseBody List<Client> addItem(HttpServletResponse response,
-			@RequestBody Client client)
+	@RequestMapping(value = "/api/user/addressBook/destinations", method = RequestMethod.GET)
+	public @ResponseBody List<AddressBook> destinations(HttpServletResponse response) throws IOException {
+
+		List<AddressBook> clients= clientDAO.listAllDest();
+
+		if(clients.size()>0){
+			return clients;
+		}
+		response.sendError(404);
+		return null;
+	}
+	
+	
+	@RequestMapping(value = "/api/user/addressBook", method = RequestMethod.POST)
+	public @ResponseBody List<AddressBook> addItem(HttpServletResponse response,
+			@RequestBody AddressBook client)
 			throws Exception {
 		
 				
 		client.setId(null);
 		clientDAO.saveOrUpdate(client);
 
-		List<Client> clients = clientDAO.listAll();
+		List<AddressBook> clients = clientDAO.listAll();
 
 		if(clients.size()>0){
 			return clients;
@@ -65,9 +89,9 @@ public class ClientController {
 	}
 	
 	
-	@RequestMapping(value = "/api/user/client", method = RequestMethod.PUT)
-	public @ResponseBody List<Client> updateItem(HttpServletResponse response,
-			@RequestBody Client client)
+	@RequestMapping(value = "/api/user/addressBook", method = RequestMethod.PUT)
+	public @ResponseBody List<AddressBook> updateItem(HttpServletResponse response,
+			@RequestBody AddressBook client)
 			throws Exception {
 		
 		
@@ -78,7 +102,7 @@ public class ClientController {
 		
 		
 		clientDAO.saveOrUpdate(client);
-		List<Client> clients = clientDAO.listAll();
+		List<AddressBook> clients = clientDAO.listAll();
 
 		if(clients.size()>0){
 			return clients;
@@ -90,15 +114,15 @@ public class ClientController {
 	
 	
 
-	@RequestMapping(value = "/api/user/client/{id}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/api/user/addressBook/{id}", method = RequestMethod.DELETE)
 	
-	public @ResponseBody List<Client> deleteItem(@PathVariable("id") long id,
+	public @ResponseBody List<AddressBook> deleteItem(@PathVariable("id") long id,
 			HttpServletResponse response) throws Exception {
-		Client client = clientDAO.get(id);
+		AddressBook client = clientDAO.get(id);
 	
 		if(client != null){
 			clientDAO.delete(client);
-			List<Client> clients = clientDAO.listAll();
+			List<AddressBook> clients = clientDAO.listAll();
 
 			if(clients.size()>0){
 				return clients;

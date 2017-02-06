@@ -10,8 +10,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "DESTINATION")
-public class Client {
+@Table(name = "ADDRESS_BOOK")
+public class AddressBook {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="dest_seq")
@@ -21,7 +21,10 @@ public class Client {
 	
 	@Column(name = "name")
 	private String name;
-		
+	
+	@Column(name="type")
+	private String type;
+	
 	@Column(name="address")
 	private String address;
 
@@ -33,6 +36,9 @@ public class Client {
 	
 	@Column(name="manager")
 	private String manager;
+	
+	@Column(name = "email")
+	private String email;
 
 	public Long getId() {
 		return id;
@@ -81,6 +87,24 @@ public class Client {
 	public void setManager(String manager) {
 		this.manager = manager;
 	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	
+		
 	
 	
 }

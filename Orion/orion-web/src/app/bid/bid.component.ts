@@ -47,10 +47,12 @@ export class BidComponent implements OnInit {
   approvalAlert={};allOrders;ordersList;
   approversList;currencies;responseCurrency;
   approversPlaceHolder = "Select an Approver";
-
+  activeOrder1;
   constructor(private utilService :UtilService,private bidService:BidService, private el: ElementRef,private rd: Renderer,
               private orderService:OrdersService ,public route: ActivatedRoute,private userService : UserService,
               public router: Router,private approvalService : ApprovalService,private currencyService : CurrencyService) {
+    utilService.currentSearchTxt$.subscribe(txt => {this.search(txt);});
+
     this.approvalAlert['hidden']=true;
     this.optionsList = [{'name':'Add New Bidder','value':'addNew'}];
     this.utilService.setToolsContent(this.optionsList);
@@ -71,15 +73,30 @@ export class BidComponent implements OnInit {
     utilService.currentToolsOptCont$.subscribe(opt => { this.option(opt);});
     utilService.currentdelItem$.subscribe(opt => { this.delete(opt);});
 
-    router.events.subscribe((val) => {
-      var newRouteParam = this.route.snapshot.params['id'];
-      if(this.activeOrderId != newRouteParam){
-        this.activeOrderId = newRouteParam;
-          this.loadAll(this.activeOrderId);
-       //   this.setTitle();
-      }       
-    });
    }
+
+
+   setTitle(){
+          if(this.activeOrderId.indexOf("all")>=0){
+            this.activeOrder1 = null;        
+          }else{
+            this.getActiveOrder()
+          }
+   }
+
+    getActiveOrder(){
+          this.orderService.getOrderById(this.activeOrderId) 
+          .subscribe(
+              response => {
+               //   this.allOrders = response; 
+                    console.log(JSON.stringify(response));
+                    this.activeOrder1 = response;
+              },
+              error => {
+                  console.error("order not found!");          
+              }
+            );
+    }
 
   ngOnInit() {
       this.headers = [{'name':'No','value':'id','j':'x'},{'name':'Order Inv. No','value':'invNo','j':'l'},
@@ -93,15 +110,20 @@ export class BidComponent implements OnInit {
                       {'name':'Updated On','value':'updatedOn','j':'c'}];
       
         this.activeOrderId = this.route.snapshot.params['id'];
+        this.setTitle();
         this.loadAll(this.activeOrderId);
         this.populateYear();
         this.getAllOrders();
         this.getAllCurrencies();
 
-        jQuery(this.el.nativeElement).find('#monthSelector li').on('click',function(){  
-          jQuery('#monthBtn').html(jQuery(this).text().trim()); 
-          jQuery('#monthBtn').attr('value',jQuery(this).text().trim());       
-        });
+    this.router.events.subscribe((val) => {
+      var newRouteParam = this.route.snapshot.params['id'];
+      if(this.activeOrderId != newRouteParam){
+        this.activeOrderId = newRouteParam;
+          this.loadAll(this.activeOrderId);
+          this.setTitle();
+      }       
+    });
 
   } 
   
@@ -433,12 +455,7 @@ updateBaseUnit(unit){
 
 
     search(searchObj){
-      this.data= this.responseData.filter(item => (
-        (item.name.toLowerCase().indexOf(searchObj.searchTxt.toLowerCase()) !== -1) || 
-        (item.brand.toLowerCase().indexOf(searchObj.searchTxt) !== -1) || 
-        (item.itemOrigin.toLowerCase().indexOf(searchObj.searchTxt) !== -1) || 
-        (item.destinationPort.toLowerCase().indexOf(searchObj.searchTxt) !== -1)
-        ));
+      this.data= this.utilService.search(searchObj,this.responseData,this.headers);
     }
 
 

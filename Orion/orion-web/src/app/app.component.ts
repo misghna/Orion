@@ -49,7 +49,8 @@ ngOnInit() {
                     localStorage.setItem('accessDetail', JSON.stringify(response));
                     localStorage.setItem('sid',"JSESSIONID=" + response['sId']);
                     localStorage.setItem('homeHeaders',response['homeHeaders']);
-                    localStorage.setItem('homeColor',response['homeColor']);                   
+                    localStorage.setItem('homeColor',response['homeColor']);
+                    localStorage.setItem('notifications',response['notifications']);                     
                     if(response['role'] =='Admin'){
                       this.utilService.setAdminState(true);
                     }

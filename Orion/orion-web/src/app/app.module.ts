@@ -23,6 +23,7 @@ import { PassRenewComponent } from './passrenew/passrenew.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { ItemsComponent } from './items/items.component';
 import { FilterNamePipe } from './pipes/pipe.filterName';
+import { DateDiffPipe } from './pipes/pipe.dateDiff';
 import { SalesPlanComponent } from './sales-plan/sales-plan.component';
 import { SalesPlanService } from './sales-plan/sales-plan.service';
 import { OrdersComponent } from './orders/orders.component';
@@ -64,6 +65,11 @@ import { TerminalService } from './terminal/terminal.service';
 import { EstimateComponent } from './estimate/estimate.component';
 import { EstimateService } from './estimate/estimate.service';
 import { BudgetService } from './budget/budget.service';
+import { DocHandoverComponent } from './doc-handover/doc-handover.component';
+import { DocHandoverService } from './doc-handover/doc-handover.service';
+import { NotificationComponent } from './notification/notification.component';
+import { NotificationService } from './notification/notification.service';
+
 
 
 
@@ -86,7 +92,8 @@ import { BudgetService } from './budget/budget.service';
                 ItemsComponent,FilterNamePipe, SalesPlanComponent, OrdersComponent, FileUploadComponent,
                 BidComponent, PaymentComponent, ShippingComponent,LicenseComponent,
                 FileSelectDirective, FileDropDirective, DocumentComponent,DigitsOnly,NumberOnly, ContainerComponent,
-                PortFeeComponent, StatusComponent, ApprovalComponent, MiscComponent, CurrencyComponent, ClientComponent, BudgetComponent, DocTrackingComponent, TerminalComponent, EstimateComponent
+                PortFeeComponent, StatusComponent, ApprovalComponent, MiscComponent, CurrencyComponent, 
+                ClientComponent, BudgetComponent, DocTrackingComponent, TerminalComponent, EstimateComponent,DateDiffPipe, DocHandoverComponent, NotificationComponent
                  ],
   providers:[AuthGuard,UtilService,UserService,AppSettings,MiscService,
             SalesPlanService,OrdersService,DocumentService,
@@ -94,6 +101,7 @@ import { BudgetService } from './budget/budget.service';
             ContainerService,PortFeeService,ApprovalService,StatusService,
             MiscSettingService,CurrencyService,ClientService,LicenseService,
             DocTrackingService,TerminalService,EstimateService,BudgetService,
+            DocHandoverService,NotificationService,
         {
           provide: Http,
           useFactory: (backend: XHRBackend, defaultOptions: RequestOptions, utilService:UtilService) => {

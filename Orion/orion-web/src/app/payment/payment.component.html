@@ -162,8 +162,7 @@
                 </tr>
                 </table> 
               </li>
-            </ul>
-           
+            </ul>        
           </div>    
         </td>
         <td>
@@ -183,7 +182,7 @@
                 {{itemDetail.name}} <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
-                <li *ngFor ="let payment of allPaymentList"><a (click)="itemDetail.name = payment">{{payment}}</a></li>          
+                <li *ngFor ="let payment of allPaymentList"><a (click)="itemDetail.name = payment.name">{{payment.name}}</a></li>          
             </ul>
             </div>
         </td>

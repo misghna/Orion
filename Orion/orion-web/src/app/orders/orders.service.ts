@@ -28,6 +28,12 @@ export class OrdersService {
       .map(res => res.json());
   }
 
+  // getOrderById(id) {
+  //   var url = this.baseUrl + 'api/user/order/' + id;
+  //   return this.http.get(url,[{ withCredentials: true }])
+  //     .map(res => res.json());
+  // }
+
 
   getOrder(year,month) {
     var url = this.baseUrl + 'api/user/order/' + year + '/' + month;

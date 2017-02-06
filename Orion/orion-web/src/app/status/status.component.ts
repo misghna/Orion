@@ -56,6 +56,7 @@ export class StatusComponent implements OnInit {
                 response => {
                     this.payments =response;
                     this.payPercent = this.calcPercent(this.payments);
+                    this.setProgressValue('payment',this.payPercent);
                     this.statusHidden = false;
                     this.overAllProgress();
                 },
@@ -75,6 +76,7 @@ export class StatusComponent implements OnInit {
                 response => {
                     this.documents =response;
                     this.docPercent = this.calcPercent(this.documents);
+                    this.setProgressValue('document',this.docPercent);
                     this.statusHidden = false;
                     this.overAllProgress();
                 },
@@ -94,6 +96,7 @@ export class StatusComponent implements OnInit {
                 response => {
                     this.orders =response;
                     this.orderPercent = this.calcPercent(this.orders);
+                    this.setProgressValue('order',this.orderPercent);
                     this.statusHidden = false;
                     this.overAllProgress();
                 },
@@ -102,6 +105,15 @@ export class StatusComponent implements OnInit {
                 }
       );
   }
+
+setProgressValue(type,value){
+        $('.pie_progress_' + type).asPieProgress({
+             namespace: 'pie_progress_'+type
+        });
+          $('.pie_progress_' + type).asPieProgress('reset');
+          $('.pie_progress_' + type).asPieProgress('start');
+          $('.pie_progress_' + type).asPieProgress('go',value);
+}
 
   getOrderList(){ 
      this.ordersService.getAllOrders('all')
@@ -152,13 +164,7 @@ overAllProgress(){
 
     var averAllProgress = this.calcPercent(mrg1);
 
-      $('.pie_progress').asPieProgress({
-        namespace: 'pie_progress'
-      });
-        $('.pie_progress').asPieProgress('reset');
-        $('.pie_progress').asPieProgress('start');
-        $('.pie_progress').asPieProgress('go',averAllProgress);
-
+      this.setProgressValue('overall',averAllProgress);
 
 }
 
@@ -169,7 +175,7 @@ calcPercent(status){
       count = count +1;
     }
   });
-  return Math.round(count/(status.length)*100);
+  return Math.floor(count/(status.length)*100);
 }
 
 }

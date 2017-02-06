@@ -77,6 +77,7 @@ public class BidController {
 			throws Exception {
 		
 		bid.setUpdatedOn(Util.parseDate(new Date(),"/"));
+		bid.setTotalBid(getBidTotal(bid));
 		bid.setId(null);
 		bidDao.saveOrUpdate(bid);
 		
@@ -99,6 +100,8 @@ public class BidController {
 			response.sendError(400,"Bid file not found");
 			return null;
 		}
+		
+		bid.setTotalBid(getBidTotal(bid));
 		bid.setUpdatedOn(Util.parseDate(new Date(),"/"));
 		bidDao.saveOrUpdate(bid);
 		
@@ -110,6 +113,7 @@ public class BidController {
 		return null;
 
 	}
+	
 	
 	@RequestMapping(value = "/api/user/bid/select/{id}", method = RequestMethod.PUT)
 	public @ResponseBody List<BidView> selectBidder(HttpServletResponse response,
@@ -306,5 +310,10 @@ public class BidController {
 //		response.sendError(400);
 //		return null;
 //	}
+	
+	private double getBidTotal(Bid bid){
+		OrderView order = orderDao.get(bid.getOrderRef());		
+		return order.getPckPerCont() * order.getContQnt() * bid.getCifCnf();
+	}
 	
 }

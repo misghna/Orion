@@ -11,9 +11,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.multipart.MultipartResolver;
@@ -30,7 +32,7 @@ import com.sesnu.orion.web.utility.ConfigFile;
 import com.sesnu.orion.web.utility.Util;
 
 
-
+@EnableScheduling
 @EnableWebMvc
 @Configuration
 @ComponentScan(basePackages="com.sesnu.orion", useDefaultFilters = false, 
@@ -60,6 +62,11 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 	    return multipartResolver;
 	}
 	
+    @Bean
+    public CronJob myCron() {
+        return new CronJob();
+    }
+    
 	@Bean
 	public InternalResourceViewResolver viewResolver() {
 		InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();

@@ -66,8 +66,8 @@
 
 
 .meterBox {
-    width: 200px;
-    height: 95px;
+    width: 175px;
+    height: 75px;
     background-color: #F7F7F7;
      box-shadow:0.2px 0.2px 0.2px 0.2px #C9C9C9;
  	-webkit-box-shadow:0.2px 0.2px 0.2px 0.2px #C9C9C9;
@@ -79,7 +79,7 @@
 }
 .meterNumber{
     color : gray;
-	font-size:40px;
+	font-size:25px;
     font-family:"Comic Sans MS";
     width: 100%;
     margin: 0 auto; 
@@ -89,7 +89,7 @@
 
 .meterText{
 	color : grey;
-	font-size:22px;
+	font-size:18px;
     font-family:"Courier New";
     width: 100%;
     margin: 0 auto; 

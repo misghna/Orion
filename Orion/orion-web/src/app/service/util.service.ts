@@ -6,6 +6,8 @@ import { Subject }    from 'rxjs/Subject';
 @Injectable()
 export class UtilService {
 
+  contId=0;
+
   private headerState = new Subject<boolean>();
   currentHeaderState$ = this.headerState.asObservable();
 
@@ -96,8 +98,6 @@ constructor(public router: Router) {
       this.delItem.next(param);
     }
 
-
-
     getErrorMsg(error){
         var msg = JSON.stringify(error);
         if (msg.indexOf('*$Start$*')>0){
@@ -105,6 +105,39 @@ constructor(public router: Router) {
         }else{
           return "";
         }
+    }
+
+
+    setDocInstId(id){
+      if(this.contId==0){
+          this.contId =id;
+      }
+    }
+
+    getDocInstId(){ return this.contId}
+
+    search(searchObj,responseData,headers){
+      if(searchObj.searchTxt==null || searchObj.searchTxt==''){       
+        return responseData; 
+      }
+
+      var searchResult = [];
+      var searchStrs = searchObj.searchTxt.split(" ");
+      searchStrs.forEach(txt => {
+          searchResult = [];
+          responseData.forEach(el => {
+              var rowAdded :boolean = false;
+              headers.forEach(sel => {
+              if(!rowAdded && el[sel.value]!=null && el[sel.value].toString().toLowerCase().indexOf(txt.toLowerCase()) !== -1){
+                searchResult.push(el);
+                rowAdded = true;
+              }
+            });  
+          });
+          responseData=searchResult;
+      });
+
+      return searchResult;
     }
 
 } 

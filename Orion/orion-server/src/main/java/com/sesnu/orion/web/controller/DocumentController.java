@@ -58,58 +58,6 @@ public class DocumentController {
 		}
 		return docs;
 	}
-//	@RequestMapping(value = "/api/user/doc/{docType}", method = RequestMethod.GET)
-//	public @ResponseBody List<Document> docByDocType(@PathVariable("docType") String docType,
-//			HttpServletResponse response) throws IOException {
-//
-//		List<Document> docs = docDao.listByDocType(docType);
-//		if(docs.size()>0){
-//			return docs;
-//		}
-//		response.sendError(404);
-//		return null;
-//	}
-	
-	
-//	@RequestMapping(value = "/api/user/doc", method = RequestMethod.POST)
-//	public @ResponseBody List<DocView> addItem(HttpServletResponse response,@RequestBody DocView doc)
-//			throws Exception {
-//		
-//		doc.setUpdatedOn(Util.parseDate(new Date(),"/"));
-//		doc.setId(null);
-//		docDao.saveOrUpdate(doc);
-//		
-//		List<DocView> docs = docDao.list(doc.getOrderRef());
-//		if(docs.size()>0){
-//			return docs;
-//		}
-//		response.sendError(404);
-//		return null;
-//
-//	}
-	
-	
-//	@RequestMapping(value = "/api/user/doc", method = RequestMethod.PUT)
-//	public @ResponseBody List<DocView> updateItem(HttpServletResponse response,
-//			@RequestBody DocView doc)
-//			throws Exception {
-//		
-//		if(docDao.get(doc.getId())==null){
-//			response.sendError(400);
-//			return null;
-//		}
-//		doc.setUpdatedOn(Util.parseDate(new Date(),"/"));
-//		docDao.saveOrUpdate(doc);
-//		
-//		List<DocView> Documents = docDao.list(doc.getOrderRef());
-//		if(Documents.size()>0){
-//			return Documents;
-//		}
-//		response.sendError(404);
-//		return null;
-//
-//	}
-	
 	
 
 	@RequestMapping(value = "/api/user/doc/{state}/{id}", method = RequestMethod.DELETE)
@@ -151,11 +99,12 @@ public class DocumentController {
 	@RequestMapping(value = "/documents/pdf/{docName}", method = RequestMethod.GET, produces = MediaType.APPLICATION_PDF_VALUE)
 	public byte[] getPdf(@PathVariable("docName") String docName, HttpServletResponse resp) 
 			throws IOException {
-	    TCPResponse response = util.readFromS3(docName);
+	    TCPResponse response = util.readFromS3(docName + ".pdf");
 	    if(response.getCode()==200){
-			InputStream in = (InputStream) util.readFromS3(docName).getResponse();
+			InputStream in = (InputStream) response.getResponse();
 		    return IOUtils.toByteArray(in);
 	    }else{
+	    	System.out.println(response.getMsg());
 	    	resp.sendError(400,"error when retriving document");
 	    	return null;
 	    }

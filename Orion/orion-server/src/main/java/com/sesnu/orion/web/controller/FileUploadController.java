@@ -44,7 +44,8 @@ public class FileUploadController {
 	@RequestMapping(value = "/api/user/uploadFile", method = RequestMethod.POST)
 	public @ResponseBody List<DocView> uploadFileHandler(HttpServletRequest req,
 			@RequestParam("file") MultipartFile file,
-			@RequestParam("data") String data,@RequestParam("orderRef") long orderRef,
+			@RequestParam("data") String data,
+			@RequestParam("orderRef") long orderRef,
 			HttpServletResponse res
 			) throws ParseException, IOException {
 
@@ -55,7 +56,7 @@ public class FileUploadController {
 		if (!file.isEmpty()) {
 			try {
 				fileName = file.getOriginalFilename();
-				fileName = fileName.replace(".", "_").concat("__").concat(Long.toString((System.currentTimeMillis())));
+				fileName = fileName.replace(".", "_").concat("__").concat(((Long)orderRef).toString()).concat("__").concat(Long.toString((System.currentTimeMillis())));
 				byte[] bytes = file.getBytes();
 
 				TCPResponse response = util.writeToS3(bytes,fileName);

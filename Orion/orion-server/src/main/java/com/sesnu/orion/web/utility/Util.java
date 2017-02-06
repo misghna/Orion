@@ -13,6 +13,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -30,6 +31,8 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.encrypt.Encryptors;
@@ -108,8 +111,11 @@ public class Util {
 
     }
 
-	
 	public static void sendMail(String subject,String to, String msg) {
+		sendMail(subject,to,msg,null);
+	}
+	
+	public static void sendMail(String subject,String to, String msg,String cc) {
 		Properties props = new Properties();
 		props.put("mail.smtp.host", "smtp.gmail.com");
 		props.put("mail.smtp.socketFactory.port", "465");
@@ -132,6 +138,7 @@ public class Util {
 			message.setFrom(new InternetAddress("eriangoappmaster@gmail.com"));
 			message.setRecipients(Message.RecipientType.TO,
 					InternetAddress.parse(to));
+			if(cc!=null){message.setRecipients(Message.RecipientType.CC,InternetAddress.parse(cc));}
 			message.setSubject(subject);
 			message.setText(msg);			
 
@@ -286,6 +293,24 @@ public class Util {
 		renderer.createPDF( fos );
 		fos.close();
 		return fileNameWithPath;
+	}
+	
+	public static String parseCurrency(Double amount){
+		NumberFormat formatter = NumberFormat.getCurrencyInstance();
+		String moneyString = formatter.format(amount);
+		return moneyString;
+	}
+	
+	
+	public User getActiveUser(HttpServletRequest request,UserDAO userDao){
+		User user=null;
+		HttpSession session = request.getSession();			
+		if(request.getSession().getAttribute("user")!=null){			
+			 user = (User) session.getAttribute("user");		
+		}else if(conf.getProp().get("devMode").equals("true"))	{
+			 user = getDevUser(userDao);
+		}
+		return user;
 	}
 }
 

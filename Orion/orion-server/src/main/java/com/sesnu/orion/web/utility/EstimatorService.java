@@ -34,6 +34,7 @@ public class EstimatorService {
 	@Autowired private MiscSettingDAO miscDao;
 	@Autowired private ExchangeDAO exchangeDao;
 	@Autowired private TerminalDAO terminalDao;
+	@Autowired private BidDAO bidDao;
 	
 	private JSONObject addTotal(Estimate est){
 		JSONObject j =est.getDetails();
@@ -91,12 +92,12 @@ public class EstimatorService {
 		// certificateOfHealth
 		est = certificateOfHealth();
 		total += est.getValue();
-		pd.put("Certificate Of Health", addTotal(est));
+		pd.put("Agriculture Phyto.", addTotal(est));
 				
 		// phytosanitary
 		est = phytosanitary();
 		total += est.getValue();
-		pd.put("Local Phytosanitary", addTotal(est));
+		pd.put("Phytosanitary", addTotal(est));
 
 		// forwardingAgent
 		est = forwardingAgent(bid);
@@ -419,6 +420,17 @@ public class EstimatorService {
 //		}
 //		pd.put("Forwarding agent",total);
 //		return new EstimateDetail(total,pd);
+		return null;
+	}
+
+	public Estimate itemCost(OrderView order,Payment pay) {
+		
+		List<Bid> bid = bidDao.getBidWinner(order.getId());
+		if(bid.size()>0){
+			if(pay.getCurr().equals(bid.get(0).getCurrency())){
+				new Estimate(bid.get(0).getTotalBid(),null);
+			}
+		}
 		return null;
 	}
 	

@@ -2,118 +2,116 @@
 
 
 <div style="width:100%">
-<table border="0px" style="width:100%">
-  <tr>
-    <td style ="width:300px;vertical-align:top">
 
-      <div class="sideMenu" >
-         <font size=2> Search by Invoice No or Bill Of Loading</font>
-          <br><br>
-          <div class="dropdown">
-          <textarea id="filterTxt" #filterTxt class="dropdown-toggle form-control txt-flat" data-toggle="dropdown" rows="2" required
-                placeholder="Invoice No - Bill of loading" (keyup)="filterOrder(filterTxt.value)" [ngModel]="activeOrderId"></textarea> 
-            <ul class="dropdown-menu item-name">
-              <li >
-                <table class="table table-striped tableFont" style="width:250px">
-                  <thead> <tr>
-                      <th class="text-center">Inv No</th>
-                      <th class="text-center">Bill of Loading</th>
-                   </tr></thead>
-                   
-                   <tr *ngFor = "let order of allOrders" 
-                  (click)="assignOrder(order)">
-                      <td >{{order.invNo}}</td>
-                      <td>{{order.bl}}</td>
-                </tr>
-                </table> 
-              </li>                         
-            </ul>        
-          </div>  
-          <br> 
-          <br>
-          <button class="btn btn-success btn-block" (click)="openStat()">Open Status</button>
+       <div class="row">
+         <div class="col-sm-3" style="background-color:white;">
+          <div class="sideMenu" >
+            <div style="text-align:center"> Search by Inv. No or BL</div>
+              <div class="dropdown">
+              <textarea id="filterTxt" #filterTxt class="dropdown-toggle form-control txt-flat" data-toggle="dropdown" rows="2" required
+                    placeholder="Invoice No - Bill of loading" (keyup)="filterOrder(filterTxt.value)" [ngModel]="activeOrderId"></textarea> 
+                <ul class="dropdown-menu item-name">
+                  <li >
+                    <table class="table table-striped tableFont" style="width:250px">
+                      <thead> <tr>
+                          <th class="text-center">Inv No</th>
+                          <th class="text-center">Bill of Loading</th>
+                      </tr></thead>
+                      
+                      <tr *ngFor = "let order of allOrders" 
+                      (click)="assignOrder(order)">
+                          <td >{{order.invNo}}</td>
+                          <td>{{order.bl}}</td>
+                    </tr>
+                    </table> 
+                  </li>                         
+                </ul>        
+              </div>  
+              <br> 
+              <br>
+              <button class="btn btn-success btn-block" (click)="openStat()">Open Status</button>
 
-          <br><br><br><br><br><br>
-  
-          <div class="pie_progress" role="progressbar" data-barcolor="green" data-goal="50">
-            <div class="pie_progress__number" [class.hidden]="statusHidden" >0%</div>
-            <div class="pie_progress__label" [class.hidden]="statusHidden">Overall progress</div>
+              <br><br><br><br><br><br>
+              <!--<div class="dMeterOverall">
+                <div class="pie_progress_overall" role="progressbar" data-barcolor="green" data-goal="50" style="width:200px">
+                  <div class="pie_progress__number" [class.hidden]="statusHidden" >0%</div>
+                  <div class="pie_progress__label" [class.hidden]="statusHidden">Overall progress</div>
+                </div>
+              </div>-->
+           <div class="dMeterOverall">
+              <div class="pie_progress_overall dProgressOverall" role="progressbar" data-barcolor="green" data-goal="50">
+                <div class="pie_progress__number dMeterNumberOverall" [class.hidden]="statusHidden" >0%</div>
+                <div class="pie_progress__label" [class.hidden]="statusHidden" style="font-size:8px">Overall progress</div>
+              </div>
           </div>
 
-      </div>
-    </td>
-
-   <td style ="vertical-align:top">
-        <div class="statusBox" [class.hidden]="statusHidden">
-        <div class="statusTitle">Order</div>
-        <div class="statusContent">
-          <div class="checkbox cont3">          
-                <span  *ngFor ="let order of orders;let i of index">
+          </div>
+        </div>
+        <div class="col-sm-3" style="background-color:white;">
+          <div class="dMeter" >
+              <div class="pie_progress_order dProgress" role="progressbar" data-barcolor="green" data-goal="50">
+                <div class="pie_progress__number dMeterNumber" [class.hidden]="statusHidden" >0%</div>
+                <div class="pie_progress__label" [class.hidden]="statusHidden"></div>
+              </div>
+          </div>
+          <div class="headerTxt" [class.hidden]="statusHidden">Order</div>
+          <div class="checkbox" >
+            <div class="checkbox2">
+                <div *ngFor ="let order of orders">
                   <span *ngIf="order.done==true" class="glyphicon glyphicon glyphicon-ok spPad" aria-hidden="true">
-                    <span class="cntStyle">{{order.name}}</span>
+                    <span >{{order.name}}</span>
                   </span>
-                  <span *ngIf="order.done==false" class="glyphicon glyphicon glyphicon-remove spPad" aria-hidden="true">
-                    <span class="cntStyle">{{order.name}}</span>
+                  <span *ngIf="order.done==false" class="glyphicon glyphicon glyphicon-remove spPad" style="color:red" aria-hidden="true">
+                    <span style="color:black">{{order.name}}</span>
                   </span>
-                </span>           
-          </div>
-          <div class="progress" >
-              <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" [attr.aria-valuenow]="orderPercent"
-                    aria-valuemin="0" aria-valuemax="100" [style.width]="orderPercent + '%'" >
-                   <font color="black"> {{orderPercent}}% Complete</font>
+                </div>
+            </div>
+           </div>
+        </div>
+        <div class="col-sm-3" style="background-color:white;border-left: 1px solid #D3D3D3;border-right: 1px solid #D3D3D3;">
+          <div class="dMeter">
+              <div class="pie_progress_payment dProgress" role="progressbar" data-barcolor="green" data-goal="50">
+                <div class="pie_progress__number dMeterNumber" [class.hidden]="statusHidden" >0%</div>
+                <div class="pie_progress__label" [class.hidden]="statusHidden"></div>
               </div>
           </div>
-        </div>
-        </div>  
-
-        <div class="statusBox" [class.hidden]="statusHidden">
-        <div class="statusTitle">Payment</div>
-        <div class="statusContent">
-          <div class="checkbox cont3">          
-                <span  *ngFor ="let payment of payments">
+          <div class="headerTxt" [class.hidden]="statusHidden">Payment</div>
+          <div class="checkbox">
+            <div class="checkbox2">
+                <div *ngFor ="let payment of payments">
                   <span *ngIf="payment.done==true" class="glyphicon glyphicon glyphicon-ok spPad" aria-hidden="true">
-                    <span class="cntStyle">{{payment.name}}</span>
+                    <span >{{payment.name}}</span>
                   </span>
-                  <span *ngIf="payment.done==false" class="glyphicon glyphicon glyphicon-remove spPad" aria-hidden="true">
-                    <span class="cntStyle">{{payment.name}}</span>
+                  <span *ngIf="payment.done==false" class="glyphicon glyphicon glyphicon-remove spPad" style="color:red" aria-hidden="true">
+                    <span style="color:black">{{payment.name}}</span>
                   </span>
-                </span>           
-          </div>
-          <div class="progress">
-              <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" [attr.aria-valuenow]="payPercent"
-                    aria-valuemin="0" aria-valuemax="100" [style.width]="payPercent + '%'">
-                   <font color="black"> {{payPercent}}% Complete</font>
+                </div>
+            </div>
+           </div>
+        </div>
+        <div class="col-sm-3" style="background-color:white;">
+           <div class="dMeter">
+              <div class="pie_progress_document dProgress" role="progressbar" data-barcolor="green" data-goal="50">
+                <div class="pie_progress__number dMeterNumber" [class.hidden]="statusHidden" >0%</div>
+                <div class="pie_progress__label" [class.hidden]="statusHidden"></div>
               </div>
           </div>
-        </div>
-        </div>  
-
-       <div class="statusBox" [class.hidden]="statusHidden">
-        <div class="statusTitle">Document</div>
-        <div class="statusContent">
-          <div class="checkbox cont3">          
-                <span  *ngFor ="let doc of documents">
+          <div class="headerTxt" [class.hidden]="statusHidden">Uploaded Document</div>
+          <div class="checkbox">
+            <div class="checkbox2">
+                <div *ngFor ="let doc of documents">
                   <span *ngIf="doc.done==true" class="glyphicon glyphicon glyphicon-ok spPad" aria-hidden="true">
-                    <span class="cntStyle">{{doc.name}}</span>
+                    <span >{{doc.name}}</span>
                   </span>
-                  <span *ngIf="doc.done==false" class="glyphicon glyphicon glyphicon-remove spPad" aria-hidden="true">
-                    <span class="cntStyle">{{doc.name}}</span>
+                  <span *ngIf="doc.done==false" class="glyphicon glyphicon glyphicon-remove spPad" style="color:red" aria-hidden="true">
+                    <span style="color:black">{{doc.name}}</span>
                   </span>
-                </span>           
-          </div>
-          <div class="progress">
-              <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" [attr.aria-valuenow]="docPercent"
-                    aria-valuemin="0" aria-valuemax="100" [style.width]="docPercent + '%'">
-                   <font color="black"> {{docPercent}}% Complete</font>
-              </div>
-          </div>
+                </div>
+            </div>
+           </div>
         </div>
-        </div> 
-   </td>
-  </tr>
+      </div>
 
 
-
-</table>
 </div>
 

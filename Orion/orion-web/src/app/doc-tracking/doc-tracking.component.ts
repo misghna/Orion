@@ -37,7 +37,7 @@ export class DocTrackingComponent implements OnInit {
 
   constructor(private utilService :UtilService,private docTrackService:DocTrackingService, private el: ElementRef,
               public route: ActivatedRoute,public router: Router,private orderService:OrdersService,private rd: Renderer) {
-
+    utilService.currentSearchTxt$.subscribe(txt => {this.search(txt);});
     this.trackableDocs = ['Bill of Loading','Proforma Invoice','Commerical Invoice','CNCA','Inspection','Packing List','Certificate of Health','Certificate of Origin','Certificate of Analise',
                       'Certificate of Fumigation','Certificate of Quality','Certificate of Insurance','Certificate of Phytosanitary','Other'];
 
@@ -345,12 +345,7 @@ triggerDelModal(event){
 
 
     search(searchObj){
-      this.data= this.responseData.filter(item => (
-        (item.name.toLowerCase().indexOf(searchObj.searchTxt.toLowerCase()) !== -1) || 
-        (item.brand.toLowerCase().indexOf(searchObj.searchTxt) !== -1) || 
-        (item.itemOrigin.toLowerCase().indexOf(searchObj.searchTxt) !== -1) || 
-        (item.destinationPort.toLowerCase().indexOf(searchObj.searchTxt) !== -1)
-        ));
+      this.data= this.utilService.search(searchObj,this.responseData,this.headers);
     }
 
 

@@ -6,7 +6,7 @@
       'alert-success' : alertType == 'Info'
     }"
 >
-<a  class="close" aria-label="close" (click)="alertObj.alertHidden = true">x</a>
+<a  class="close" aria-label="close" (click)="alertHidden = true">x</a>
   <strong>{{alertType}}!</strong> {{itemMsg}}
 </div>
 
@@ -86,11 +86,13 @@
         <td>
             <div class="btn-group ">
             <button type="button" class="btn btn-default dropdown-toggle editFormMargin noBorder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                {{itemDetail.food==true? 'Yes':'No'}} <span class="caret"></span>
+                {{itemDetail.type}} <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
-                <li><a (click)="itemDetail.food=true">Yes</a></li>
-                <li><a (click)="itemDetail.food=false">No</a></li>
+                <li><a (click)="itemDetail.type='Food'">Food</a></li>
+                <li><a (click)="itemDetail.type='Raw Material'">Raw Material</a></li>
+                <li><a (click)="itemDetail.type='Const. Material'">Const. Material</a></li>
+                <li><a (click)="itemDetail.type='Other'">Other</a></li>
             </ul>
             </div>
         </td>

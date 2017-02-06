@@ -51,8 +51,8 @@ public class Item {
 	@Column(name = "revision")
 	private Date revision;
 	
-	@Column(name = "food")
-	private boolean food;
+	@Column(name = "type")
+	private String type;
 
 	public long getId() {
 		return id;
@@ -145,13 +145,15 @@ public class Item {
 		this.revision = revision;
 	}
 
-	public boolean isFood() {
-		return food;
+	public String getType() {
+		return type;
 	}
 
-	public void setFood(boolean food) {
-		this.food = food;
+	public void setType(String type) {
+		this.type = type;
 	}
+
+
 
 	
 	

@@ -23,6 +23,8 @@ import { ClientComponent } from './client/client.component';
 import { DocTrackingComponent } from './doc-tracking/doc-tracking.component';
 import { TerminalComponent } from './terminal/terminal.component';
 import { EstimateComponent } from './estimate/estimate.component';
+import { DocHandoverComponent } from './doc-handover/doc-handover.component';
+import { NotificationComponent } from './notification/notification.component';
 
 import { BudgetComponent } from './budget/budget.component';
 
@@ -42,7 +44,7 @@ export const routes: Routes = [
   { path: 'setting/legalization',  component: PortFeeComponent },
   { path: 'setting/misc',  component: MiscComponent },
   { path: 'setting/currency',  component: CurrencyComponent },
-  { path: 'setting/clients',  component: ClientComponent },
+  { path: 'setting/addressBook',  component: ClientComponent },
   { path: 'setting/terminal',  component: TerminalComponent },
   
 
@@ -61,6 +63,10 @@ export const routes: Routes = [
   { path: 'document/license/:id',  component: LicenseComponent },
   { path: 'document/docTracking/:id',  component: DocTrackingComponent },
   { path: 'document/uploaded/:id',  component: DocumentComponent },
+  { path: 'document/handover/:id',  component: DocHandoverComponent },
+  
+
+ { path: 'notification',  component: NotificationComponent },
   
 
   { path: 'open/register',  component: RegisterComponent },
