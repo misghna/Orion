@@ -58,10 +58,18 @@ public class MainController {
 		return "login";
 	}
 
-	@RequestMapping(value = "/Access_Denied", method = RequestMethod.GET)
-	public String accessDeniedPage(ModelMap model) {
+	@RequestMapping(value = "/access_denied", method = RequestMethod.GET)
+	public String accessDeniedPage(ModelMap model,HttpServletResponse response) 
+			throws IOException {
 		model.addAttribute("user", getPrincipal());
 		return "accessDenied";
+	}
+	
+	@RequestMapping(value = "/api_access_denied", method = RequestMethod.GET)
+	public @ResponseBody JSONObject apiAccessDenied(HttpServletResponse response) 
+			throws IOException {
+		response.sendError(403);
+		return null;
 	}
 	
 	@RequestMapping(value="/logout", method = RequestMethod.GET)

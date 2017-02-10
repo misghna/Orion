@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
     <meta charset="UTF-8">
     <title>Anseba General Trading</title>
@@ -24,5 +25,5 @@
   <body>
     
     <app-root></app-root>
-  <script type="text/javascript" src="inline.js"></script><script type="text/javascript" src="styles.574ffab380bc9d1d16ef.bundle.js"></script><script type="text/javascript" src="main.54e5e230ff1c27368e84.bundle.js"></script></body>
+  <script type="text/javascript" src="inline.js"></script><script type="text/javascript" src="styles.574ffab380bc9d1d16ef.bundle.js"></script><script type="text/javascript" src="main.26ee17ea9293642edc2d.bundle.js"></script></body>
 </html>

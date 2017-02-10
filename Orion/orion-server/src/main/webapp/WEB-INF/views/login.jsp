@@ -19,7 +19,11 @@
 			    <span class="text-danger">
 				    <c:if test="${param.error != null}">
 						<div class="alert alert-danger">
-							<p>Invalid username and password.</p>
+							  <p>Invalid username and password.</p> 
+<%-- 							<%     
+								String errorString = (String)request.getAttribute("error");  
+								out.println("<p>" + errorString + "</p>");  
+							%> --%>
 						</div>
 					</c:if>
 					<c:if test="${param.logout != null}">

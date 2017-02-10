@@ -59,6 +59,17 @@ public class MiscSettingDAOimpl implements MiscSettingDAO {
 		return null;
 	}
 
+	@Override
+	public List<String> getTableNamesWithOrderRef() {
+		String sql = "SELECT * FROM information_schema.columns WHERE  table_schema = 'public' AND column_name IN ( 'order_ref' )";
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		return query.list();
+		
+	}
+	
+
+	
+
 
 	
 

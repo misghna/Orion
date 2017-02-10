@@ -5,6 +5,7 @@ import java.util.Properties;
 import javax.sql.DataSource;
 
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.hibernate.Interceptor;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -23,11 +24,13 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
+import com.sesnu.orion.dao.MiscSettingDAO;
 import com.sesnu.orion.web.utility.ConfigFile;
 import com.sesnu.orion.web.utility.Util;
 
@@ -51,6 +54,11 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 	}
 	
 	@Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new RequestInterceptor());
+    }
+	
+	@Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
         configurer.enable();
     }
@@ -66,6 +74,7 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
     public CronJob myCron() {
         return new CronJob();
     }
+    
     
 	@Bean
 	public InternalResourceViewResolver viewResolver() {
@@ -108,6 +117,7 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
     @Bean
     public LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+        sessionFactory.setEntityInterceptor(new AccessInterceptor());
         sessionFactory.setDataSource(getDataSource());
         sessionFactory.setPackagesToScan(new String[] { "com.sesnu.orion" });
         sessionFactory.setHibernateProperties(getHibernateProperties());

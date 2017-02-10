@@ -11,6 +11,8 @@ import javax.servlet.http.HttpSession;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -79,6 +81,8 @@ public class UserController {
 		
 		}else if(conf.getProp().get("devMode").equals("true"))	{
 			User user = util.getDevUser(userDao);
+			System.out.println("##############################  setting user");
+			session.setAttribute("user", user);
 			return filterUser(user,session.getId(),request.getServletContext());
 		}
 			response.sendError(401);
@@ -105,12 +109,15 @@ public class UserController {
 		jo.put("homeHeaders", user.getHomeHeaders());
 		jo.put("homeColor", user.getHomeColor());
 		jo.put("notifications", user.getNotification());
+		jo.put("privilage", user.getPrivilage());
+		jo.put("access", user.getAccess());
 		return jo;
 	}
 	
 	
 	@RequestMapping(value = "/api/admin/users", method = RequestMethod.GET)
-	public @ResponseBody JSONArray users(ModelMap model,HttpServletRequest request,HttpServletResponse response) {	
+	public @ResponseBody JSONArray users(ModelMap model,HttpServletRequest request,
+			HttpServletResponse response) throws ParseException {	
 		return filterUsers(userDao.list());
 	}
 	
@@ -309,7 +316,7 @@ public class UserController {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private JSONArray filterUsers(List<User> userList){
+	private JSONArray filterUsers(List<User> userList) throws ParseException{
 		JSONArray users = new JSONArray();
 		for (User user : userList) {
 			JSONObject jo = new JSONObject();
@@ -321,7 +328,16 @@ public class UserController {
 			jo.put("phone", user.getPhone());
 			jo.put("department", user.getDepartment());
 			jo.put("approver", user.getApprover());
-			jo.put("header", user.getFullname() + "-" + user.getId());			
+			jo.put("header", user.getFullname() + "-" + user.getId());	
+			jo.put("privilage", user.getPrivilage());
+			
+			if(user.getAccess()!=null){
+				JSONParser parser = new JSONParser();
+				jo.put("access", (JSONArray)parser.parse(user.getAccess()));
+			}else{
+				jo.put("access", new JSONArray());
+			}
+			
 			users.add(jo);
 		}
 		

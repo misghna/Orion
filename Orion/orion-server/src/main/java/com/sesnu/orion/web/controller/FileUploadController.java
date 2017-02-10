@@ -22,9 +22,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sesnu.orion.dao.DocumentDAO;
+import com.sesnu.orion.dao.NotificationDAO;
+import com.sesnu.orion.dao.OrderDAO;
 import com.sesnu.orion.web.model.DocView;
 import com.sesnu.orion.web.model.Document;
+import com.sesnu.orion.web.model.Notification;
+import com.sesnu.orion.web.model.OrderView;
 import com.sesnu.orion.web.model.TCPResponse;
+import com.sesnu.orion.web.utility.NotificationService;
 import com.sesnu.orion.web.utility.Util;
 
 /**
@@ -40,6 +45,7 @@ public class FileUploadController {
 
 	@Autowired private Util util;
 	@Autowired private DocumentDAO docDao;
+	@Autowired private NotificationDAO notifDao;
 	
 	@RequestMapping(value = "/api/user/uploadFile", method = RequestMethod.POST)
 	public @ResponseBody List<DocView> uploadFileHandler(HttpServletRequest req,
@@ -63,6 +69,9 @@ public class FileUploadController {
 				if(response.getCode()==200){
 					Document doc = new Document(orderRef,fileName,dataObj.get("type").toString(),Util.parseDate(new Date(),"/"),dataObj.get("remark").toString());
 					docDao.saveOrUpdate(doc);
+					// register for notification
+					Notification notif = new Notification(doc.getType(),"Document",doc.getOrderRef());			
+					notifDao.saveOrUpdate(notif);
 					return docDao.listByOrderRef(orderRef);
 				}else{
 					res.sendError(response.getCode(), "Error in storage");

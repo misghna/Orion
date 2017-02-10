@@ -313,10 +313,12 @@ updateBaseUnit(unit){
 
 
   setData(response){
+    if(response.length>0){
       var date = new Date(response[0]['createdOn']);
       this.selectedMonth = this.monthNames[date.getMonth()];
       this.selectedYear = date.getFullYear();
       this.returnedRange = this.selectedMonth+ " " + this.selectedYear;
+    }
       this.responseData=response;
       this.data = response;  
   }
@@ -355,6 +357,7 @@ updateBaseUnit(unit){
       this.hideAddNewForm=false;
       this.itemDetail={};
       var today = new Date();
+      this.itemDetail['paymentDate'] = today;
       // this.itemDetail['invNo'] = this.activeOrder['invNo'];
       // this.itemDetail['bl'] = this.activeOrder['bl'];
       // this.itemDetail['orderRef'] = this.activeOrder['id'];

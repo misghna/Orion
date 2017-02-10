@@ -19,14 +19,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sesnu.orion.dao.ApprovalDAO;
 import com.sesnu.orion.dao.BidDAO;
+import com.sesnu.orion.dao.NotificationDAO;
+import com.sesnu.orion.dao.OrderDAO;
 import com.sesnu.orion.dao.PaymentDAO;
 import com.sesnu.orion.dao.UserDAO;
 import com.sesnu.orion.web.model.Approval;
 import com.sesnu.orion.web.model.ApprovalView;
 import com.sesnu.orion.web.model.Bid;
+import com.sesnu.orion.web.model.Notification;
+import com.sesnu.orion.web.model.OrderView;
 import com.sesnu.orion.web.model.Payment;
 import com.sesnu.orion.web.model.User;
 import com.sesnu.orion.web.utility.ConfigFile;
+import com.sesnu.orion.web.utility.NotificationService;
 import com.sesnu.orion.web.utility.ReportService;
 import com.sesnu.orion.web.utility.Util;
 
@@ -42,6 +47,7 @@ public class ApprovalController {
 	@Autowired private BidDAO bidDao;
 	@Autowired private PaymentDAO payDao;
 	@Autowired private ReportService repoService;
+	@Autowired private NotificationDAO notifDao;
 	
 	@RequestMapping(value = "/api/user/approval/{orderRef}", method = RequestMethod.GET)
 	public @ResponseBody List<ApprovalView> byId(@PathVariable("orderRef") String orderRef,
@@ -113,6 +119,7 @@ public class ApprovalController {
 			Payment pay = payDao.get(aprv.getForId());
 			pay.setStatus("Pending Approval");
 			payDao.saveOrUpdate(pay);
+			
 			response.sendError(200,"ok");
 			return "success";
 		}
@@ -148,7 +155,7 @@ public class ApprovalController {
 		
 		User user= getActiveUser(request);	
 		if(!aprv.getApprover().equals(user.getFullname())){
-			response.sendError(403,Util.parseError("Only " + aprv.getApprover() + " can approve this request."));
+			response.sendError(400,Util.parseError("Only " + aprv.getApprover() + " can approve this request."));
 			return null;
 		}
 		
@@ -166,6 +173,11 @@ public class ApprovalController {
 			Payment pay = payDao.get(aprv.getForId());
 			pay.setStatus("Approved");
 			payDao.saveOrUpdate(pay);
+	
+			// register for notification
+			Notification notif = new Notification(pay.getName(),"Payment",pay.getOrderRef());			
+			notifDao.saveOrUpdate(notif);
+			
 			repoService.generatePayAuthReport(aprv, "actual");
 			return "success";
 		}

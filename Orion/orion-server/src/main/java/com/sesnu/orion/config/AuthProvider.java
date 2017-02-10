@@ -1,12 +1,15 @@
 package com.sesnu.orion.config;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -24,6 +27,7 @@ import com.sesnu.orion.web.utility.Util;
 public class AuthProvider implements AuthenticationProvider  {
 
 	private @Autowired HttpServletRequest request;
+	private @Autowired HttpServletResponse response;
 	@Autowired
 	UserDAO userDao;
 	
@@ -43,16 +47,26 @@ public class AuthProvider implements AuthenticationProvider  {
 		
 		
 		if(user==null){
-			return null; // Bad emailAddress
+			request.setAttribute("error", "User not found");
+			return null;
 		}
 		
-
+		if(user.getAccess()==null){
+			throw new BadCredentialsException("Invalid Password");
+		}
+		
 		
 		if (email.equals(user.getEmail()) && Util.passwordMatch(user.getPassphrase(), password)) {
+		    	
 				if(request.getSession()!=null){
 					request.getSession().setAttribute("user", user);
+					List<Long> grandtedIds = userDao.getAllowedOrderIds(user.getAccess());
+					if(grandtedIds.size()==0){
+						grandtedIds.add(0l);
+					}
+					request.getSession().setAttribute("grantedIds",grandtedIds);
 				}
-			    request.setAttribute("user", user);
+				
 				List<GrantedAuthority> grantedAuths = new ArrayList<>();
 				GrantedAuthority ga = new SimpleGrantedAuthority(user.getRole());
 				grantedAuths.add(ga);

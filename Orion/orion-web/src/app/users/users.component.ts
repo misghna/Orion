@@ -2,7 +2,7 @@ import { Component, OnInit,Output,EventEmitter } from '@angular/core';
 import { UserService } from '../users/users.service';
 import { UtilService } from '../service/util.service';
 import { PaymentService } from '../payment/payment.service';
-
+import { MiscSettingService } from '../misc/misc-service.service';
 
 
 
@@ -18,18 +18,18 @@ export class UsersComponent implements OnInit {
   userIdDelete;
   pageName;optionsList;
   hideEditForm;
-  userData;headerNames;allUsersResponse;approvalList =[];
-    constructor(private userService: UserService,private utilService: UtilService,private payService: PaymentService) {
+  userData;headerNames;allUsersResponse;approvalList =[];importers;accessList;allPaymentList;
+    constructor(private userService: UserService,private utilService: UtilService,
+              private payService: PaymentService,private miscService : MiscSettingService) {
         this.hideEditForm = true;
        utilService.currentSearchTxt$.subscribe(txt => {this.search(txt);});
 
        // this.optionsList = [{'name':'Add New Item','value':'addNew'},{'name':'Create New Revision','value':'createNewRevision'}];
        this.headerNames = [{'value':'name',"cap":"No"},{'value':'name',"cap":'Full Name'},
                            {'value':'email',"cap":'Email'},{'value': 'phone', 'cap' : 'Phone'},
-                           {'value': 'department', 'cap' : 'Department'},
-                           {'value':'approver','cap': 'Approver'},
-                           {'value':'role','cap': 'Role'},
-                           {'value':'status','cap': 'Status'},
+                           {'value': 'department', 'cap' : 'Department'},{'value':'role','cap': 'Role'},
+                           {'value':'approver','cap': 'Approver'},{'value':'privilage','cap': 'Permission'},
+                           {'value':'access','cap': 'Access'},{'value':'status','cap': 'Status'},                          
                            {'value':'action','cap': 'Action'}];
 
         this.pageName="Users";
@@ -49,25 +49,78 @@ export class UsersComponent implements OnInit {
           return {};
         }
       );
-
+      this.getImporters();
+      this.getPayList();
   }
 
+getImporters(){
+      this.miscService.getImporters()
+    .subscribe(
+        response => {       
+            this.importers = response;
+        },
+        error => {
+          console.error(error);
+          return {};
+        }
+      );
+}
 
-  getApprovalList(approved){
+getPayList(){
+      this.payService.getPaymentList()
+    .subscribe(
+        response => {       
+            this.allPaymentList = response;
+        },
+        error => {
+          console.error(error);
+          return {};
+        }
+      );
+}
 
-      var allowedList = JSON.parse(approved);
-      var allList = JSON.parse(JSON.stringify(this.payService.getPaymentList()));
-      allList.push("Order Authorization");
-      this.approvalList =[];
+
+    getAccessList(accessAllowedList){
+
+      var allList = JSON.parse(JSON.stringify(this.importers));
+      console.log("all " + JSON.stringify(allList) + " allowed " + JSON.stringify(accessAllowedList));
+      this.accessList =[];
       allList.forEach(el => {
-            if(approved!=null && allowedList.indexOf(el)>-1){
-              this.approvalList.push({'type' :el, 'selected' : true});
+            if(accessAllowedList!=null && accessAllowedList.indexOf(el)>-1){
+              this.accessList.push({'type' :el, 'selected' : true});
             }else{
-              this.approvalList.push({'type' :el, 'selected' : false});
+              this.accessList.push({'type' :el, 'selected' : false});
             }
       });
     
   }
+
+  updateAccess(type,notSelected){
+    var newAccess = [];
+  //  console.log(JSON.stringify(this.accessList));
+    this.accessList.forEach(el =>{
+      if(el.selected || (type.trim() == el.type.trim() && !notSelected)){
+        newAccess.push(el.type);
+      }
+    });
+    this.userData['access'] =  JSON.stringify(newAccess);
+  }
+
+  getApprovalList(approved){
+
+      var allowedList = JSON.parse(approved);
+      var allList = JSON.parse(JSON.stringify(this.allPaymentList));
+      this.approvalList =[];
+      allList.forEach(el => {
+            if(approved!=null && allowedList.indexOf(el.name)>-1){
+              this.approvalList.push({'type' :el.name, 'selected' : true});
+            }else{
+              this.approvalList.push({'type' :el.name, 'selected' : false});
+            }
+      });
+    
+  }
+
 
 
 
@@ -90,10 +143,14 @@ export class UsersComponent implements OnInit {
       }
     });
     this.userData['approver'] =  JSON.stringify(newApproval);
+
   }
 
   update(){
     this.updateApproval();
+    if(Array.isArray(this.userData['access'])){
+          this.userData['access'] =  JSON.stringify(this.userData['access']);
+    }
     this.userService.update(this.userData)
     .subscribe(
         response => {
@@ -101,7 +158,7 @@ export class UsersComponent implements OnInit {
            this.allUsers = response;     
         },
         error => {
-          console.error(error);
+          console.error(error.status);
           return {};
         }
       );

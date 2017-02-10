@@ -1,0 +1,61 @@
+<div  class="alert alert-auto" alert-dismissible
+    [ngClass]="{
+      'hidden' : alertObj.alertHidden,
+      'alert-danger' :  alertObj.alertType == 'Error',
+      'alert-success' : alertObj.alertType == 'Info'
+    }"
+  >
+<a  class="close" aria-label="close" (click)="alertObj.alertHidden = true">x</a>
+  <strong>{{alertObj.alertType}}!</strong> {{alertObj.itemMsg}}
+</div>
+
+
+<div class="container">
+  <h2>Notification Setting</h2>
+  <p>Select any from each catagory to get notification as they happen.</p>
+  <div class="panel-group">
+
+    <div class="panel panel-default">
+      <div class="panel-heading">Delivery Method</div>
+      <div class="panel-body">
+        <div class="checkbox">
+            <label *ngFor ="let dm of deliveryMethodList" class="ckbx"><input type="checkbox" class="ckbx" [(ngModel)]="dm.selected">{{dm.name}}</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">Status</div>
+      <div class="panel-body">
+        <div class="checkbox">
+            <label *ngFor ="let stat of statusList" class="ckbx"><input type="checkbox" class="ckbx" [(ngModel)]="stat.selected">{{stat.name}}</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">Payment</div>
+      <div class="panel-body">
+        <div class="checkbox">
+            <label *ngFor ="let payment of paymentList" class="ckbx"><input type="checkbox" class="ckbx" [(ngModel)]="payment.selected">{{payment.name}}</label>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="panel panel-default">
+      <div class="panel-heading">Document</div>
+      <div class="panel-body">
+         <div class="checkbox">
+            <label *ngFor ="let doc of documentList" class="ckbx"><input type="checkbox" class="ckbx" [(ngModel)]="doc.selected">{{doc.name}}</label>
+        </div>
+      </div>
+    </div>
+
+     <div class="panel panel-default">
+         <div class="panel-heading ">
+           <button class="btn btn-default" (click)="save()">Save</button>
+         </div>
+     </div>
+  </div>
+</div>

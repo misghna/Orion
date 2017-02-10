@@ -86,7 +86,7 @@ public class PaymentController {
 			throws Exception {
 		
 		List<ShippingView> ships = shipDao.listByOrderId(pay.getOrderRef());
-		if(ships.size()==0 || !pay.getName().equals("DU License")){
+		if(ships.size()==0 && !pay.getName().equals("DU License")){
 			response.sendError(400, Util.parseError("Item not yet marked as shipped"));
 			return null;
 		}

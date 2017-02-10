@@ -18,13 +18,20 @@
         <td class="text-left">{{user.email}}</td>
         <td class="text-left">{{user.phone}}</td>
         <td class="text-left">{{user.department}}</td>
-
+        <td class="text-left">{{user.role}}</td>
         <td  *ngIf="user.approver!=null && user.approver.length > 2 ">
-            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+            <span class="glyphicon glyphicon-ok" aria-hidden="true">{{" (" + user.approver.split(",").length + ")"}}</span>
         </td>
         <td  *ngIf="user.approver==null || user.approver.length < 3"></td>
-
-        <td class="text-left">{{user.role}}</td>
+        <td class="text-left">
+            <span *ngIf="user.role=='Admin'">RW(Admin)</span>
+            <span *ngIf="user.role!='Admin'">{{user.privilage}} </span>  
+      </td>
+        <td class="text-left">
+            <span *ngIf="user.role=='Admin'">ALL(Admin)</span>
+            <span *ngIf="user.role!='Admin'">{{user.access}} </span>           
+        </td>
+        
         <td class="text-left">{{user.status}}</td>
         <td class="text-center" >
             <div class="dropdown" style="border: 0">
@@ -53,30 +60,6 @@
         <td><textarea #unit class="form-control txt-flat middletext" rows="2"  readonly [(ngModel)]="userData.email" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td><textarea #unit class="form-control txt-flat middletext" rows="2"  readonly [(ngModel)]="userData.phone" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td>
-            <div class="btn-group ">
-            <button type="button" class="btn btn-default dropdown-toggle editFormMargin noBorder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                {{userData.department}} <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu">         
-                <li><a (click)="userData.department = 'Clearing'">Clearing</a></li>
-                <li><a (click)="userData.department = 'Finance'">Finance</a></li>
-                <li><a (click)="userData.department = 'Import'">Import</a></li>
-                <li><a (click)="userData.department = 'Manager'">Manager</a></li>
-                <li><a (click)="userData.department = 'Manager'">CEO</a></li>
-            </ul>
-            </div>
-        </td>
-        <td>
-             <div class="dropdown">
-                <textarea id="bill" #bill class="dropdown-toggle form-control txt-flat" data-toggle="dropdown" rows="2"  
-                    placeholder="can approve.." (click) = "getApprovalList(userData.approver)" readonly
-                    [(ngModel)]="userData.approver" [ngModelOptions]="{standalone: true}"></textarea>              
-                <ul class="dropdown-menu item-name">
-                <li *ngFor ="let aprv of approvalList"> <input type="checkbox" class="approveList" [(ngModel)]="aprv.selected" (click)="updateApproval()"/>{{aprv.type}}</li>                      
-                </ul>           
-            </div> 
-        </td>
-        <td>
             <div class="btn-group  ">
             <button type="button" class="btn btn-default dropdown-toggle editFormMargin noBorder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 {{userData.role}} <span class="caret"></span>
@@ -87,6 +70,51 @@
             </ul>
             </div>
         </td>
+        <td>
+            <div class="btn-group ">
+            <button type="button" class="btn btn-default dropdown-toggle editFormMargin noBorder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{userData.department}} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">         
+                <li><a (click)="userData.department = 'Clearing'">Clearing</a></li>
+                <li><a (click)="userData.department = 'Finance'">Finance</a></li>
+                <li><a (click)="userData.department = 'Import'">Import</a></li>
+                <li><a (click)="userData.department = 'Manager'">Manager</a></li>
+            </ul>
+            </div>
+        </td> 
+        <td>
+             <div class="dropdown">
+                <textarea id="bill" #bill class="dropdown-toggle form-control txt-flat" data-toggle="dropdown" rows="2"  
+                    placeholder="can approve.." (click) = "getApprovalList(userData.approver)" readonly
+                    [(ngModel)]="userData.approver" [ngModelOptions]="{standalone: true}"></textarea>              
+                <ul class="dropdown-menu item-name">
+                <li *ngFor ="let aprv of approvalList"> <input type="checkbox" class="approveList" [(ngModel)]="aprv.selected" (mouseup)="updateApproval()"/>{{aprv.type}}</li>                      
+                </ul>           
+            </div> 
+        </td>
+         <td>
+            <div class="btn-group  ">
+            <button type="button" class="btn btn-default dropdown-toggle editFormMargin noBorder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{userData.privilage}} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a (click)="userData.privilage = 'READ ONLY'">READ ONLY</a></li>
+                <li><a (click)="userData.privilage = 'READ WRITE'">READ WRITE</a></li>
+            </ul>
+            </div>
+        </td>
+        <td>
+             <div class="dropdown">
+                <textarea id="bill" #bill class="dropdown-toggle form-control txt-flat" data-toggle="dropdown" rows="2"  
+                    placeholder="access" (click) = "getAccessList(userData.access)" readonly
+                    [(ngModel)]="userData.access" [ngModelOptions]="{standalone: true}"></textarea>              
+                <ul class="dropdown-menu item-name">
+                <li *ngFor ="let access of accessList"> <input type="checkbox" #ck class="approveList" [(ngModel)]="access.selected" (mouseup)="updateAccess(access.type,ck.checked)"/>{{access.type}}</li>                      
+                </ul>           
+            </div> 
+        </td>
+
         <td>
             <div class="btn-group ">
             <button type="button" class="btn btn-default dropdown-toggle editFormMargin noBorder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -102,7 +130,7 @@
         <td class="text-left" ><input type="button" class="btn btn-success" (click)= "update()" value="Update"/></td>
       </tr>  
     <tr>
-        <td colspan="9">
+        <td colspan="11">
             <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25]"></mfBootstrapPaginator>
         </td>
     </tr>

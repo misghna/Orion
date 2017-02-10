@@ -66,10 +66,18 @@ export class HttpInterceptor extends Http {
                 console.error("401 error");
                 window.location.replace("/login");
                 return Observable.empty();
-            } else if (error.status ==0 || error.status==302){
+            }else if (error.status===302){
                 console.error("302 redirecting..");
-
+                 this.util.setLoaderState(false);
                  return Observable.empty();
+            } else if (error.status ===0 ){
+                 console.error("bad error message" + JSON.stringify(error));
+                 this.util.setLoaderState(false);
+                 return Observable.empty();
+            }else if(error.status===403){
+                alert("You don't have permission to perform the operation!");
+                this.util.setLoaderState(false);
+                return Observable.empty();
             }else {
                 return Observable.throw(error);
             }

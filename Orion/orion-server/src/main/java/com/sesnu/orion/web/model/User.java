@@ -24,6 +24,8 @@ public class User {
 	private String status;
 	private String department;
 	private String approver;
+	private String access;
+	private String privilage;
 	
 	@Column(name="home_headers")
 	private String homeHeaders;
@@ -131,6 +133,22 @@ public class User {
 
 	public void setNotification(String notification) {
 		this.notification = notification;
+	}
+
+	public String getAccess() {
+		return access;
+	}
+
+	public void setAccess(String access) {
+		this.access = access;
+	}
+
+	public String getPrivilage() {
+		return privilage;
+	}
+
+	public void setPrivilage(String privilage) {
+		this.privilage = privilage;
 	}
 
 

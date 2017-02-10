@@ -19,6 +19,9 @@ public class Summary {
 	@Column(name = "id")
 	private Long id;
 	
+	@Column(name = "order_ref")
+	private Long orderRef;
+	
 	@Column(name = "item")
 	private String item;
 	
@@ -256,6 +259,14 @@ public class Summary {
 
 	public void setProgress(Long progress) {
 		this.progress = progress;
+	}
+
+	public Long getOrderRef() {
+		return orderRef;
+	}
+
+	public void setOrderRef(Long orderRef) {
+		this.orderRef = orderRef;
 	}
 
 	

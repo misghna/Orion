@@ -92,4 +92,15 @@ public class UserDAOImpl implements UserDAO {
 		
 		return null;
 	}
+	
+	
+	@Override
+	public List<Long> getAllowedOrderIds(String importers) {
+		importers = importers.replace("[", "(").replace("]", ")").replace("\"", "'");
+		String sql = "select id from orders where importer in " + importers;
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		return query.list();
+		
+	}
+	
 }

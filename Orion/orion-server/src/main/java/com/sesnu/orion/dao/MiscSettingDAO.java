@@ -19,6 +19,9 @@ public interface MiscSettingDAO {
 
 	public MiscSetting getByName(String name);
 	
+	public List<String> getTableNamesWithOrderRef();
+	
+	
 //	public List<Currency> getByNameType(String name, String type);
 	
 }

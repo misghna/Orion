@@ -19,5 +19,6 @@ public interface UserDAO {
 	
 	public List<String> getApprovers(String type);
 	
+	public List<Long> getAllowedOrderIds(String importers);
 	
 }

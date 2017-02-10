@@ -6,7 +6,7 @@
 	<title>AccessDenied page</title>
 </head>
 <body>
-	 Your session is expired please login again!
-	<a href="<c:url value="/login" />">Login</a>
+	 Your session is expired or you don't have privilage to access the page,  please login again & try again!
+	 <a href="<c:url value="/login" />">Login</a>
 </body>
 </html>
