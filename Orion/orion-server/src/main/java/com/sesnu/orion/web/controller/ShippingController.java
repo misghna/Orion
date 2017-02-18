@@ -22,7 +22,7 @@ import com.sesnu.orion.web.model.Order;
 import com.sesnu.orion.web.model.OrderView;
 import com.sesnu.orion.web.model.Shipping;
 import com.sesnu.orion.web.model.ShippingView;
-import com.sesnu.orion.web.utility.TrackingService;
+import com.sesnu.orion.web.service.TrackingService;
 import com.sesnu.orion.web.utility.Util;
 
 @CrossOrigin(origins = "http://localhost:4200")

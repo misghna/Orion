@@ -44,8 +44,8 @@ export class PaymentComponent implements OnInit {
   selectedDate;containers;
   activeOrder= {}; filteredSalesPlanList=[];allPaymentList;
   approversList;approversPlaceHolder;approvalAlert={};
-  responseCurrency;currencies;
-
+  responseCurrency;currencies; totalSum =[];
+  warningList =[];
   activeOrderId;
   constructor(private utilService :UtilService,private payService:PaymentService, private el: ElementRef,
               private orderService:OrdersService ,public route: ActivatedRoute,public router : Router,
@@ -56,6 +56,7 @@ export class PaymentComponent implements OnInit {
     utilService.currentSearchTxt$.subscribe(txt => {this.search(txt);});
     this.optionsList = [{'name':'Add New Payment','value':'addNew'}];
     this.utilService.setToolsContent(this.optionsList);
+    utilService.currentdelItem$.subscribe(opt => { this.delete();});
     
     this.monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN","JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
     
@@ -234,7 +235,7 @@ getActiveOrder(){
 
 triggerDelModal(event){
     event.preventDefault();
-    var modalInfo = {"title" : "Order", "msg" : this.activeProductHeader.split('-')[1],"task" :"myTask"};
+    var modalInfo = {"title" : "Order", "msg" : this.itemDetail['name'] + " for inv No " + this.itemDetail['invNo'],"task" :"myTask"};
     this.utilService.showModalState(modalInfo);
 }
 
@@ -320,13 +321,41 @@ updateBaseUnit(unit){
       this.returnedRange = this.selectedMonth+ " " + this.selectedYear;
     }
       this.responseData=response;
-      this.data = response;  
+      this.data = response;
+      this.calculateTotal();
   }
 
+  calculateTotal(){
+    var curTypes = [];
+    this.totalSum =[];
+    this.data.forEach(pay => {
+        if(curTypes.indexOf(pay.curr)<0){
+            curTypes.push(pay.curr);
+        }
+    });
+    
+    if(curTypes.length>0){
+        curTypes.forEach(currency => {
+          var sum = 0.0;
+            this.data.forEach(pay => {
+                if(pay.curr == currency){
+                  sum += pay['paymentAmount'];
+                }
+            });
+            this.totalSum.push({"type":currency,"value":sum});
+        });
+    }
+  }
 
     addUpdate(event){
       event.preventDefault();
         if (this.taskType=="Add"){
+            var marker = this.itemDetail['orderRef'] + this.itemDetail['name'];
+            if(this.exists(this.itemDetail) && (JSON.stringify(this.warningList)).indexOf(marker)<0){
+              this.popAlert("Warning","Warning","Are you sure you want to add a duplicate payment for the same order, if yes click 'add' again!");
+              this.warningList.push(marker)
+              return;
+            }
             this.itemDetail['orderRef'] = this.activeOrderId;
             this.payService.add(this.itemDetail)
             .subscribe(
@@ -344,6 +373,16 @@ updateBaseUnit(unit){
          }
     }
 
+    exists(item){
+        var response :boolean = false;
+        this.responseData.forEach(el => {
+          if(el.orderRef==item.orderRef && el.name==item.name){
+             response = true;
+          }
+        });
+        return response;
+       
+    }
 
     getDate(date){
       var dd = date.getDate();
@@ -358,6 +397,7 @@ updateBaseUnit(unit){
       this.itemDetail={};
       var today = new Date();
       this.itemDetail['paymentDate'] = today;
+      this.itemDetail['deposit'] = 0.0;
       // this.itemDetail['invNo'] = this.activeOrder['invNo'];
       // this.itemDetail['bl'] = this.activeOrder['bl'];
       // this.itemDetail['orderRef'] = this.activeOrder['id'];
@@ -372,10 +412,8 @@ updateBaseUnit(unit){
           this.itemMsg= msg;
     }
 
-    delete(event){
-
-      var id = this.activeProductHeader.split('-')[0];
-      this.payService.deleteById(id)
+    delete(){
+      this.payService.deleteById(this.itemDetail['id'])
       .subscribe(
           response => {
               this.setData(response);  
@@ -460,6 +498,7 @@ updateBaseUnit(unit){
 
     search(searchObj){
       this.data= this.utilService.search(searchObj,this.responseData,this.headers);
+      this.calculateTotal();
     }
 
 

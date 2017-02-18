@@ -140,6 +140,7 @@ public class UserController {
 		user.setStatus("Inactive");
 		user.setApprover(null);
 		user.setRole("User");
+		user.setPrivilage("READ ONLY");
 		userDao.saveOrUpdate(user);
 		StringBuilder msg = new StringBuilder();
 		msg.append("Hello  AdminNameHere, \n\n ");

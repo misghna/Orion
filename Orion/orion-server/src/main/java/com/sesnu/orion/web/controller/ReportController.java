@@ -16,8 +16,8 @@ import com.sesnu.orion.dao.PaymentDAO;
 import com.sesnu.orion.web.model.Approval;
 import com.sesnu.orion.web.model.Bid;
 import com.sesnu.orion.web.model.Payment;
+import com.sesnu.orion.web.service.ReportService;
 import com.sesnu.orion.web.utility.ConfigFile;
-import com.sesnu.orion.web.utility.ReportService;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @Controller

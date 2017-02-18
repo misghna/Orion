@@ -57,7 +57,7 @@ public class SalesPlanController {
 	}
 	
 	
-	@RequestMapping(value = "/api/admin/salesPlan/{year}/{month}", method = RequestMethod.POST)
+	@RequestMapping(value = "/api/user/salesPlan/{year}/{month}", method = RequestMethod.POST)
 	public @ResponseBody List<SalesView> addItem(HttpServletResponse response,@RequestBody SalesView sv,
 			@PathVariable("year") int year,@PathVariable("month") String month)
 			throws Exception {
@@ -79,7 +79,7 @@ public class SalesPlanController {
 	}
 	
 	
-	@RequestMapping(value = "/api/admin/salesPlan/{year}/{month}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/api/user/salesPlan/{year}/{month}", method = RequestMethod.PUT)
 	public @ResponseBody List<SalesView> updateItem(HttpServletResponse response,
 			@RequestBody SalesView salesView,@PathVariable("year") int year,
 			@PathVariable("month") String month)
@@ -109,7 +109,7 @@ public class SalesPlanController {
 	}
 	
 		
-	@RequestMapping(value = "api/admin/salesPlan/duplicatePlan", method = RequestMethod.POST)
+	@RequestMapping(value = "api/user/salesPlan/duplicatePlan", method = RequestMethod.POST)
 	public @ResponseBody List<SalesView> duplicatePlan(@RequestBody JSONObject prop,HttpServletResponse response)
 			throws IOException {
 		List<SalesPlan> salesPlans = salesPlanDao.getPlanByTime(Integer.parseInt(prop.get("sourceYear").toString()),
@@ -138,7 +138,7 @@ public class SalesPlanController {
 	}
 	
 
-	@RequestMapping(value = "/api/admin/salesPlan/{id}/{year}/{month}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/api/user/salesPlan/{id}/{year}/{month}", method = RequestMethod.DELETE)
 	public @ResponseBody List<SalesView> deleteItem(@PathVariable("id") long id,@PathVariable("year") int year,
 			@PathVariable("month") String month,HttpServletResponse response) throws Exception {
 		SalesPlan sp = salesPlanDao.get(id);
@@ -164,7 +164,7 @@ public class SalesPlanController {
 		return null;
 	}
 	
-	@RequestMapping(value = "/api/admin/salesPlan/{year}/{month}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/api/user/salesPlan/{year}/{month}", method = RequestMethod.DELETE)
 	public @ResponseBody List<SalesView> deleteSalesPlan(@PathVariable("year") int year,
 			@PathVariable("month") String month,HttpServletResponse response) throws Exception {
 		

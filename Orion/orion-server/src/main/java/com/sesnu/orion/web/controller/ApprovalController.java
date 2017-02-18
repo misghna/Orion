@@ -30,9 +30,9 @@ import com.sesnu.orion.web.model.Notification;
 import com.sesnu.orion.web.model.OrderView;
 import com.sesnu.orion.web.model.Payment;
 import com.sesnu.orion.web.model.User;
+import com.sesnu.orion.web.service.NotificationService;
+import com.sesnu.orion.web.service.ReportService;
 import com.sesnu.orion.web.utility.ConfigFile;
-import com.sesnu.orion.web.utility.NotificationService;
-import com.sesnu.orion.web.utility.ReportService;
 import com.sesnu.orion.web.utility.Util;
 
 @CrossOrigin(origins = "http://localhost:4200")
@@ -97,7 +97,7 @@ public class ApprovalController {
 			response.sendError(400, Util.parseError("Already Approved"));
 			return null;
 		}
-		else if(aprvls.size()>0 && aprvls.get(0).getApprover().equals(aprv.getApprover())){
+		else if(aprvls.size()>0 && aprvls.get(0).getApprover().equals(aprv.getApprover()) && !aprvls.get(0).getStatus().equals("Void")){
 			response.sendError(400,Util.parseError("Approval request already exists"));
 			return null;
 		}
@@ -168,6 +168,7 @@ public class ApprovalController {
 			bid.setApproval("Approved");
 			bidDao.saveOrUpdate(bid);
 			repoService.generateOrderAuthReport(aprv,"actual");
+			
 			return "success";
 		}else{
 			Payment pay = payDao.get(aprv.getForId());

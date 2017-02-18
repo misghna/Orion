@@ -70,7 +70,7 @@ export class SalesPlanComponent implements OnInit {
                      {'name':'Base Size', 'value':'baseSize','j':'c'}, {'name':'Base Unit','value':'baseUnit','j':'c'},
                       {'name':'Qty/pck','value':'qtyPerPack','j':'c'},{'name':'pck/cont','value': 'pckPerCont','j':'c'},
                       {'name':'Cont Size','value':'contSize','j':'c'},{'name':'Cont Qnt','value': 'contQnt','j':'c'},
-                      {'name':'CIF','value':'cif','j':'c'},{'name':'Dest Port','value':'destinationPort','j':'c'},
+                      {'name':'CIF($)','value':'cif','j':'c'},{'name':'Dest Port','value':'destinationPort','j':'c'},
                       {'name':'Month','value':'month','j':'c'}, {'name':'Year','value':'year','j':'c'}, 
                       {'name':'Updated On','value':'updatedOn','j':'l'}];
       
@@ -338,7 +338,7 @@ updateBaseUnit(unit){
         return;
       }
         this.productNameList = this.allPrdList.filter(item => {
-          if(item!=null && item.indexOf(txt)>-1) return item;
+          if(item!=null && item.toLowerCase().indexOf(txt.toLowerCase())>-1) return item;
         });
     }
 

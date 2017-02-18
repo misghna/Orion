@@ -16,7 +16,7 @@ declare var $: any;
 export class AppComponent implements OnInit{
 
 
-  loaderHidden;
+  loaderHidden;loaderPath="images/pleaseWait.gif";
 
   constructor(public utilService:UtilService,private rd: Renderer,
               private userService:UserService,public router:Router) {   

@@ -259,6 +259,12 @@ triggerDelModal(event){
   //   this.lastFileOpenerTime=0;
   }
 
+  openFile(path){
+    window.open(
+            this.utilService.getBaseUrl()+ path,'_blank'
+    );
+
+  }
     option(options){
       var date = new Date();
       var selected = options.optionName;

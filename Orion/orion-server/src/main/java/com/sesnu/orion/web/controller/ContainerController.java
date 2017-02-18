@@ -116,7 +116,7 @@ public class ContainerController {
 				 interval = (new Interval(shippings.get(0).getEta().getTime(), retDate)).toDuration().getStandardDays();
 			}
 		}		
-		container.setTotalDays(Integer.parseInt(interval.toString()));
+		if(interval!=null)container.setTotalDays(Integer.parseInt(interval.toString()));
 		return container;
 	}
 	

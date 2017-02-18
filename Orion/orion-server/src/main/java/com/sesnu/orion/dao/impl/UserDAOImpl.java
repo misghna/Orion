@@ -102,5 +102,20 @@ public class UserDAOImpl implements UserDAO {
 		return query.list();
 		
 	}
+
+	@Override
+	public User getUserName(String name) {
+		String hql = "from User where lower(fullname)= :fullname";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setParameter("fullname", name.toLowerCase());
+		
+		List<?> list = query.list();
+		
+		if (list != null && !list.isEmpty()) {
+			return (User) list.get(0);
+		}
+
+		return null;
+	}
 	
 }

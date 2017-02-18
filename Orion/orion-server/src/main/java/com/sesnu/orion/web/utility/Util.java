@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.text.DateFormat;
@@ -23,13 +24,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
+import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -112,10 +120,14 @@ public class Util {
     }
 
 	public static void sendMail(String subject,String to, String msg) {
-		sendMail(subject,to,msg,null);
+		sendMail(subject,to,msg,null,null);
 	}
 	
 	public static void sendMail(String subject,String to, String msg,String cc) {
+		sendMail(subject,to,msg,cc,null);      
+	}
+	
+	public static void sendMail(String subject,String to, String msg,String cc,String path) {
 		Properties props = new Properties();
 		props.put("mail.smtp.host", "smtp.gmail.com");
 		props.put("mail.smtp.socketFactory.port", "465");
@@ -140,16 +152,33 @@ public class Util {
 					InternetAddress.parse(to));
 			if(cc!=null){message.setRecipients(Message.RecipientType.CC,InternetAddress.parse(cc));}
 			message.setSubject(subject);
-			message.setText(msg);			
+			message.setText(msg);
 
+			
+			
+			if(path!=null){
+		        MimeBodyPart messageBodyPart = new MimeBodyPart();
+		        Multipart multipart = new MimeMultipart();
+		        messageBodyPart = new MimeBodyPart();
+		        String file = "/tmp/" + path;
+		        String fileName = path;
+		        DataSource source = new FileDataSource(file);
+		        messageBodyPart.setDataHandler(new DataHandler(source));
+		        messageBodyPart.setFileName(fileName);
+		        multipart.addBodyPart(messageBodyPart);
+		        message.setContent(multipart);
+			}
+			
 			Transport.send(message);
-
+			
 			System.out.println("email sent");
 
 		} catch (MessagingException e) {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	
 	
 	public void sendText(String txt,String phoneNo) {
         String message = "[Anseba web] \n" + txt;

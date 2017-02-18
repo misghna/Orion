@@ -1,4 +1,4 @@
-package com.sesnu.orion.web.utility;
+package com.sesnu.orion.web.service;
 
 import java.io.IOException;
 import java.util.ArrayList;

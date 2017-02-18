@@ -243,6 +243,7 @@ filterOrder(txt){
           this.popAlert("Error","danger","Something went wrong, please try again later!");   
         }
    }
+   
     editItem(idd){        
       var id = idd.split('-')[0];
       console.log("id .. " + id);

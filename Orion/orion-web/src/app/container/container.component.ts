@@ -175,11 +175,7 @@ updateBaseUnit(unit){
               this.setData(response);    
           },
           error => {
-            if(error.status==404){
-               this.popAlert("Info","Info","Payment is not yet added for this order!");          
-            }else{
-               this.popAlert("Error","danger","Something went wrong, please try again later!");          
-            }
+            this.sendError(error);
           }
         );
   }
@@ -208,19 +204,17 @@ updateBaseUnit(unit){
           return;
        }
         if (this.taskType=="Add"){
+            if(this.itemDetail['transporter']=="Select")this.itemDetail['transporter']="";
+            if(this.itemDetail['destination']=="Select")this.itemDetail['destination']="";
             this.contService.add(this.itemDetail,this.activeShippingId)
             .subscribe(
                 response => {
-                    this.popAlert("Info","success","Payment successfully added!");
+                    this.popAlert("Info","success","Container successfully added!");
                     this.setData(response);  
                     this.hideAddNewForm = true;  
                 },
                 error => {
-                    if(error.status==500){
-                       this.popAlert("Error","danger","Something went wrong, please try again later!");
-                    }else{
-                       this.popAlert("Error","danger",this.utilService.getErrorMsg(error));
-                    }                   }
+                    this.sendError(error);                  }
               );
         }else if(this.taskType=="Update"){
           this.update();
@@ -263,7 +257,6 @@ updateBaseUnit(unit){
 
     delete(){
       var id = this.activeProductHeader.split('-')[0];
-      console.log("this.activeShippingId " + this.activeShippingId);
       this.contService.deleteById(id,this.activeShippingId)
       .subscribe(
           response => {
@@ -271,10 +264,21 @@ updateBaseUnit(unit){
               this.popAlert("Info","success","Payment successfully deteled!"); 
           },
           error => {
-              this.popAlert("Error","danger","Something went wrong, please try again later!");
+              this.sendError(error);
           }
         );
     }
+
+   sendError(error){
+        if(error.status==404){
+          this.popAlert("Info","Info","No record of Containers!");  
+          this.setData([]);        
+        }else if(error.status==400){
+          this.popAlert("Error","danger",this.utilService.getErrorMsg(error));          
+        }else{
+          this.popAlert("Error","danger","Something went wrong, please try again later!");   
+        }
+   }
 
     editItem(idd){        
       var id = idd.split('-')[0];
@@ -292,11 +296,11 @@ updateBaseUnit(unit){
             .subscribe(
                 response => {
                     this.hideAddNewForm = true;
-                    this.popAlert("Info","success","Bid successfully updated!");
+                    this.popAlert("Info","success","Container Table successfully updated!");
                     this.setData(response);     
                 },
                 error => {      
-                    this.popAlert("Error","danger","Something went wrong, please try again later!");
+                    this.sendError(error);
                 }
               );
     }

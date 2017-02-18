@@ -33,7 +33,7 @@ import com.sesnu.orion.web.model.Payment;
 import com.sesnu.orion.web.model.PortFee;
 import com.sesnu.orion.web.model.Required;
 import com.sesnu.orion.web.model.ShippingView;
-import com.sesnu.orion.web.utility.EstimatorService;
+import com.sesnu.orion.web.service.EstimatorService;
 import com.sesnu.orion.web.utility.Util;
 
 @CrossOrigin(origins = "http://localhost:4200")
@@ -94,10 +94,11 @@ public class PaymentController {
 		
 		pay.setEstimate(calcEstimate(order,pay).getValue());
 		pay.setUpdatedOn(Util.parseDate(new Date(),"/"));
+		pay.setStatus("Initiated");
 		pay.setId(null);
 		payDao.saveOrUpdate(pay);
 		
-		List<PayView> pays = payDao.listByOrderRef(pay.getOrderRef());
+		List<PayView> pays = payDao.listAll();
 		if(pays.size()>0){
 			return pays;
 		}
@@ -116,6 +117,12 @@ public class PaymentController {
 			response.sendError(400);
 			return null;
 		}
+		
+		if(pay.getStatus().equals("Approved")){
+			response.sendError(400,Util.parseError("Payment is approved, it can not be deleted"));
+			return null;
+		}
+		
 		pay.setUpdatedOn(Util.parseDate(new Date(),"/"));
 		payDao.saveOrUpdate(pay);
 		
@@ -136,9 +143,15 @@ public class PaymentController {
 			HttpServletResponse response) throws Exception {
 		Payment pay = payDao.get(id);
 		long orderRef= pay.getOrderRef();
+		
+		if(pay.getStatus() !=null && pay.getStatus().equals("Approved")){
+			response.sendError(400,Util.parseError("Payment is approved, it can not be deleted"));
+			return null;
+		}
+		
 		if(pay != null){
 			payDao.delete(pay);
-			List<PayView> pays = payDao.listByOrderRef(orderRef);
+			List<PayView> pays = payDao.listAll();
 			if(pays.size()>0){
 				return pays;
 			}
@@ -182,7 +195,7 @@ public class PaymentController {
 					return estService.terminal(order, bid.getTotalBid());
 				}
 				return null;
-			case "Transpiration Fee" :
+			case "Transportation Fee" :
 				return estService.transport(order);
 			case "Detention Fee" :
 				return estService.penality(order);

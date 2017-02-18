@@ -1,5 +1,6 @@
-package com.sesnu.orion.web.utility;
+package com.sesnu.orion.web.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.file.Files;
@@ -21,6 +22,7 @@ import com.sesnu.orion.dao.ItemDAO;
 import com.sesnu.orion.dao.OrderDAO;
 import com.sesnu.orion.dao.PaymentDAO;
 import com.sesnu.orion.dao.ShippingDAO;
+import com.sesnu.orion.dao.UserDAO;
 import com.sesnu.orion.web.model.Approval;
 import com.sesnu.orion.web.model.Bid;
 import com.sesnu.orion.web.model.BidView;
@@ -31,6 +33,8 @@ import com.sesnu.orion.web.model.Exchange;
 import com.sesnu.orion.web.model.Item;
 import com.sesnu.orion.web.model.OrderView;
 import com.sesnu.orion.web.model.Payment;
+import com.sesnu.orion.web.utility.ConfigFile;
+import com.sesnu.orion.web.utility.Util;
 
 @Component
 public class ReportService {
@@ -47,6 +51,7 @@ public class ReportService {
 	@Autowired private ExchangeDAO exchangeDao;
 	@Autowired private DuLicenseDAO licenseDao;
 	@Autowired private PaymentDAO payDao;
+	@Autowired private UserDAO userDao;
 	
 	public String generateOrderAuthReport(Approval appr,String state) 
 			throws DocumentException, IOException{
@@ -76,6 +81,8 @@ public class ReportService {
 		editedHtml = editedHtml.replace("IN_TERMINAL",shipDao.InTerminalCount(item.getId()).toString());
 		BigInteger newItemOrders = orderDao.newOrdersCount(item.getId()).subtract(new BigInteger("1"));
 		editedHtml = editedHtml.replace("NEW_ORDERS",newItemOrders.toString());
+		editedHtml = editedHtml.replace("ORDER_DATE",bid.getUpdatedOn());
+
 		
 		StringBuilder sb = new StringBuilder();
 		for (int i =0; i< bids.size(); i++) {
@@ -112,26 +119,52 @@ public class ReportService {
 		editedHtml = editedHtml.replace("LANDED_COST_TO_WH",pricePerPack.toString());
 		Double totalEstPrice = pricePerPack * 1.12;
 		editedHtml = editedHtml.replace("COST_PLUS_MRG",totalEstPrice.toString());
-
+		String emailTo = appr.getRequestedBy() + " [" + (userDao.getUserName(appr.getRequestedBy())).getEmail() + "]";
+		String emailCC = appr.getApprover() + " [" + (userDao.getUserName(appr.getApprover())).getEmail() + "]";
+		editedHtml = editedHtml.replace("EMAIL_TO",emailTo);
+		editedHtml = editedHtml.replace("EMAIL_CC",emailCC);
 
 				
 		if(!state.equals("preview")){
 			editedHtml = editedHtml.replace("SIGNATURE", appr.getApprover());
+			editedHtml = editedHtml.replace("APPROVED_ON",new Date().toGMTString());
 			String pdfFilePath = util.convertToPdf(editedHtml); // convert to pdf
 			Path path = Paths.get(pdfFilePath);
+			
 			byte[] data = Files.readAllBytes(path);	// convert to byte array
 			String[] frag = pdfFilePath.split("/");
 			String fileName = frag[frag.length-1]; // get file name
 			util.writeToS3(data, fileName);		// write to s3
+			sendApprovalEmail(appr,pdfFilePath,order);
 			Files.deleteIfExists(path);
 			
 			Document doc = new Document(order.getId(), fileName, "Order Authorization", Util.parseDate(new Date()), "");
 			docDao.saveOrUpdate(doc);
+		}else{
+			editedHtml = editedHtml.replace("APPROVED_ON","");
 		}
 		return editedHtml;
 	}
 	
 	
+	private void sendApprovalEmail(Approval appr, String filePath,OrderView order) {
+	Path path = new File(filePath).toPath();
+	String to = userDao.getUserName(appr.getRequestedBy()).getEmail();
+	String cc = userDao.getUserName(appr.getApprover()).getEmail();
+	String sfix = " (" + appr.getType() + ")";
+	String msg = "Attached file is a copy of the approval document for \n " + appr.getForName() + (appr.getType().equals("Order Authorization")? "":sfix);
+ 
+	msg += " Invoice number " + order.getInvNo() +" , BL " + order.getBl();
+	String subject = "Approval for Order Autorisation - Inv No " +  order.getInvNo();
+	if(appr.getType().equals("Payment")){
+		subject = "Payment Approval for " + appr.getForName() + " - Inv No " +  order.getInvNo();
+	}
+	Util.sendMail(subject,to , msg, cc, path.getFileName().toString());
+		
+	}
+
+
+
 	
 	public String generatePayAuthReport(Approval app,String state) 
 			throws DocumentException, IOException{
@@ -157,6 +190,8 @@ public class ReportService {
 		editedHtml = editedHtml.replace("QTY_PER_CONT",order.getPckPerCont().toString());
 		editedHtml = editedHtml.replace("DESTINATION",order.getDestinationPort());
 		editedHtml = editedHtml.replace("QUANTITY",order.getContQnt() + "X" + order.getContSize() + "'");
+		editedHtml = editedHtml.replace("PAYMENT_DATE",pay.getUpdatedOn());
+		
 		
 		// create request body
 		StringBuilder sb = new StringBuilder();
@@ -172,19 +207,27 @@ public class ReportService {
 		sb.append("</tr>");
 		editedHtml = editedHtml.replace("BID_DATA_TABLE",sb.toString());
 
-			
+		String emailTo = app.getRequestedBy() + " [" + (userDao.getUserName(app.getRequestedBy())).getEmail() + "]";
+		String emailCC = app.getApprover() + " [" + (userDao.getUserName(app.getApprover())).getEmail() + "]";
+		editedHtml = editedHtml.replace("EMAIL_TO",emailTo);
+		editedHtml = editedHtml.replace("EMAIL_CC",emailCC);
+		
 		if(!state.equals("preview")){
 			editedHtml = editedHtml.replace("SIGNATURE", app.getApprover());
+			editedHtml = editedHtml.replace("APPROVED_DATE",new Date().toGMTString());
 			String pdfFilePath = util.convertToPdf(editedHtml); // convert to pdf
 			Path path = Paths.get(pdfFilePath);
 			byte[] data = Files.readAllBytes(path);	// convert to byte array
 			String[] frag = pdfFilePath.split("/");
 			String fileName = frag[frag.length-1]; // get file name
 			util.writeToS3(data, fileName);		// write to s3
+			sendApprovalEmail(app,pdfFilePath,order);
 			Files.deleteIfExists(path);
 			
 			Document doc = new Document(order.getId(), fileName, "Payment[" + pay.getName() + "]", Util.parseDate(new Date()), "Approval");
 			docDao.saveOrUpdate(doc);
+		}else{
+			editedHtml = editedHtml.replace("APPROVED_DATE","");
 		}
 		
 		return editedHtml;

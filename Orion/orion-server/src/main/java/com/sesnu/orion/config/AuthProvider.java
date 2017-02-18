@@ -1,6 +1,5 @@
 package com.sesnu.orion.config;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +16,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
+import com.sesnu.orion.dao.AccessHistoryDAO;
 import com.sesnu.orion.dao.UserDAO;
+import com.sesnu.orion.web.model.AccessHistory;
 import com.sesnu.orion.web.model.User;
 import com.sesnu.orion.web.utility.Util;
 
@@ -28,6 +29,7 @@ public class AuthProvider implements AuthenticationProvider  {
 
 	private @Autowired HttpServletRequest request;
 	private @Autowired HttpServletResponse response;
+	private @Autowired AccessHistoryDAO accessDao;
 	@Autowired
 	UserDAO userDao;
 	
@@ -38,8 +40,9 @@ public class AuthProvider implements AuthenticationProvider  {
 		String email = authentication.getName();
 		String password = authentication.getCredentials().toString();
 		System.out.println("credentials" + email + "-" + password);
-
+		AccessHistory accessHistory = new AccessHistory(0l,request.getRemoteHost(),"denied");
 		if(email ==null || password ==email){
+			accessDao.save(accessHistory);
 			return null;
 		}
 		
@@ -47,17 +50,24 @@ public class AuthProvider implements AuthenticationProvider  {
 		
 		
 		if(user==null){
+			accessDao.save(accessHistory);
 			request.setAttribute("error", "User not found");
 			return null;
+		}else{
+			accessHistory.setUserId(user.getId());
 		}
 		
 		if(user.getAccess()==null){
-			throw new BadCredentialsException("Invalid Password");
+			accessDao.save(accessHistory);
+			throw new BadCredentialsException("insuficient Access");
 		}
 		
 		
 		if (email.equals(user.getEmail()) && Util.passwordMatch(user.getPassphrase(), password)) {
 		    	
+				accessHistory.setStatus("granted");
+				accessDao.save(accessHistory);
+				
 				if(request.getSession()!=null){
 					request.getSession().setAttribute("user", user);
 					List<Long> grandtedIds = userDao.getAllowedOrderIds(user.getAccess());

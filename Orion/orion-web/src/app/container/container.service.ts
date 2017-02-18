@@ -37,7 +37,7 @@ export class ContainerService {
   }
  
   deleteById(id,state) {
-    return this.http.delete(this.baseUrl + 'api/user/cont/' + id + "/")
+    return this.http.delete(this.baseUrl + 'api/user/cont/' + id + "/" + state)
       .map(res => res.json());
   }
 

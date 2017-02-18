@@ -83,7 +83,6 @@ getPayList(){
     getAccessList(accessAllowedList){
 
       var allList = JSON.parse(JSON.stringify(this.importers));
-      console.log("all " + JSON.stringify(allList) + " allowed " + JSON.stringify(accessAllowedList));
       this.accessList =[];
       allList.forEach(el => {
             if(accessAllowedList!=null && accessAllowedList.indexOf(el)>-1){
@@ -110,6 +109,7 @@ getPayList(){
 
       var allowedList = JSON.parse(approved);
       var allList = JSON.parse(JSON.stringify(this.allPaymentList));
+      allList.push({"name":"Order Authorization"});
       this.approvalList =[];
       allList.forEach(el => {
             if(approved!=null && allowedList.indexOf(el.name)>-1){

@@ -26,12 +26,12 @@ public class AccessInterceptor extends EmptyInterceptor {
     @Override
     public String onPrepareStatement(String sql) {
     	String tableName = getTableName(sql.toLowerCase());
-    	System.out.println(tableName);
+   // 	System.out.println(tableName);
     	if(tableName==null){ 
     		return sql;
     	}
     	if(!protectedTables.contains(tableName) || sql.indexOf("select id from orders")>-1){
-    		System.out.println("table not found in array");
+   // 		System.out.println("table not found in array");
     		return sql;
     	}
 		
@@ -39,9 +39,13 @@ public class AccessInterceptor extends EmptyInterceptor {
 		
 		RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
 		 
-		User user = (User) attributes.getAttribute("user",0);
-    	
-		if(user.getRole().equals("Admin"))return sql;
+		User user=null;
+		if(attributes !=null){
+			user =(User) attributes.getAttribute("user",0);
+		}else{
+			return sql;  
+		}
+		if(user!=null && user.getRole().equals("Admin"))return sql;
             
         List<Long> allowedOrderRefs = (List<Long>) attributes.getAttribute("grantedIds", 0);
         

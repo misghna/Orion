@@ -50,7 +50,7 @@ constructor(public router: Router) {
 
     getBaseUrl(){
       if(isDevMode()){
-        return 'http://localhost:8080/';     
+         return 'http://localhost:8080/';    
       }else{
         return '';
       }
@@ -139,5 +139,17 @@ constructor(public router: Router) {
 
       return searchResult;
     }
+
+       sendError(error,popAlert,tblName){
+        if(error.status==404){
+            popAlert("Info","Info","there is no entry for " + tblName + "!");         
+        }else if(error.status==400){
+           popAlert("Error","danger",this.getErrorMsg(error));          
+        }else if(error.status==403){
+           popAlert("Error","danger","You don't have permission to perform the operation!");          
+        }else{
+           popAlert("Error","danger","Something went wrong, please try again later!");   
+        }
+   }
 
 } 

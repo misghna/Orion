@@ -64,8 +64,8 @@
             </button>
             <ul id="{{item.id.toString() + '-' + item.supplier}}" #dropDownBox class="dropdown-menu dropdown-menu-right" 
                  aria-labelledby="dropdownMenu2">
-                <li *ngIf="item.path.indexOf('pdf')<0"><a id= "{{item.path}" href="{{'documents/image/' + item.path}}" target="_blank">Open</a></li>
-                <li *ngIf="item.path.indexOf('pdf')>=0"><a id= "{{item.path}" href="{{'documents/pdf/' + item.path}}" target="_blank">Open</a></li>
+                <li *ngIf="item.path.indexOf('pdf')<0"><a id= "{{item.path}" (click)="openFile('documents/image/' + item.path)" >Open</a></li>
+                <li *ngIf="item.path.indexOf('pdf')>=0"><a id= "{{item.path}" (click)="openFile('documents/pdf/' + item.path)">Open</a></li>
                  <li role="separator" class="divider"></li>
                 <li><a #deleteitem (click)="triggerDelModal($event)">Delete</a></li>
             </ul>

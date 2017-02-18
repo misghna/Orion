@@ -93,15 +93,6 @@ public class Bid {
 		this.cifCnf = cifCnf;
 	}
 
-	public Double getTotalBid() {
-		return totalBid;
-	}
-
-	public void setTotalBid(double Double) {
-		this.totalBid = totalBid;
-	}
-
-
 
 	public long getOrderRef() {
 		return orderRef;
@@ -185,5 +176,14 @@ public class Bid {
 		this.proformaInvNo = proformaInvNo;
 	}
 
+	public Double getTotalBid() {
+		return totalBid;
+	}
+
+	public void setTotalBid(Double totalBid) {
+		this.totalBid = totalBid;
+	}
+
+	
 	
 }

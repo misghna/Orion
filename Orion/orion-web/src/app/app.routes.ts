@@ -25,11 +25,10 @@ import { TerminalComponent } from './terminal/terminal.component';
 import { EstimateComponent } from './estimate/estimate.component';
 import { DocHandoverComponent } from './doc-handover/doc-handover.component';
 import { NotificationComponent } from './notification/notification.component';
-
 import { BudgetComponent } from './budget/budget.component';
-
 import { AuthGuard } from './service/auth.guard';
 import { ChangePasswordComponent } from './change-password/change-password.component';
+import { AccessControlComponent } from './access-control/access-control.component';
 
 
 // Define which component should be loaded based on the current URL
@@ -40,20 +39,20 @@ export const routes: Routes = [
   // { path: 'logout',  component: LoginComponent },
   { path: 'setting/items',  component: ItemsComponent },
   { path: 'setting/users',  component: UsersComponent },
-  { path: 'setting/salesPlan',  component: SalesPlanComponent },
   { path: 'setting/legalization',  component: PortFeeComponent },
   { path: 'setting/misc',  component: MiscComponent },
   { path: 'setting/currency',  component: CurrencyComponent },
   { path: 'setting/addressBook',  component: ClientComponent },
   { path: 'setting/terminal',  component: TerminalComponent },
+  { path: 'setting/accessControl',  component: AccessControlComponent },
   
-
+  
   { path: 'status/:id',  component: StatusComponent },
   { path: 'finance/approval/:id',  component: ApprovalComponent },
   { path: 'finance/payment/:id',  component: PaymentComponent },
   { path: 'finance/estimator/:id',  component: EstimateComponent },
   { path: 'finance/budget/:id',  component: BudgetComponent },
-  
+  { path: 'finance/salesPlan',  component: SalesPlanComponent },
   
   { path: 'import/order/:id',  component: OrdersComponent },
   { path: 'import/shipping/:id',  component: ShippingComponent },

@@ -1,4 +1,4 @@
-package com.sesnu.orion.web.utility;
+package com.sesnu.orion.web.service;
 
 import java.util.List;
 
@@ -23,6 +23,7 @@ import com.sesnu.orion.web.model.PortFee;
 import com.sesnu.orion.web.model.Shipping;
 import com.sesnu.orion.web.model.ShippingView;
 import com.sesnu.orion.web.model.Terminal;
+import com.sesnu.orion.web.utility.Util;
 
 @SuppressWarnings("unchecked")
 @Component
@@ -326,7 +327,7 @@ public class EstimatorService {
 		if(cur==null){
 			cur = exchangeDao.get("Other", "Other","USD", "AOA");
 			if(cur==null){
-				return null;
+				return new Estimate(0,null);
 			}
 		}
 		double total=0;double temp=0;JSONObject pd = new JSONObject();
@@ -404,7 +405,7 @@ public class EstimatorService {
 		if(cur==null){
 			cur = exchangeDao.get("Other", "Other",bid.getCurrency(), "AOA");
 			if(cur==null){
-				return null;
+				return new Estimate(0,null);
 			}
 		}
 		total = Double.parseDouble(miscDao.getByName("Forwarding agent %(Est/bill-AOA)").getValue()) * bid.getTotalBid() * cur.getRate()/100;
@@ -431,7 +432,7 @@ public class EstimatorService {
 				new Estimate(bid.get(0).getTotalBid(),null);
 			}
 		}
-		return null;
+		return new Estimate(0,null);
 	}
 	
 	

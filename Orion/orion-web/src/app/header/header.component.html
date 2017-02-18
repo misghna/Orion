@@ -11,7 +11,7 @@
         <span class="icon-bar"></span>
       </button>
       <a class="navbar-brand">   
-        <img id="loader" style="width:100px;height:40px;margin-top:-10px" src="images/anseba_icon.png" alt="ERIANGO" >
+        <img id="loader" style="width:100px;height:40px;margin-top:-10px" src="assets/images/anseba_icon.png" alt="ERIANGO" >
       		<!--<span class="text-primary stuff" style="font-family:Garamond;font-size:1.3em;font-style: italic; "> ERIANGO</span>-->
           </a>
     </div>
@@ -58,6 +58,7 @@
             <li><a routerLink="/finance/approval/all" routerLinkActive="active" > All Approvals</a></li>
             <li><a routerLink="/finance/estimator/search" routerLinkActive="Active" >Order Estimator</a></li>
             <li><a routerLink="/finance/budget/all" routerLinkActive="Active" >Budget Estimate</a></li>
+            <li><a routerLink="/finance/salesPlan" routerLinkActive="active" >Sales Plan</a></li> 
           </ul>
         </li>
 
@@ -102,7 +103,7 @@
         </li>-->
         <li id="statusMenu"><a routerLink="/notification" routerLinkActive="active" >Notifications<span class="sr-only">(current)</span></a></li>
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tools<span class="caret"></span></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Edit<span class="caret"></span></a>
           <ul *ngIf = "toolsList !=null" class="dropdown-menu">
             <li *ngFor="let option of toolsList;" [class.divider]="option.value=='divider'" role="option.value=='divider'? 'separator' : ''">
               <a id="{{option?.value}}" #me (click)="triggerOption(me.id)">{{option?.name}}</a>
@@ -114,8 +115,7 @@
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Settings <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a routerLink="/setting/users" routerLinkActive="active" (click)="activePageName='Users'" >Users</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a routerLink="/setting/salesPlan" routerLinkActive="active" (click)="activePageName='Sales Plan'" >Sales Plan</a></li>         
+            <li role="separator" class="divider"></li>                   
             <li><a routerLink="/setting/items" routerLinkActive="active" (click)="activePageName='Items'" >Items/Fees</a></li>
             <li><a routerLink="/setting/legalization" routerLinkActive="active" (click)="activePageName='Legalization/offload'">Shipping Agency</a></li>
             <li><a routerLink="/setting/currency" routerLinkActive="active" (click)="activePageName='Currency Exchange'">Currency Exchange</a></li>

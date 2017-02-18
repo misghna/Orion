@@ -1,0 +1,7 @@
+      /*#map {
+        height: calc(100% - 120px);
+      }*/
+
+.sebm-google-map-container {
+  height: calc(100% - 120px);
+}

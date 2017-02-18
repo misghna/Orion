@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.sesnu.orion.dao.MiscSettingDAO;
@@ -32,12 +33,13 @@ public class RequestInterceptor extends HandlerInterceptorAdapter{
 
 			if(request.getSession().getAttribute("user")!=null){				
 				User user = (User) request.getSession().getAttribute("user");
-				if(user.getRole().equals("Admin")){
-					return true;
-				}
 				request.setAttribute("user", user);
 				permissions = user.getPrivilage();
 				request.setAttribute("grantedIds", request.getSession().getAttribute("grantedIds"));
+				
+				if(user.getRole().equals("Admin")){
+					return true;
+				}
 			}
 			
 			if(request.getMethod().toLowerCase().equals("get")){
@@ -51,11 +53,8 @@ public class RequestInterceptor extends HandlerInterceptorAdapter{
 			
 			if(permissions==null || (permissions.equals("READ ONLY")) ){
 				if(request.getRequestURL().indexOf("api")>-1){
-//					response.addHeader("Access-Control-Allow-Origin", "http://localhost:4200");
-//					response.addHeader("Access-Control-Allow-Credentials","true");
 					response.sendError(403,"Method not allowed");
-				//	response.sendError(400,"Method not allowed");
-				//	response.sendRedirect("/api_access_denied");
+
 				}else{
 					response.sendRedirect("/access_denied");
 				}
@@ -65,5 +64,13 @@ public class RequestInterceptor extends HandlerInterceptorAdapter{
 		
 			return true;
 		}
+	
+	
+	@Override
+	public void postHandle(
+			HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView)
+			throws Exception {
+	//	response.sendError(200, "Server Error");
+	}
 
 }

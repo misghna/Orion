@@ -21,7 +21,7 @@ import com.sesnu.orion.dao.OrderDAO;
 import com.sesnu.orion.web.model.DocTracking;
 import com.sesnu.orion.web.model.DocTrackingView;
 import com.sesnu.orion.web.model.OrderView;
-import com.sesnu.orion.web.utility.TrackingService;
+import com.sesnu.orion.web.service.TrackingService;
 import com.sesnu.orion.web.utility.Util;
 
 @CrossOrigin(origins = "http://localhost:4200")

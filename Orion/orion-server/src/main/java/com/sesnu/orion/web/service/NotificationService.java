@@ -1,4 +1,4 @@
-package com.sesnu.orion.web.utility;
+package com.sesnu.orion.web.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,6 +18,7 @@ import com.sesnu.orion.dao.UserDAO;
 import com.sesnu.orion.web.model.Notification;
 import com.sesnu.orion.web.model.OrderView;
 import com.sesnu.orion.web.model.User;
+import com.sesnu.orion.web.utility.Util;
 
 @Component
 public class NotificationService {
@@ -31,6 +32,8 @@ public class NotificationService {
         List<Notification> notifs = notifDao.listUnnotified();
         if(notifs.size()<1) return;
        
+        System.out.println("sending Notification ... ");
+        
         Map<String,List<User>> notifUsers=null; String msg =null;
     
         for (Notification notif : notifs) {
@@ -84,7 +87,8 @@ public class NotificationService {
 					if(payNotifList.contains(name)){
 						if(deliveryMethod(notif,"Email")){
 							emailNotifUsers.add(user);
-						}else if(deliveryMethod(notif,"SMS/Text")){
+						}
+						if(deliveryMethod(notif,"SMS/Text")){
 							smsNotifUsers.add(user);
 						}
 					}
@@ -110,14 +114,14 @@ public class NotificationService {
 	private void emailNotification(List<User> users, String mainMsg,Long orderRef){
 		OrderView order = orderDao.get(orderRef);
 		StringBuilder msg = new StringBuilder();
-		msg.append("Hello  USER_NAME,\n\n ");
-		msg.append("Notification for : Inv No. "  + order.getInvNo() + " Bill of loading : " + order.getBl());
+		msg.append("Hello,\n\n ");
+		msg.append("Notification from AnsebaLimitada web app for : Inv No. "  + order.getInvNo() + " Bill of loading : " + order.getBl());
 		msg.append("\n " + mainMsg);
-		msg.append("\n\n you are getting this notification, becase you set it in your notification profile.");
+		msg.append("\n\n you are getting this notification, becase you have set it in your notification profile.");
 		msg.append("\n\n Do not replay to this email, this is an automated message.\n\n Thank you!!");
 		StringBuffer receiver = new StringBuffer();
-		for (User user : users) {
-			receiver.append(user.getEmail() + ",");			
+		for (User user : users) {		
+			receiver.append(user.getEmail() + ",");	
 		}
 		String allRecipients = receiver.toString();
 		allRecipients = allRecipients.substring(0,allRecipients.length()-1);
@@ -130,7 +134,6 @@ public class NotificationService {
 		msg.append("Hello  USER_NAME,\n\n ");
 		msg.append("Notification for : Inv No. "  + order.getInvNo() + " Bill of loading : " + order.getBl());
 		msg.append("\n " + mainMsg);
-		StringBuffer receiver = new StringBuffer();
 		for (User user : users) {
 			if(user.getPhone()!=null){
 				util.sendText(msg.toString(), user.getPhone());

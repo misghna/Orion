@@ -38,6 +38,7 @@ import { HomeService } from './home/home.service';
 import { PaymentComponent } from './payment/payment.component';
 import { ShippingComponent } from './shipping/shipping.component';
 import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-upload/ng2-file-upload';
+import {FileUploadModule} from 'ng2-file-upload/file-upload/file-upload.module'
 import { DocumentComponent } from './document/document.component';
 import { DigitsOnly } from './service/digitsOnly.directive';
 import { NumberOnly } from './service/numberOnly.directive';
@@ -69,31 +70,34 @@ import { DocHandoverComponent } from './doc-handover/doc-handover.component';
 import { DocHandoverService } from './doc-handover/doc-handover.service';
 import { NotificationComponent } from './notification/notification.component';
 import { NotificationService } from './notification/notification.service';
+import { AccessControlComponent } from './access-control/access-control.component';
+import { CommonModule } from '@angular/common';
+import { AgmCoreModule } from 'angular2-google-maps/core';
 
 
 
-
+export function httpFactory(backend: XHRBackend, defaultOptions: RequestOptions, utilService:UtilService) {
+            return new HttpInterceptor(backend, defaultOptions,utilService);}
 
 @NgModule({
-  imports: [HttpModule, DataTableModule,
+  imports: [HttpModule, DataTableModule,FileUploadModule,
   BrowserModule, FormsModule,
+  CommonModule,
+  AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyC5Xn75hscrToxJ-ScGHTUevh58Pwoeyvw'
+    }),
   RouterModule.forRoot(routes, {
       useHash: false
     }) 
    ],
-  declarations: [ AppComponent,
-                HomeComponent,
-                RegisterComponent,
-                AdminComponent,
-                HeaderComponent,
-                UsersComponent,
-                PassRenewComponent,
-                ChangePasswordComponent,
+  declarations: [ AppComponent,HomeComponent,RegisterComponent,AdminComponent,HeaderComponent,
+                UsersComponent,PassRenewComponent,ChangePasswordComponent,
                 ItemsComponent,FilterNamePipe, SalesPlanComponent, OrdersComponent, FileUploadComponent,
                 BidComponent, PaymentComponent, ShippingComponent,LicenseComponent,
-                FileSelectDirective, FileDropDirective, DocumentComponent,DigitsOnly,NumberOnly, ContainerComponent,
+                DocumentComponent,DigitsOnly,NumberOnly, ContainerComponent,
                 PortFeeComponent, StatusComponent, ApprovalComponent, MiscComponent, CurrencyComponent, 
-                ClientComponent, BudgetComponent, DocTrackingComponent, TerminalComponent, EstimateComponent,DateDiffPipe, DocHandoverComponent, NotificationComponent
+                ClientComponent, BudgetComponent, DocTrackingComponent, TerminalComponent, EstimateComponent,DateDiffPipe,
+                DocHandoverComponent, NotificationComponent, AccessControlComponent
                  ],
   providers:[AuthGuard,UtilService,UserService,AppSettings,MiscService,
             SalesPlanService,OrdersService,DocumentService,
@@ -104,15 +108,15 @@ import { NotificationService } from './notification/notification.service';
             DocHandoverService,NotificationService,
         {
           provide: Http,
-          useFactory: (backend: XHRBackend, defaultOptions: RequestOptions, utilService:UtilService) => {
-            return new HttpInterceptor(backend, defaultOptions,utilService);
-            },
+          useFactory: httpFactory,
             deps: [ XHRBackend, RequestOptions,UtilService]
-        },{
+        },
+        {
           provide : 'ApiEndpoint',  useValue : ('http://localhost:8080/')
         }
   ],
 
   bootstrap:    [ AppComponent]
 })
+
 export class AppModule { }
