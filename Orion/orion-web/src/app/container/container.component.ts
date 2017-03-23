@@ -4,7 +4,7 @@ import { FilterNamePipe } from '../pipes/pipe.filterName';
 import { ContainerService } from '../container/container.service';
 import { UtilService } from '../service/util.service';
 import { ShippingService } from '../shipping/shipping.service';
-import { ClientService } from '../client/client.service';
+import { AddressBookService } from '../address-book/address-book.service';
 import {MiscSettingService} from '../misc/misc-service.service'
 
 import { Router,ActivatedRoute, Params } from '@angular/router';
@@ -38,7 +38,7 @@ export class ContainerComponent implements OnInit {
 
   constructor(private utilService :UtilService,private contService:ContainerService, private el: ElementRef,
               private shipService:ShippingService ,public route: ActivatedRoute,public router:Router,
-              private clientService :ClientService, private miscService :MiscSettingService) {
+              private addBookService :AddressBookService, private miscService :MiscSettingService) {
           utilService.currentSearchTxt$.subscribe(txt => {this.search(txt);});
           utilService.currentdelItem$.subscribe(opt => { this.delete();}); 
           this.optionsList = [{'name':'Add Container','value':'addNew'}];
@@ -111,7 +111,7 @@ getTransporters(){
 }
 
 getDestinations(){
-     this.clientService.getDestinations()
+     this.addBookService.getDestinations()
       .subscribe(
           response => {
               this.destinations = response;    

@@ -14,10 +14,12 @@
     <script src="assets/js/jquery.min.js" charset="utf-8" ></script>
     <link rel="stylesheet" href="assets/css/bootstrap.min.css" >
     <link rel="stylesheet" href="assets/css/asPieProgress.min.css" >
+     <link rel="stylesheet" href="assets/css/slider.css" >
+      <!--<link rel="stylesheet" href="assets/css/slider2.css" >-->
     <!-- Latest compiled and minified JavaScript -->
     <script src="assets/js/bootstrap.min.js"  charset="utf-8"></script>
     <script src="assets/js/jquery-asPieProgress.min.js"></script>
-
+  <script src="assets/js/bootstrap-slider.js"></script>
 
 <!-- 1. Load libraries -->
 
@@ -28,5 +30,5 @@
     
     <app-root></app-root>
 
-  <script type="text/javascript" src="inline.3450c5505179e1e0faaa.bundle.js"></script><script type="text/javascript" src="vendor.4dade1173b6a393546d8.bundle.js"></script><script type="text/javascript" src="main.42fc1f1f10b98772ae6d.bundle.js"></script></body>
+  <script type="text/javascript" src="inline.e4ccab9074206cf7513e.bundle.js"></script><script type="text/javascript" src="vendor.cd2fcd7f3d10764463fe.bundle.js"></script><script type="text/javascript" src="main.5645c5c7cb6ce3797107.bundle.js"></script></body>
 </html>

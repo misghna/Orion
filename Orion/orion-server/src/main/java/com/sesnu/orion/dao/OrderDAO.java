@@ -21,7 +21,7 @@ public interface OrderDAO {
 	
 	public List<OrderView> getOrderByTime(int year,String month);
 	
-	public List<OrderView> getOrdersByInvNo(String invNo);
+	public OrderView getOrderByInvNo(String invNo);
 	
 	public List<OrderView> listAll() ;
 		

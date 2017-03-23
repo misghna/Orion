@@ -5,7 +5,7 @@ import { ContainerService } from '../container/container.service';
 import { UtilService } from '../service/util.service';
 import { DocHandoverService } from './doc-handover.service';
 import { Router,ActivatedRoute, Params } from '@angular/router';
-import { ClientService } from '../client/client.service';
+import { AddressBookService } from '../address-book/address-book.service';
 import { OrdersService } from '../orders/orders.service';
 
 
@@ -40,7 +40,7 @@ export class DocHandoverComponent implements OnInit {
 
   constructor(private utilService :UtilService,private el: ElementRef,
               private docHandService:DocHandoverService ,public route: ActivatedRoute,public router:Router, 
-              private clientService :ClientService, private orderService :OrdersService) {
+              private addBookService :AddressBookService, private orderService :OrdersService) {
 
         this.trackableDocs = ['Bill of Loading','Proforma Invoice','Commerical Invoice','CNCA','Inspection','Packing List','Certificate of Health','Certificate of Origin','Certificate of Analise',
                       'Certificate of Fumigation','Certificate of Quality','Certificate of Insurance','Certificate of Phytosanitary','Other'];
@@ -111,7 +111,7 @@ triggerDelModal(event){
 
 
 getFWAgents(){
-     this.clientService.getFWAgents()
+     this.addBookService.getFWAgents()
       .subscribe(
           response => {
               this.fwAgents = response;    

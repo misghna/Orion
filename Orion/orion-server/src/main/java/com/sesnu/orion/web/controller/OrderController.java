@@ -114,8 +114,8 @@ public class OrderController {
 			@PathVariable("year") int year,@PathVariable("month") String month)
 			throws Exception {
 		
-		List<OrderView> ord = orderDao.getOrdersByInvNo(order.getInvNo());
-		if(ord.size()>0){
+		OrderView ord = orderDao.getOrderByInvNo(order.getInvNo());
+		if(ord!=null){
 			response.sendError(400,Util.parseError("Invoice number is already assigned"));
 			return null;
 		}
@@ -146,8 +146,8 @@ public class OrderController {
 			@PathVariable("month") String month)
 			throws Exception {
 		
-		List<OrderView> ord = orderDao.getOrdersByInvNo(order.getInvNo());
-		if(ord.size()>0 && ord.get(0).getId()!=order.getId()){
+		OrderView ord = orderDao.getOrderByInvNo(order.getInvNo());
+		if(ord!=null && ord.getId()!=order.getId()){
 			response.sendError(400,Util.parseError("Invoice number is already assigned"));
 			return null;
 		}

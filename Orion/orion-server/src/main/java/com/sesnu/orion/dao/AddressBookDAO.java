@@ -11,7 +11,7 @@ import com.sesnu.orion.web.model.DuLicenseView;
 
 
 
-public interface ClientDAO {
+public interface AddressBookDAO {
 	
 	public List<AddressBook> listAll();
 		
@@ -20,6 +20,8 @@ public interface ClientDAO {
 	public List<AddressBook> listAllDest();
 	
 	public AddressBook getByName(String name);
+	
+	public List<AddressBook> getByType(String name);
 	
 	public AddressBook get(long id);
 	

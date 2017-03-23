@@ -56,8 +56,7 @@ import { MiscSettingService } from './misc/misc-service.service';
 import { CurrencyService } from './currency/currency.service';
 import { LicenseComponent } from './license/license.component';
 import { LicenseService } from './license/license.service';
-import { ClientComponent } from './client/client.component';
-import { ClientService } from './client/client.service';
+import { AddressBookService } from './address-book/address-book.service';
 import { BudgetComponent } from './budget/budget.component';
 import { DocTrackingComponent } from './doc-tracking/doc-tracking.component';
 import { DocTrackingService } from './doc-tracking/doc-tracking.service';
@@ -73,14 +72,18 @@ import { NotificationService } from './notification/notification.service';
 import { AccessControlComponent } from './access-control/access-control.component';
 import { CommonModule } from '@angular/common';
 import { AgmCoreModule } from 'angular2-google-maps/core';
-
-
+import { AddressBookComponent } from './address-book/address-book.component';
+import { InvoiceFormatComponent } from './invoice-format/invoice-format.component';
+import { InvoiceFormatService } from './invoice-format/invoice-format.service';
+import { ExporterInvoiceComponent } from './exporter-invoice/exporter-invoice.component';
+import { ChartsModule } from 'ng2-charts';
+import { CashFlowComponent } from './cash-flow/cash-flow.component';
 
 export function httpFactory(backend: XHRBackend, defaultOptions: RequestOptions, utilService:UtilService) {
             return new HttpInterceptor(backend, defaultOptions,utilService);}
 
 @NgModule({
-  imports: [HttpModule, DataTableModule,FileUploadModule,
+  imports: [HttpModule, DataTableModule,FileUploadModule,ChartsModule,
   BrowserModule, FormsModule,
   CommonModule,
   AgmCoreModule.forRoot({
@@ -96,16 +99,16 @@ export function httpFactory(backend: XHRBackend, defaultOptions: RequestOptions,
                 BidComponent, PaymentComponent, ShippingComponent,LicenseComponent,
                 DocumentComponent,DigitsOnly,NumberOnly, ContainerComponent,
                 PortFeeComponent, StatusComponent, ApprovalComponent, MiscComponent, CurrencyComponent, 
-                ClientComponent, BudgetComponent, DocTrackingComponent, TerminalComponent, EstimateComponent,DateDiffPipe,
-                DocHandoverComponent, NotificationComponent, AccessControlComponent
+                AddressBookComponent, BudgetComponent, DocTrackingComponent, TerminalComponent, EstimateComponent,DateDiffPipe,
+                DocHandoverComponent, NotificationComponent, AccessControlComponent, AddressBookComponent, InvoiceFormatComponent, ExporterInvoiceComponent, CashFlowComponent
                  ],
   providers:[AuthGuard,UtilService,UserService,AppSettings,MiscService,
             SalesPlanService,OrdersService,DocumentService,
             BidService,PaymentService,ShippingService,HomeService,
             ContainerService,PortFeeService,ApprovalService,StatusService,
-            MiscSettingService,CurrencyService,ClientService,LicenseService,
+            MiscSettingService,CurrencyService,AddressBookService,LicenseService,
             DocTrackingService,TerminalService,EstimateService,BudgetService,
-            DocHandoverService,NotificationService,
+            DocHandoverService,NotificationService,InvoiceFormatService,
         {
           provide: Http,
           useFactory: httpFactory,

@@ -1,0 +1,30 @@
+/*@import "../../../node_modules/nouislider/distribute/nouislider.min.css";*/
+
+#invoiceHtml{
+     background-color: #fcfcfc;
+     box-shadow:0.2px 0.2px 0.2px 0.2px #C9C9C9;
+ 	-webkit-box-shadow:0.2px 0.2px 0.2px 0.2px #C9C9C9;
+	 -moz-box-shadow:0.2px 0.2px 0.2px 0.2px #C9C9C9;
+     border-radius: 10px;
+      margin: auto; 
+}
+
+
+#editor {
+    height: 122px;
+    width: 304px;
+    position: absolute;
+    left: 500px;
+    top: 200px;
+    z-index: 4000000;
+    border:1px solid grey;
+    background-color: white;
+}
+
+
+.middletext {
+    text-align: justify;
+    white-space: pre-line;
+    -moz-text-align-last: center;
+    text-align-last: center;
+}

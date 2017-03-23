@@ -30,9 +30,9 @@
             <li><a routerLink="/import/order/inPort" routerLinkActive="active" >Orders In Port</a></li> 
             <li><a routerLink="/import/order/inTerminal" routerLinkActive="active" >Orders In Terminal</a></li> 
             <li role="separator" class="divider"></li>
-            <li><a routerLink="/import/bid/all" routerLinkActive="active" >All Bid</a></li>
-            <li><a routerLink="/import/shipping/all" routerLinkActive="active" >All Shipments</a></li>
-            <li><a routerLink="/import/container/all" routerLinkActive="active" >All Containers</a></li>       
+            <li><a routerLink="/import/bid/all" routerLinkActive="active" >Bids</a></li>
+            <li><a routerLink="/import/shipping/all" routerLinkActive="active" >Shipments</a></li>
+            <li><a routerLink="/import/container/all" routerLinkActive="active" >Containers</a></li>       
           </ul>
         </li>
 
@@ -54,8 +54,10 @@
         <li id="financeMenu" class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Finance <span class="caret"></span></a>
           <ul class="dropdown-menu">           
-            <li><a routerLink="/finance/payment/all" routerLinkActive="active" >All Payments</a></li> 
-            <li><a routerLink="/finance/approval/all" routerLinkActive="active" > All Approvals</a></li>
+            <li><a routerLink="/finance/payment/all" routerLinkActive="active" >Payments</a></li> 
+            <li><a routerLink="/finance/approval/all" routerLinkActive="active" > Approvals</a></li>
+            <li><a routerLink="/finance/cashFlow" routerLinkActive="Active" >Cash Flow</a></li>           
+            <li><a routerLink="/finance/exporterInvoices/search" routerLinkActive="Active" >Generate Invoice</a></li>
             <li><a routerLink="/finance/estimator/search" routerLinkActive="Active" >Order Estimator</a></li>
             <li><a routerLink="/finance/budget/all" routerLinkActive="Active" >Budget Estimate</a></li>
             <li><a routerLink="/finance/salesPlan" routerLinkActive="active" >Sales Plan</a></li> 
@@ -121,6 +123,7 @@
             <li><a routerLink="/setting/currency" routerLinkActive="active" (click)="activePageName='Currency Exchange'">Currency Exchange</a></li>
             <li><a routerLink="/setting/addressBook" routerLinkActive="active" (click)="activePageName='Clients/WH'">Address Book</a></li>
             <li><a routerLink="/setting/terminal" routerLinkActive="active" (click)="activePageName='Terminals'">Terminals</a></li>
+            <li><a routerLink="/setting/invoiceFormat" routerLinkActive="active" (click)="activePageName='Invoice Format'">Invoice Format</a></li>            
             <li><a routerLink="/setting/misc" routerLinkActive="active" (click)="activePageName='Misc Settings'">Others</a></li>
           </ul>
         </li>

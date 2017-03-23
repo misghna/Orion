@@ -6,6 +6,7 @@ import { UtilService } from '../service/util.service';
 import { SalesPlanService } from '../sales-plan/sales-plan.service';
 import { Router,ActivatedRoute, Params } from '@angular/router';
 import { MiscSettingService } from '../misc/misc-service.service';
+import { AddressBookService } from '../address-book/address-book.service';
 
 
 declare var jQuery : any;
@@ -38,8 +39,9 @@ export class OrdersComponent implements OnInit {
   salesPlanList= []; filteredSalesPlanList=[];importers;ports;
 
   constructor(private utilService :UtilService,private orderService:OrdersService, private el: ElementRef,
-              private miscService:MiscService, private salesService:SalesPlanService,public router: Router 
-              ,public route: ActivatedRoute, private miscSettingService :MiscSettingService) {
+              private miscService:MiscService, private salesService:SalesPlanService,public router: Router,
+              public route: ActivatedRoute, private miscSettingService :MiscSettingService,
+              private addressBookService : AddressBookService) {
 
           this.subscription = utilService.currentSearchTxt$.subscribe(txt => {this.search(txt);});
           this.activeOrderId = this.route.snapshot.params['id'];
@@ -86,9 +88,10 @@ export class OrdersComponent implements OnInit {
         this.getItemNameBrandList();
         this.populateYear();
         this.getSalesPlan();
-        this.getImporters();
+  //      this.getImporters();
         this.getPorts();
         this.loadData();
+        this.getAddressByType("Importer");
 
         jQuery(this.el.nativeElement).find('#monthSelector li').on('click',function(){  
           jQuery('#monthBtn').html(jQuery(this).text().trim()); 
@@ -97,6 +100,20 @@ export class OrdersComponent implements OnInit {
 
   } 
   
+
+    getAddressByType(type){
+     this.addressBookService.get(type)
+      .subscribe(
+          response => {
+              this.importers = response;    
+          },
+          error => {
+            console.log("exporters not found");
+          }
+        );
+  }
+
+
   getImporters() {
      this.miscSettingService.getImporters()
       .subscribe(

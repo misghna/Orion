@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sesnu.orion.dao.BidDAO;
-import com.sesnu.orion.dao.ClientDAO;
+import com.sesnu.orion.dao.AddressBookDAO;
 import com.sesnu.orion.dao.DuLicenseDAO;
 import com.sesnu.orion.dao.OrderDAO;
 import com.sesnu.orion.web.model.Bid;
@@ -21,12 +21,12 @@ import com.sesnu.orion.web.model.Order;
 @SuppressWarnings("unchecked")
 @Transactional
 @Repository
-public class ClientDAOImpl implements ClientDAO {
+public class AddressBookDAOImpl implements AddressBookDAO {
 	
 	@Autowired
     private SessionFactory sessionFactory;
 
-	public ClientDAOImpl() {
+	public AddressBookDAOImpl() {
 	}
 
 	
@@ -63,6 +63,16 @@ public class ClientDAOImpl implements ClientDAO {
 		return null;
 	}
 
+	@Override
+	public List<AddressBook> getByType(String type) {
+		String hql = "from AddressBook where type = :type";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql)
+				.setString("type", type);
+		if(query.list().size()>0){
+			return (List<AddressBook>) query.list();
+		}
+		return null;
+	}
 
 	@Override
 	public AddressBook get(long id) {

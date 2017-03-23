@@ -24,7 +24,7 @@ import javax.mail.search.SearchTerm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.sesnu.orion.dao.ClientDAO;
+import com.sesnu.orion.dao.AddressBookDAO;
 import com.sesnu.orion.dao.DocHandoverDAO;
 import com.sesnu.orion.web.model.AddressBook;
 import com.sesnu.orion.web.model.DocHandover;
@@ -32,7 +32,7 @@ import com.sesnu.orion.web.model.DocHandover;
 @Component
 public class GmailInbox {
  
-	@Autowired ClientDAO clientDao;
+	@Autowired AddressBookDAO clientDao;
 	@Autowired DocHandoverDAO docDao;
 	
 	

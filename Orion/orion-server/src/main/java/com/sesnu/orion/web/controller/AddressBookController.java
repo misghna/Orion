@@ -14,27 +14,32 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.sesnu.orion.dao.ClientDAO;
+import com.sesnu.orion.dao.AddressBookDAO;
 import com.sesnu.orion.dao.OrderDAO;
 import com.sesnu.orion.web.model.AddressBook;
 import com.sesnu.orion.web.utility.Util;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @Controller
-public class ClientController {
+public class AddressBookController {
 
 	
 	@Autowired
-	ClientDAO clientDAO;
+	AddressBookDAO clientDAO;
 	@Autowired Util util;
 	@Autowired OrderDAO orderDao;
 	
 
-	@RequestMapping(value = "/api/user/addressBook/all", method = RequestMethod.GET)
-	public @ResponseBody List<AddressBook> items(HttpServletResponse response) throws IOException {
+	@RequestMapping(value = "/api/user/addressBook/{type}", method = RequestMethod.GET)
+	public @ResponseBody List<AddressBook> items(HttpServletResponse response
+			,@PathVariable("type") String type) throws IOException {
 
-		List<AddressBook> clients= clientDAO.listAll();
-
+		List<AddressBook> clients= null;
+		if(type.equals("all")){
+			clients= clientDAO.listAll();
+		}else{
+			clients= clientDAO.getByType(type);
+		}
 		if(clients.size()>0){
 			return clients;
 		}

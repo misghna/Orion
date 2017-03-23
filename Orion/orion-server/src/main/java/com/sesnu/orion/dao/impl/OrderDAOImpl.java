@@ -62,12 +62,16 @@ public class OrderDAOImpl implements OrderDAO {
 	}
 	
 	@Override
-	public List<OrderView> getOrdersByInvNo(String invNo) {
+	public OrderView getOrderByInvNo(String invNo) {
 		
 		String hql = "from OrderView where lower(invNo) = :invNo";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql)
 		.setString("invNo",invNo.toLowerCase());
-		return (List<OrderView>) query.list();
+		List<OrderView> result =  (List<OrderView>) query.list();
+		if(result.size()>0){
+			return result.get(0);
+		}
+		return null;
 
 	}	
 	

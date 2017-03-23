@@ -73,6 +73,7 @@ public class Order {
 	
 	@Column(name = "updated_on")
 	private String updatedOn;
+	
 
 	public Long getId() {
 		return id;

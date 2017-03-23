@@ -1,0 +1,64 @@
+<div  class="alert alert-auto" alert-dismissible
+    [ngClass]="{
+      'hidden' : alertObj.alertHidden,
+      'alert-danger' :  alertObj.alertType == 'Error',
+      'alert-success' : alertObj.alertType == 'Info'
+    }"
+  >
+<a  class="close" aria-label="close" (click)="alertObj.alertHidden = true">x</a>
+  <strong>{{alertObj.alertType}}!</strong> {{alertObj.itemMsg}}
+</div>
+
+<div class="container" style="width:100%">
+
+       <div class="row">
+         <div class="col-sm-2" style="background-color:white;">
+            <!--<span style="margin-top:10px;font-size:20px"> Invoice Generator Options</span>-->
+            <span style ="color:grey;font-size:25px;margin-left:20px">Invoice Generator</span>
+            <br>  <br>
+            <div class="dropdown" style="width:90%"> 
+            <textarea id="itemName" #itemName class="dropdown-toggle form-control txt-flat middletext" data-toggle="dropdown" rows="2"  style="width:90%"
+                placeholder="Select Order - Invoice No" required (keyup)="filterName(itemName.value)" 
+                [(ngModel)]="invoice.invNo" [ngModelOptions]="{standalone: true}"></textarea>
+            <ul class="dropdown-menu item-name">
+              <li *ngFor = "let order of allOrders" (click)="invoice.invNo=order.invNo"><a>{{order.invNo}}</a></li>
+            </ul>
+          </div>   
+            <div class="btn-group " style="width:90%">
+              <button type="button" style="width:100%" class="btn btn-default dropdown-toggle editFormMargin noBorder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  {{invoice.type}} <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu">         
+                  <li><a (click)="invoice.type = 'Proforma Invoice'">Proforma Invoice</a></li>
+                  <li><a (click)="invoice.type = 'Commercial Invoice'">Commercial Invoice</a></li>
+                  <li><a (click)="invoice.type= 'Packing List'">Packing List</a></li>
+              </ul>
+            </div>
+            <div class="btn-group " style="width:90%">
+              <button type="button" style="width:100%" class="btn btn-default dropdown-toggle editFormMargin noBorder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  {{invoice.exporter}} <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu">         
+                  <li *ngFor="let address of addresses"><a (click)="invoice.exporter = address.name">{{address.name}}</a></li>
+              </ul>
+            </div>
+            <button (click)="openInvoice()" class="btn btn-default" style="margin-top:5px;width:90%">Open</button>
+            <button (click)="save()" class="btn btn-default" style="margin-top:5px;width:90%">Save Changes</button>
+            <button (click)="generateInvoice()" class="btn btn-default" style="margin-top:5px;width:90%">Create New</button>
+            <button id="apprv" class="btn btn-default" style="margin-top:5px;width:90%">Request Approval</button>
+         </div>
+         
+          <div class="col-sm-9" style="background-color:white;">
+          <div id="slider" ></div> 
+          <div id="editor">
+             <textarea id= "editArea" rows="4" cols="40"></textarea>
+             <table style="width:100%"><tr>
+              <td><button id="cancelBtn" class="btn btn-default" style="width:100%">Cancel</button></td>
+              <td><button id="saveBtn"  class="btn btn-default" style="width:100%">Change</button></td>   
+             </tr></table>
+          </div>
+          <div #invoiceHtml id="invoiceHtml" [class.hidden]="notLoaded">></div>
+          <div  [class.hidden]="!notLoaded" style="width:100%; font-size:30px;margin-top:200px;color:gray;text-align:center;opacity: .3;"> Open or Create New Invoice</div>
+         </div>
+       </div>
+</div>

@@ -1,19 +1,20 @@
-import { Component, OnInit,ElementRef} from '@angular/core';
+import { Component, OnInit,ElementRef,Renderer,ViewChild} from '@angular/core';
 import { MiscService } from '../service/misc.service';
 import { FilterNamePipe } from '../pipes/pipe.filterName';
 import { ContainerService } from '../container/container.service';
 import { UtilService } from '../service/util.service';
-import { ClientService } from './client.service';
+import { InvoiceFormatService } from './invoice-format.service';
 import { Router,ActivatedRoute, Params } from '@angular/router';
 
-declare var jQuery : any;
+declare var $ : any;
 
 @Component({
-  selector: 'app-client',
-  templateUrl: './client.component.html',
-  styleUrls: ['./client.component.css']
+  selector: 'app-invoice-format',
+  templateUrl: './invoice-format.component.html',
+  styleUrls: ['./invoice-format.component.css']
 })
-export class ClientComponent implements OnInit {
+export class InvoiceFormatComponent implements OnInit {
+  @ViewChild('reportModalBtn') modalInput:ElementRef;
   data;responseData;itemMsg;
   alertType;alertHidden;alertLabel;
   hideAddNewForm;  hideLoader;
@@ -33,11 +34,11 @@ export class ClientComponent implements OnInit {
   selectedDate;activeShippingId;activeOrderId;
   activeOrder= {}; filteredSalesPlanList=[]; allOrders;shippingList; allShippingList;
 
-  constructor(private utilService :UtilService,private el: ElementRef,
-              private clientService:ClientService ,public route: ActivatedRoute,public router:Router) {
+  constructor(private utilService :UtilService,private el: ElementRef,private rd: Renderer,
+              private invFrmtService:InvoiceFormatService ,public route: ActivatedRoute,public router:Router) {
           utilService.currentSearchTxt$.subscribe(txt => {this.search(txt);});
           utilService.currentdelItem$.subscribe(opt => { this.delete();}); 
-          this.optionsList = [{'name':'Add Client/WH','value':'addNew'}];
+          this.optionsList = [{'name':'Add Invoice Format','value':'addNew'}];
           this.utilService.setToolsContent(this.optionsList);
               
           this.pageName;
@@ -56,20 +57,12 @@ export class ClientComponent implements OnInit {
     }
 
   ngOnInit() {
-      this.headers = [{'name':'No','value':'id','j':'x'},{'name':'Name','value':'name','j':'l'},
-                      {'name':'Type','value':'type','j':'l'},{'name':'Manager','value':'manager','j':'l'},
-                      {'name':'Phone No','value':'phone','j':'c'}, {'name':'Email','value':'email','j':'c'},
-                      {'name':'Address','value':'address','j':'c'},{'name':'City','value':'city','j':'l'}];
+      this.headers = [{'name':'No','value':'id','j':'x'},{'name':'Exporter','value':'exporter','j':'l'},
+                      {'name':'Invoice Type','value':'invoiceType','j':'l'},{'name':'Format File','value':'format','j':'l'},
+                      {'name':'Updated No','value':'updatedOn','j':'c'}];
         
         this.activeShippingId = this.route.snapshot.params['id'];
         this.loadAll();
-        
-   //     this.getAllShiping();
-
-        jQuery(this.el.nativeElement).find('#monthSelector li').on('click',function(){  
-          jQuery('#monthBtn').html(jQuery(this).text().trim()); 
-          jQuery('#monthBtn').attr('value',jQuery(this).text().trim());       
-        });
 
   } 
 
@@ -86,14 +79,14 @@ triggerDelModal(event){
   loadAll(){
 
     var setRev :boolean;
-     this.clientService.get()
+     this.invFrmtService.get()
       .subscribe(
           response => {
               this.setData(response);    
           },
           error => {
             if(error.status==404){
-               this.popAlert("Info","Info","Client/WH is not yet added!");          
+               this.popAlert("Info","Info","Invoice format is not yet added!");          
             }else{
                this.popAlert("Error","danger","Something went wrong, please try again later!");          
             }
@@ -101,6 +94,31 @@ triggerDelModal(event){
         );
   }
 
+ preview(item){
+    this.invFrmtService.getInvoiceFormat(item['id'])
+      .subscribe(
+          response => {
+               $("#reportModalDiv").html(response['_body']); 
+                let event = new MouseEvent('click', {bubbles: true});
+                this.rd.invokeElementMethod(
+                this.modalInput.nativeElement, 'dispatchEvent', [event]); 
+          },
+          error => {
+            if(error.status==404){
+               this.popAlert("Info","Info","Preview not found!");          
+            }else{
+              console.log();
+               this.popAlert("Error","danger","Something went wrong, please try again later!");          
+            }
+          }
+        );
+}
+
+
+close(){
+  console.log("closing");
+  $("#reportModalDiv").empty();  
+}
 
   setData(response){
       this.responseData=response;
@@ -111,10 +129,10 @@ triggerDelModal(event){
     addUpdate(event){
       event.preventDefault();
         if (this.taskType=="Add"){
-            this.clientService.add(this.itemDetail)
+            this.invFrmtService.add(this.itemDetail)
             .subscribe(
                 response => {
-                    this.popAlert("Info","success","Setting successfully added!");
+                    this.popAlert("Info","success","Invoice format successfully added!");
                     this.setData(response);  
                     this.hideAddNewForm = true;  
                 },
@@ -164,11 +182,11 @@ triggerDelModal(event){
 
     delete(){
       var id = this.activeProductHeader.split('-')[0];
-      this.clientService.deleteById(id)
+      this.invFrmtService.deleteById(id)
       .subscribe(
           response => {
               this.setData(response);  
-              this.popAlert("Info","success","Setting Agency successfully deteled!"); 
+              this.popAlert("Info","success","Invoice format successfully deteled!"); 
           },
           error => {
               this.popAlert("Error","danger","Something went wrong, please try again later!");
@@ -188,11 +206,11 @@ triggerDelModal(event){
 
     update(){
           console.log(this.itemDetail['id']);
-            this.clientService.update(this.itemDetail)
+            this.invFrmtService.update(this.itemDetail)
             .subscribe(
                 response => {
                     this.hideAddNewForm = true;
-                    this.popAlert("Info","success","Setting successfully updated!");
+                    this.popAlert("Info","success","Invoice format successfully updated!");
                     this.setData(response);     
                 },
                 error => {      

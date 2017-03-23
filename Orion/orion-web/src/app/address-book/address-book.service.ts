@@ -6,7 +6,7 @@ import 'rxjs/add/operator/map';
 
 
 @Injectable()
-export class ClientService {
+export class AddressBookService {
   baseUrl; 
 
 
@@ -15,11 +15,17 @@ export class ClientService {
   }
 
 
-  get(){
-    var url = this.baseUrl + 'api/user/addressBook/all'
+  get(type){
+    var url = this.baseUrl + 'api/user/addressBook/' + type
     return this.http.get(url,[{ withCredentials: true }])
       .map(res => res.json());
   }
+
+  // getByType(type){
+  //   var url = this.baseUrl + 'api/user/addressBook/all'
+  //   return this.http.get(url,[{ withCredentials: true }])
+  //     .map(res => res.json());
+  // }
 
   getDestinations(){
     var url = this.baseUrl + 'api/user/addressBook/destinations'

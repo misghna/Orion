@@ -39,6 +39,9 @@ public class AddressBook {
 	
 	@Column(name = "email")
 	private String email;
+	
+	@Column(name = "country")
+	private String country;
 
 	public Long getId() {
 		return id;
@@ -102,6 +105,14 @@ public class AddressBook {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
 	}
 	
 		

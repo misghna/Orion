@@ -218,7 +218,7 @@
                 {{itemDetail.importer}} <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
-                <li *ngFor ="let imp of importers" ><a (click)="itemDetail.importer = imp">{{imp}}</a></li>
+                <li *ngFor ="let imp of importers" ><a (click)="itemDetail.importer = imp.name">{{imp.name}}</a></li>
             </ul>
             </div>
         </td>

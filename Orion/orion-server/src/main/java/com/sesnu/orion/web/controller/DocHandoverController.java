@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.sesnu.orion.dao.ClientDAO;
+import com.sesnu.orion.dao.AddressBookDAO;
 import com.sesnu.orion.dao.DocHandoverDAO;
 import com.sesnu.orion.dao.UserDAO;
 import com.sesnu.orion.web.model.AddressBook;
@@ -33,7 +33,7 @@ public class DocHandoverController {
 	DocHandoverDAO docDao;
 	@Autowired UserDAO userDao;
 	@Autowired Util util;
-	@Autowired ClientDAO clientDao;
+	@Autowired AddressBookDAO clientDao;
 	
 
 	@RequestMapping(value = "/api/user/docHandover/all", method = RequestMethod.GET)

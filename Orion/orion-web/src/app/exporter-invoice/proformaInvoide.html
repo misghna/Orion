@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Page Title</title>
+<style>
+
+
+.body{
+  font-family:serif;
+}
+
+.address {
+ 	width: 50%;
+	margin: 0 auto;
+    text-align:center
+}
+
+
+.item {
+    border-bottom: 1px solid grey;
+    border-collapse: collapse;
+
+}
+
+.cntTable, td{
+	text-align:left;
+}
+
+.cntTable{
+    width:100%;
+}
+
+</style>
+</head>
+<body class="body">
+
+<h1 align="center" >EXPORTER_COMPANY_NAME</h1>
+<div class="address">
+  EXPORTER_ADDRESS <br>
+  EXPORTER_PHONE
+</div>
+
+<h2>Proforma Invoice</h2>
+<table style="width:100%">
+  <tr> 
+    <td><h4>Importer</h4></td>
+    <td><h4> Item Details</h4></td>
+  </tr>
+  <tr>
+  <td>
+    <div>
+        IMPORTER_NAME <br>
+        IMPORTER_ADDRESS <br>
+        IMPORTER_PHONE
+    </div>
+  </td>
+<td>
+	<table>
+    	<tr><td>Country of origin :</td><td>COUNTRY_OF_ORIGIN</td></tr>
+        <tr><td>Port of loading :</td><td>PORT_OF_LOADING</td></tr>
+        <tr><td>Country of Destination :</td><td>DESTINATION_COUNTRY</td></tr>
+        <tr><td>Port of Discharge :</td><td>PORT_OF_DISCHARGE</td></tr>
+    </table>
+</td>
+
+  </tr>
+</table>
+<br>
+<table class="cntTable" >
+<tr class="item">
+	<th>Description</th><th>Quantity</th><th>Unit price FOB(USD)</th><th>Total FOB(USD)</th>
+</tr>
+<tr class="item">
+  <td>
+  <div>
+    ITEM_NAME_BRAND<br>
+  	ITEM_PACKING <br>
+    ITEM_PSC_PER_CONTAINER <br>
+    CONTAINERS_DETAIL<br>
+  </div></td>
+  <td>UNIT_QUANTITY</td><td>UNIT_PRICE</td><td>TOTAL_PRICE</td>
+</tr>
+
+<tr class="item"><td>Ocean Freight</td><td>CONTAINERS_QTY</td><td>UNIT_FREIGHT_COST</td><td>TOTAL_FREIGHT_COST</td></tr>
+<tr class="item"><td>Total</td><td></td><td></td><td>GRAND_TOTAL</td></tr>
+<tr><td colspan=4></td></tr>
+</table>
+
+</body>
+</html>

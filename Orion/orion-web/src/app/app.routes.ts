@@ -19,7 +19,7 @@ import { ApprovalComponent } from './approval/approval.component';
 import { MiscComponent } from './misc/misc.component';
 import { CurrencyComponent } from './currency/currency.component';
 import { LicenseComponent } from './license/license.component';
-import { ClientComponent } from './client/client.component';
+import { AddressBookComponent } from './address-book/address-book.component';
 import { DocTrackingComponent } from './doc-tracking/doc-tracking.component';
 import { TerminalComponent } from './terminal/terminal.component';
 import { EstimateComponent } from './estimate/estimate.component';
@@ -29,7 +29,9 @@ import { BudgetComponent } from './budget/budget.component';
 import { AuthGuard } from './service/auth.guard';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { AccessControlComponent } from './access-control/access-control.component';
-
+import { InvoiceFormatComponent } from './invoice-format/invoice-format.component';
+import { ExporterInvoiceComponent } from './exporter-invoice/exporter-invoice.component';
+import { CashFlowComponent } from './cash-flow/cash-flow.component';
 
 // Define which component should be loaded based on the current URL
 export const routes: Routes = [
@@ -42,17 +44,20 @@ export const routes: Routes = [
   { path: 'setting/legalization',  component: PortFeeComponent },
   { path: 'setting/misc',  component: MiscComponent },
   { path: 'setting/currency',  component: CurrencyComponent },
-  { path: 'setting/addressBook',  component: ClientComponent },
+  { path: 'setting/addressBook',  component: AddressBookComponent },
   { path: 'setting/terminal',  component: TerminalComponent },
   { path: 'setting/accessControl',  component: AccessControlComponent },
-  
+   { path: 'setting/invoiceFormat',  component: InvoiceFormatComponent },
   
   { path: 'status/:id',  component: StatusComponent },
   { path: 'finance/approval/:id',  component: ApprovalComponent },
   { path: 'finance/payment/:id',  component: PaymentComponent },
   { path: 'finance/estimator/:id',  component: EstimateComponent },
+  { path: 'finance/exporterInvoices/:id',  component: ExporterInvoiceComponent },
   { path: 'finance/budget/:id',  component: BudgetComponent },
   { path: 'finance/salesPlan',  component: SalesPlanComponent },
+  { path: 'finance/cashFlow',  component: CashFlowComponent },
+  
   
   { path: 'import/order/:id',  component: OrdersComponent },
   { path: 'import/shipping/:id',  component: ShippingComponent },
