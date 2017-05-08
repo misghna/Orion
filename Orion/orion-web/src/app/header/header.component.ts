@@ -62,7 +62,7 @@ export class HeaderComponent implements OnInit {
     });
 
        $(this.el.nativeElement).on('click','.dropdown-menu li',function(){
-          if($(this).parent().parent().html().indexOf('Tools')==-1){
+          if($(this).parent().parent().html().indexOf('Edit')==-1){
             $(this).parent().parent().parent().find(".active").removeClass("active");
             $(this).parent().parent().addClass("active"); 
           }     

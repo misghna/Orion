@@ -22,6 +22,7 @@ import com.sesnu.orion.dao.UserDAO;
 import com.sesnu.orion.web.model.AddressBook;
 import com.sesnu.orion.web.model.DocHandover;
 import com.sesnu.orion.web.model.User;
+import com.sesnu.orion.web.utility.GmailInbox;
 import com.sesnu.orion.web.utility.Util;
 
 @CrossOrigin(origins = "http://localhost:4200")
@@ -34,14 +35,15 @@ public class DocHandoverController {
 	@Autowired UserDAO userDao;
 	@Autowired Util util;
 	@Autowired AddressBookDAO clientDao;
-	
+	@Autowired GmailInbox gmailInbox;	
 
 	@RequestMapping(value = "/api/user/docHandover/all", method = RequestMethod.GET)
 	public @ResponseBody List<DocHandover> getAll(
 			HttpServletResponse response) throws IOException {
 
+		gmailInbox.checkConfirmation();
 		List<DocHandover> docs = docDao.listAll();
-		if(docs.size()>0){
+		if(docs.size()>0){			
 			return docs;
 		}
 
@@ -58,11 +60,17 @@ public class DocHandoverController {
 		
 		doc.setId(null);
 		User user = util.getActiveUser(request,userDao);
-		doc.setReceivedFrom(user.getFullname());
+		String agentName = doc.getReceivedBy().equals("My Self")?doc.getReceivedFrom():doc.getReceivedBy();
+		if(doc.getReceivedBy().equals("My Self")){
+			doc.setReceivedBy(user.getFullname());
+		}
+		if(doc.getReceivedFrom().equals("My Self")){
+			doc.setReceivedFrom(user.getFullname());
+		}
 		doc.setStatus("Not Confirmed");
 		docDao.saveOrUpdate(doc);
 		String bl = doc.getBl()==null? "NA":doc.getBl();
-		AddressBook client = clientDao.getByName(doc.getReceivedBy());
+		AddressBook client = clientDao.getByName(agentName);
 		String subject = "Document Handover Confirmation for BL-" + bl + "/ requestId-" + doc.getId();
 		String msg = "Hello " +  doc.getReceivedBy() + "\n if you receive the original documents listed below, please 'Replay to All' only the word 'YES' \n" + 
 					"\nBill of loading No - " + bl + "\nSubmitted by - " + doc.getReceivedFrom() + "\nSubmitted on -" + (new Date()).toGMTString() + 

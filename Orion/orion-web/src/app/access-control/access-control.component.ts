@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { UserService } from '../users/users.service';
+import { UtilService } from '../service/util.service';
+import { AccessControlService } from './access-control.service';
 
 @Component({
   selector: 'app-access-control',
@@ -14,41 +17,63 @@ export class AccessControlComponent implements OnInit {
   lat: number = 51.673858;
   lng: number = 7.815982;
   access_details;
-    ngOnInit() { }
+	 markers: marker[] = []
+
+allUsers;activeUser;access;
+constructor(private userService: UserService,private utilService: UtilService,
+						private accessControl : AccessControlService) {
+}
+
+
+  ngOnInit() {
+    this.userService.getAllUsers()
+    .subscribe(
+        response => {    
+            this.allUsers = response;     
+        },
+        error => {
+          console.error(error);
+          return {};
+        }
+      );
+  }
+
+
+loadAcces(userName){
+    this.accessControl.getAccessHistory(userName)
+    .subscribe(
+        response => {    
+            this.access = response;
+						this.createAccessObject(response);
+        },
+        error => {
+          this.markers = []
+        }
+      );
+}
+
+createAccessObject(response){
+	var markerList = [];
+	response.forEach(ac => {
+			var acObj = {'lat':ac.lat,'lng':ac.lng,'label':ac.fullName,'draggable':false};
+			markerList.push(acObj);
+	});
+	this.markers = markerList;
+}
+
 
   clickedMarker(label: string, index: number) {
-    console.log(`clicked the marker: ${label || index}`)
+ //   console.log(`clicked the marker: ${label || index}`)
     this.access_details = label + "\n" + "date - blabla hadhjsoa lashdoa";
   }
   
   markerDragEnd(m: marker, $event: MouseEvent) {
-    console.log('dragEnd', m, $event);
+  //  console.log('dragEnd', m, $event);
   }
   
-  markers: marker[] = [
-	  {
-		  lat: 51.673858,
-		  lng: 7.815982,
-		  label: 'Misghna',
-		  draggable: true
-	  },
-	  {
-		  lat: -1.723858,
-		  lng: 7.895982,
-		  label: 'Macconen',
-		  draggable: false
-	  },
-	  {
-		  lat: 51.723858,
-		  lng: 7.895982,
-		  label: 'C',
-		  draggable: true
-	  }
-  ]
+ 
 
 
-
-  constructor() { }
 
 }
 

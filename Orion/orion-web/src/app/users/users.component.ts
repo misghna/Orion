@@ -110,6 +110,7 @@ getPayList(){
       var allowedList = JSON.parse(approved);
       var allList = JSON.parse(JSON.stringify(this.allPaymentList));
       allList.push({"name":"Order Authorization"});
+      allList.push({"name":"Exporter Margin"});
       this.approvalList =[];
       allList.forEach(el => {
             if(approved!=null && allowedList.indexOf(el.name)>-1){

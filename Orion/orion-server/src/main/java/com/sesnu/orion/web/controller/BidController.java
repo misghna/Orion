@@ -8,7 +8,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -21,21 +20,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.sesnu.orion.dao.ApprovalDAO;
 import com.sesnu.orion.dao.BidDAO;
 import com.sesnu.orion.dao.DocumentDAO;
-import com.sesnu.orion.dao.ItemDAO;
 import com.sesnu.orion.dao.OrderDAO;
 import com.sesnu.orion.dao.UserDAO;
-import com.sesnu.orion.dao.OrderDAO;
 import com.sesnu.orion.web.model.Approval;
 import com.sesnu.orion.web.model.ApprovalView;
 import com.sesnu.orion.web.model.Bid;
 import com.sesnu.orion.web.model.BidView;
 import com.sesnu.orion.web.model.Document;
-import com.sesnu.orion.web.model.Item;
-import com.sesnu.orion.web.model.Order;
 import com.sesnu.orion.web.model.OrderView;
 import com.sesnu.orion.web.model.User;
-import com.sesnu.orion.web.model.Order;
-import com.sesnu.orion.web.model.Order;
 import com.sesnu.orion.web.utility.ConfigFile;
 import com.sesnu.orion.web.utility.Util;
 
@@ -71,6 +64,18 @@ public class BidController {
 		return null;
 	}
 	
+	@RequestMapping(value = "/api/user/bid/winner/{orderRef}", method = RequestMethod.GET)
+	public @ResponseBody Bid winner(@PathVariable("orderRef") String orderRef,
+			HttpServletResponse response) throws IOException, InterruptedException {
+
+		Bid bid = bidDao.getBidWinner(Long.parseLong(orderRef));
+
+		if(bid!=null){
+			return bid;
+		}
+		response.sendError(404);
+		return null;
+	}
 	
 	@RequestMapping(value = "/api/user/bid", method = RequestMethod.POST)
 	public @ResponseBody List<BidView> addItem(HttpServletResponse response,@RequestBody Bid bid)
@@ -126,10 +131,10 @@ public class BidController {
 			return null;
 		}
 		
-		List<Bid> selBid = bidDao.getBidWinner(bid.getOrderRef());
+		Bid selBid = bidDao.getBidWinner(bid.getOrderRef());
 		
-		if(selBid.size()>0){
-			response.sendError(400, Util.parseError(selBid.get(0).getSupplier() + " is already selected!"));
+		if(selBid!=null){
+			response.sendError(400, Util.parseError(selBid.getSupplier() + " is already selected!"));
 			return null;
 		}
 		

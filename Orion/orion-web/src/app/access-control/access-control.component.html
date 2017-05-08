@@ -2,7 +2,24 @@
 
        <div class="row">
          <div class="col-sm-3" style="background-color:white;">
-            side menu
+              
+              <div class="input-group" style="width:90%;margin-top:5px">
+              <div class="input-group-btn" >
+                  <div class="btn-group"> 
+                      <button class="btn btn-default dropdown-toggle" style="width:110px" type="button" data-toggle="dropdown">
+                          <span data-bind="label" id="searchLabel">User</span> <span class="caret"></span>
+                      </button> 
+                      <ul class="dropdown-menu" role="menu">
+                        <li><a (click)="activeUser='All';loadAcces('all')">All</a></li>
+                        <li *ngFor="let user of allUsers">
+                          <a (click)="activeUser=user.fullname;loadAcces(user.fullname)">{{user.fullname}}</a>
+                        </li>
+                      </ul>
+                  </div>
+              </div>  
+              <input type="text" style="background-color :white;" readonly class="form-control " value="{{activeUser}}"/>
+              </div>
+         
          </div>
           <div class="col-sm-9" style="background-color:white;">
             <sebm-google-map 

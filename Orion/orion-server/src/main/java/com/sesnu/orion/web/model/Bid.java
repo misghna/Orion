@@ -14,8 +14,8 @@ import javax.persistence.Table;
 public class Bid {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="item_seq")
-	@SequenceGenerator(name="item_seq",sequenceName="item_seq",allocationSize=20)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="bid_seq")
+	@SequenceGenerator(name="bid_seq",sequenceName="bid_seq",allocationSize=20)
 	@Column(name = "id")
 	private Long id;
 	
@@ -23,7 +23,7 @@ public class Bid {
 	private String supplier;
 	
 	@Column(name = "fob")
-	private double fob;
+	private Double fob;
 	
 	@Column(name = "cif_cnf")
 	private double cifCnf;
@@ -39,6 +39,9 @@ public class Bid {
 
 	@Column(name="currency")
 	private String currency;
+	
+	@Column(name="item_origin")
+	private String itemOrigin;
 	
 	@Column(name="proforma_inv_no")
 	private String proformaInvNo;
@@ -77,11 +80,11 @@ public class Bid {
 		this.supplier = supplier;
 	}
 
-	public double getFob() {
+	public Double getFob() {
 		return fob;
 	}
 
-	public void setFob(double fob) {
+	public void setFob(Double fob) {
 		this.fob = fob;
 	}
 
@@ -184,6 +187,14 @@ public class Bid {
 		this.totalBid = totalBid;
 	}
 
+	public String getItemOrigin() {
+		return itemOrigin;
+	}
+
+	public void setItemOrigin(String itemOrigin) {
+		this.itemOrigin = itemOrigin;
+	}
+	
 	
 	
 }

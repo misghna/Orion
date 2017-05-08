@@ -27,11 +27,15 @@ public class ShippingDAOImpl implements ShippingDAO {
 
 
 	@Override
-	public List<ShippingView> listByOrderId(long orderRefId) {
+	public ShippingView getByOrderId(long orderRefId) {
 		String hql = "from ShippingView where orderRef = :orderRefId";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql)
 		.setLong("orderRefId",orderRefId);
-		return (List<ShippingView>) query.list();
+		List list = query.list();
+		if(list.size()>0){
+			return (ShippingView) list.get(0);
+		}
+		return null;
 	}
 	
 	@Override

@@ -67,7 +67,9 @@ close(){
 }
 
   delete(event){
+      console.log("error ... " + this.activeProductHeader);
       var id = this.activeProductHeader.split('-')[0];
+      
       this.appovalService.voidApproval(id)
       .subscribe(
           response => {
@@ -84,7 +86,7 @@ close(){
 triggerDelModal(event){
     event.preventDefault();
     console.log("triigered");
-    var modalInfo = {"title" : "Order", "msg" :'(void) ' + this.activeProductHeader.split('-')[1],"task" :"myTask"};
+    var modalInfo = {"title" : "Order", "msg" :"/void " + this.activeProductHeader.split('-')[1],"task" :"myTask"};
     this.utilService.showModalState(modalInfo);
 }
 

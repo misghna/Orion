@@ -1,0 +1,97 @@
+<p>
+  <span style ="color:grey;font-size:30px;margin-left:20px" >Cash Flow Chart</span>
+</p>
+<div class="col-md-2">
+
+        <div class="input-group" style="width:90%;margin-top:5px">
+        <div class="input-group-btn" >
+            <div class="btn-group"> 
+                <button class="btn btn-default dropdown-toggle" style="width:110px" type="button" data-toggle="dropdown">
+                    <span data-bind="label" id="searchLabel">Year</span> <span class="caret"></span>
+                </button> 
+                <ul class="dropdown-menu" role="menu">
+                  <li><a (click)="cFlow.year = '2015';getCashFlow()">2015</a></li>
+                  <li><a (click)="cFlow.year = '2016';getCashFlow()">2016</a></li>
+                  <li><a (click)="cFlow.year= '2017';getCashFlow()">2017</a></li>
+                  <li><a (click)="cFlow.year= '2018';getCashFlow()">2018</a></li>
+                  <li><a (click)="cFlow.year= '2019';getCashFlow()">2019</a></li>
+                  <li><a (click)="cFlow.year= '2020';getCashFlow()">2020</a></li>
+                </ul>
+            </div>
+        </div>  
+        <input type="text" style="background-color :white;" readonly class="form-control " value="{{cFlow.year}}"/>
+        </div>
+
+        <div class="input-group" style="width:90%;margin-top:5px">
+        <div class="input-group-btn" >
+            <div class="btn-group"> 
+                <button class="btn btn-default dropdown-toggle" style="width:110px" type="button" data-toggle="dropdown">
+                    <span data-bind="label" id="searchLabel">Chart Type</span> <span class="caret"></span>
+                </button> 
+                <ul class="dropdown-menu" role="menu">
+                 <li><a (click)="cFlow.format = 'Monthy';getCashFlow()">Monthy</a></li>
+                 <li><a (click)="cFlow.format = 'Cummulative';getCashFlow()">Cummulative</a></li>
+                </ul>
+            </div>
+        </div>  
+        <input type="text" style="background-color :white;" readonly class="form-control " value="{{cFlow.format}}"/>
+        </div>
+
+        <div class="input-group" style="width:90%;margin-top:5px">
+        <div class="input-group-btn" >
+            <div class="btn-group"> 
+                <button class="btn btn-default dropdown-toggle" style="width:110px" type="button" data-toggle="dropdown">
+                    <span data-bind="label" id="searchLabel">Currency</span> <span class="caret"></span>
+                </button> 
+                <ul class="dropdown-menu" role="menu">
+                  <li><a (click)="cFlow.currency = 'AED';getCashFlow()">AED</a></li>
+                  <li><a (click)="cFlow.currency = 'AOA';getCashFlow()">AOA</a></li>
+                  <li><a (click)="cFlow.currency = 'EUR';getCashFlow()">EUR</a></li>
+                  <li><a (click)="cFlow.currency = 'GBP';getCashFlow()">GBP</a></li>
+                  <li><a (click)="cFlow.currency = 'USD';getCashFlow()">USD</a></li>
+                </ul>
+            </div>
+        </div>  
+        <input type="text" style="background-color :white;" readonly class="form-control " value="{{cFlow.currency}}"/>
+        </div>
+
+
+
+        <div class="input-group" style="width:90%;margin-top:5px">
+        <div class="input-group-btn" >
+            <div class="btn-group"> 
+                <button class="btn btn-default dropdown-toggle" style="width:110px" type="button" data-toggle="dropdown">
+                    <span data-bind="label" id="searchLabel">Destination</span> <span class="caret"></span>
+                </button> 
+                <ul class="dropdown-menu" role="menu">
+                  <li><a (click)="cFlow.dest = 'All';getCashFlow()">All</a></li>
+                  <li *ngFor="let port of ports"><a (click)="cFlow.dest = port;getCashFlow()">{{port}}</a></li>
+                </ul>
+            </div>
+        </div>  
+        <input type="text" style="background-color :white;" readonly class="form-control " value="{{cFlow.dest}}"/>
+        </div>
+
+
+
+
+</div>
+<div class="col-md-9">
+ 
+    <canvas baseChart
+                [datasets]="lineChartData"
+                [labels]="lineChartLabels"
+                [options]="lineChartOptions"
+                [legend]="true"
+                [chartType]="lineChartType"
+                (chartHover)="chartHovered($event)"
+                (chartClick)="chartClicked($event)"></canvas>
+  </div>
+  <div class="col-md-1">
+    <canvas baseChart
+                [data]="pieChartData"
+                [labels]="pieChartLabels"
+                [chartType]="pieChartType"
+                (chartHover)="chartHovered($event)"
+                (chartClick)="chartClicked($event)"></canvas>
+  </div>

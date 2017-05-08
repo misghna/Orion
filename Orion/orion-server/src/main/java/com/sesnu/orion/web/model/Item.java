@@ -21,6 +21,9 @@ public class Item {
 	@Column(name = "id")
 	private long id;
 	
+	@Column(name = "item_id")
+	private String itemId;
+	
 	@Column(name = "name")
 	private String name;
 	
@@ -151,6 +154,14 @@ public class Item {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public String getItemId() {
+		return itemId;
+	}
+
+	public void setItemId(String itemId) {
+		this.itemId = itemId;
 	}
 
 

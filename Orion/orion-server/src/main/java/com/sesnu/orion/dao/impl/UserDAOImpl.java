@@ -104,7 +104,7 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public User getUserName(String name) {
+	public User getUserByName(String name) {
 		String hql = "from User where lower(fullname)= :fullname";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setParameter("fullname", name.toLowerCase());

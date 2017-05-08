@@ -6,7 +6,9 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -58,17 +60,21 @@ public class SalesPlanController {
 	
 	
 	@RequestMapping(value = "/api/user/salesPlan/{year}/{month}", method = RequestMethod.POST)
-	public @ResponseBody List<SalesView> addItem(HttpServletResponse response,@RequestBody SalesView sv,
+	public @ResponseBody List<SalesView> addItem(HttpServletResponse response,@RequestBody SalesPlan sp,
 			@PathVariable("year") int year,@PathVariable("month") String month)
 			throws Exception {
+		JSONParser parser = new JSONParser();
 		
-		SalesPlan sp = new SalesPlan(sv);
-		sp.setUpdatedOn(Util.parseDate(new Date(),"/"));
-		sp.setId(null);
-		sp.setMon(Util.getMonth(sp.getMonth()));
-		System.out.println("saving ************" +  sp.getItemId());
-		salesPlanDao.saveOrUpdate(sp);
-		
+		JSONArray months = (JSONArray) parser.parse(sp.getMonth());
+		for (Object monObj : months) {
+			String monthName = (String) monObj;
+			sp.setUpdatedOn(Util.parseDate(new Date(),"/"));
+			sp.setId(null);
+			sp.setMonth(monthName);
+			sp.setMon(Util.getMonth(sp.getMonth()));
+			salesPlanDao.saveOrUpdate(sp);
+		}
+	
 		List<SalesView> salesViews = salesPlanDao.list(sp.getYear(),sp.getMonth());
 		if(salesViews.size()>0){
 			return salesViews;
@@ -81,15 +87,15 @@ public class SalesPlanController {
 	
 	@RequestMapping(value = "/api/user/salesPlan/{year}/{month}", method = RequestMethod.PUT)
 	public @ResponseBody List<SalesView> updateItem(HttpServletResponse response,
-			@RequestBody SalesView salesView,@PathVariable("year") int year,
+			@RequestBody SalesPlan salesPlan,@PathVariable("year") int year,
 			@PathVariable("month") String month)
 			throws Exception {
 		
-		if(salesPlanDao.get(salesView.getId())==null){
-			response.sendError(400);
-			return null;
-		}
-		SalesPlan salesPlan = new SalesPlan(salesView);
+//		if(salesPlanDao.get(salesView.getId())==null){
+//			response.sendError(400);
+//			return null;
+//		}
+//		SalesPlan salesPlan = new SalesPlan(salesView);
 		salesPlan.setUpdatedOn(Util.parseDate(new Date(),"/"));
 		salesPlan.setMon(Util.getMonth(salesPlan.getMonth()));
 		salesPlanDao.saveOrUpdate(salesPlan);

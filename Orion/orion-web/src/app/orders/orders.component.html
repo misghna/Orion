@@ -146,7 +146,7 @@
                    <th class="text-center">Product</th>
                    <th class="text-center">Brand</th>
                    <th class="text-center">Packing</th>
-                   <th class="text-center">Origin</th>
+                   <!--<th class="text-center">Origin</th>-->
                    <th class="text-center">Destination</th>
                    <th class="text-center">Budget period</th>
                    </tr></thead>
@@ -154,7 +154,7 @@
                   <td>{{plan.name}}</td>
                   <td>{{plan.brand}}</td>
                   <td>{{plan.baseSize+plan.baseUnit+'x' + plan.qtyPerPack}}</td>
-                  <td>{{plan.itemOrigin}}</td>
+                  <!--<td>{{plan.itemOrigin}}</td>-->
                   <td>{{plan.destinationPort}}</td>
                   <td>{{plan.month +'/'+ plan.year}}</td>
                 </tr>
@@ -212,6 +212,7 @@
             </div>
         </td>
         <td><textarea name="contQnt" #unit class="form-control txt-flat middletext" rows="2"  numberonly placeholder="Cont Qty" required [(ngModel)]="itemDetail.contQnt" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <!--<td><textarea class="form-control txt-flat middletext" rows="2"  numberonly placeholder="Auto" [(ngModel)]="itemDetail.adjTotalCost" [ngModelOptions]="{standalone: true}"></textarea></td> -->
         <td>
             <div class="btn-group ">
             <button type="button" class="btn btn-default dropdown-toggle editFormMargin noBorder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -239,7 +240,7 @@
         <td class="text-left" ><input type="submit" class="btn btn-success" value="{{taskType}}"/></td>
       </tr>      
     <tr>
-        <td colspan="17" > <font class ="tbl-header">
+        <td colspan="18" > <font class ="tbl-header">
             <mfBootstrapPaginator [rowsOnPageSet]="[5,20,25]"></mfBootstrapPaginator></font>
         </td>
     </tr>

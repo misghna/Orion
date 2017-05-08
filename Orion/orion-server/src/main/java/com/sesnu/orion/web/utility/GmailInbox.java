@@ -1,6 +1,7 @@
 package com.sesnu.orion.web.utility;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -26,22 +27,22 @@ import org.springframework.stereotype.Component;
 
 import com.sesnu.orion.dao.AddressBookDAO;
 import com.sesnu.orion.dao.DocHandoverDAO;
+import com.sesnu.orion.dao.UserDAO;
 import com.sesnu.orion.web.model.AddressBook;
 import com.sesnu.orion.web.model.DocHandover;
+import com.sesnu.orion.web.model.User;
 
 @Component
 public class GmailInbox {
  
 	@Autowired AddressBookDAO clientDao;
 	@Autowired DocHandoverDAO docDao;
-	
+	@Autowired UserDAO userDao;
 	
 	public void checkConfirmation(){
-		
 		try{
 			
 			List<DocHandover>  unconfirmed = docDao.listUnconfirmed();		
-			System.out.println("Unconfirmed " + unconfirmed.size());
 			if(unconfirmed.size()<1) return;
 			
 			Store store = getStore();
@@ -50,13 +51,11 @@ public class GmailInbox {
 	
 	        Folder inbox = store.getFolder("inbox");
 	        inbox.open(Folder.READ_ONLY);
-			
-			
-	        long yday = System.currentTimeMillis() - 24*3600*1000;
+						
+	        long yday = System.currentTimeMillis() - 72*3600*1000;
 	        SearchTerm newerThan = new ReceivedDateTerm(ComparisonTerm.GT, new Date(yday));
+      
 	        Message[] messages = inbox.search(newerThan);
-			
-	        
 			for (DocHandover docHandover : unconfirmed) {
 				processMessages(messages, docHandover);
 			}
@@ -107,7 +106,9 @@ public class GmailInbox {
 							if(reqId.trim().equals(docHandover.getId().toString()) &&
 									!docHandover.getStatus().equals("Confirmed")){
 									AddressBook address = clientDao.getByName(docHandover.getReceivedBy());
-									if(address!=null && sender.indexOf(address.getEmail())>=0){
+									User user = userDao.getUserByName(docHandover.getReceivedBy());
+									if((address!=null && sender.indexOf(address.getEmail())>=0) || 
+									   (user!=null && sender.indexOf(user.getEmail())>=0)){
 										docHandover.setReceivedOn(messages[i].getReceivedDate());
 										docHandover.setStatus("Confirmed");
 										docDao.saveOrUpdate(docHandover);

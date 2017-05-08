@@ -21,6 +21,14 @@ export class InvoiceFormatService {
       .map(res => res.json());
   }
 
+
+  generatePdf(body){
+    let headerContent = new Headers();
+    headerContent.append("Content-Type", "application/json");
+    return this.http.post(this.baseUrl + 'api/user/invoice/generatePdf', body, { headers: headerContent })
+            .map(res => res.json());
+  }
+
   getInvoiceFormat(id){
     var url = this.baseUrl + 'api/user/invoiceFormat/format/' + id
     return this.http.get(url,[{ withCredentials: true }]);

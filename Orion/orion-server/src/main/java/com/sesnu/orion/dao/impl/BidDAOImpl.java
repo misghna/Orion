@@ -54,11 +54,14 @@ public class BidDAOImpl implements BidDAO {
 
 
 	@Override
-	public List<Bid> getBidWinner(long orderRefId) {
+	public Bid getBidWinner(long orderRefId) {
 		String hql = "from Bid where orderRef = :orderRefId and selected = true";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql)
 		.setLong("orderRefId",orderRefId);
-		return (List<Bid>) query.list();
+		if(query.list().size()>0){
+			return (Bid) query.list().get(0);
+		}
+		return null;
 	}
 
 

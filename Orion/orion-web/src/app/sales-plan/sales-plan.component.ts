@@ -4,7 +4,7 @@ import { MiscService } from '../service/misc.service';
 import { FilterNamePipe } from '../pipes/pipe.filterName';
 import { UtilService } from '../service/util.service';
 import { MiscSettingService } from '../misc/misc-service.service';
-
+import { CurrencyService } from '../currency/currency.service';
 
 declare var jQuery : any;
 
@@ -31,15 +31,17 @@ export class SalesPlanComponent implements OnInit {
   productNameList=[]; allPrdList=[];
   headers = [];
   filterQuery = "";
-  bntOption = "Search";subscription;ports;
-
+  bntOption = "Search";ports;
+  currencies;responseCurrency;
   constructor(private salesService:SalesPlanService, private el: ElementRef,
-             private miscService : MiscService,private utilService : UtilService,private miscSettingService: MiscSettingService) {
+             private miscService : MiscService,private utilService : UtilService,
+             private miscSettingService: MiscSettingService,private currencyService:CurrencyService ) {
 
-    this.subscription = utilService.currentSearchTxt$.subscribe(txt => {this.search(txt);});
+    utilService.currentSearchTxt$.subscribe(txt => {this.search(txt);});
+    utilService.currentdelItem$.subscribe(opt => { this.delete();}); 
 
     this.optionsList = [{'name':'Add New Item','value':'addNew'},
-                        {'name':'Create new copy from selected plan','value':'createNewRevision'},
+                        {'name':'Duplicate selected month','value':'createNewRevision'},
                         {'name':'Delete Selected Plan','value':'deleteRevision'}];
     this.utilService.setToolsContent(this.optionsList);
 
@@ -50,7 +52,10 @@ export class SalesPlanComponent implements OnInit {
         this.option(opt);
     });    
     
-    this.monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN","JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+    this.monthNames = [{"name":"JAN","sel":false},{"name":"FEB","sel":false},{"name":"MAR","sel":false},{"name":"APR","sel":false},
+                       {"name":"MAY","sel":false},{"name":"JUN","sel":false},{"name":"JUL","sel":false},{"name":"AUG","sel":false},
+                       {"name":"SEP","sel":false},{"name":"OCT","sel":false},{"name":"NOV","sel":false},{"name":"DEC","sel":false},
+                       {"name":"ALL","sel":false}];
     
     this.pageName;
     this.hideLoader=true;
@@ -62,7 +67,6 @@ export class SalesPlanComponent implements OnInit {
     this.years = [];
     this.todayDate = this.today();
 
-
    }
 
   ngOnInit() {
@@ -70,14 +74,15 @@ export class SalesPlanComponent implements OnInit {
                      {'name':'Base Size', 'value':'baseSize','j':'c'}, {'name':'Base Unit','value':'baseUnit','j':'c'},
                       {'name':'Qty/pck','value':'qtyPerPack','j':'c'},{'name':'pck/cont','value': 'pckPerCont','j':'c'},
                       {'name':'Cont Size','value':'contSize','j':'c'},{'name':'Cont Qnt','value': 'contQnt','j':'c'},
-                      {'name':'CIF($)','value':'cif','j':'c'},{'name':'Dest Port','value':'destinationPort','j':'c'},
-                      {'name':'Month','value':'month','j':'c'}, {'name':'Year','value':'year','j':'c'}, 
-                      {'name':'Updated On','value':'updatedOn','j':'l'}];
+                      {'name':'Currency','value':'currency','j':'c'},{'name':'CIF','value':'cif','j':'c'},
+                      {'name':'Dest Port','value':'destinationPort','j':'c'},{'name':'Month','value':'month','j':'c'},
+                      {'name':'Year','value':'year','j':'c'},{'name':'Updated On','value':'updatedOn','j':'l'}];
       
         this.loadAll(2000,'latest');
         this.getItemNameBrandList();
         this.populateYear();
         this.getPorts();
+        this.getAllCurrencies();
 
         jQuery(this.el.nativeElement).find('#monthSelector li').on('click',function(){  
           jQuery('#monthBtn').html(jQuery(this).text().trim()); 
@@ -91,6 +96,22 @@ export class SalesPlanComponent implements OnInit {
 
 
   } 
+
+
+  getAllCurrencies(){
+
+    var setRev :boolean;
+     this.currencyService.getCurrency()
+      .subscribe(
+          response => {
+              this.currencies = response; 
+              this.responseCurrency = response; 
+          },
+          error => {
+            console.error(error.status);
+          }
+        );
+  }
 
 getPorts() {
      this.miscSettingService.getPorts()
@@ -124,8 +145,17 @@ triggerDelModal(event){
     this.utilService.showModalState(modalInfo);
 }
 
-updateMonthName(month){
-  this.itemDetail['month'] = month;
+updateMonthName(monthName){
+      var selected = [];
+      this.monthNames.forEach(el =>{
+      if(el.name == monthName && el.sel==false){
+          selected.push(el.name);
+      }
+      if(el.sel==true){
+        selected.push(el.name);
+      }
+    });
+  this.itemDetail['month'] = JSON.stringify(selected); 
 }
 
 updateBaseUnit(unit){
@@ -168,10 +198,12 @@ updateBaseUnit(unit){
 
   loadAll(year,month){
     if(!this.contains(this.monthNames,month) && month!='latest'){
+      console.error("duplicate request");
       return;
     }
 
     if(Number(year)<2000){
+      console.error("Bad year selection");
       return;
     }
 
@@ -196,7 +228,7 @@ updateBaseUnit(unit){
   contains(myArray,str){
     var i = myArray.length;
     while (i--) {
-       if (myArray[i] === str) {
+       if (myArray[i]['name'] === str) {
            return true;
        }
     }
@@ -215,12 +247,11 @@ updateBaseUnit(unit){
 
     addUpdateSP(event){
       event.preventDefault();
-        var mon = this.monthNames.indexOf(this.itemDetail['month']);
-        if(mon < 0 ){
-          this.popAlert("Error","danger","Invalid month name!");
+
+        if(this.itemDetail['destinationPort'] =="Select Port" ){
+          this.popAlert("Error","danger","Please select destination port!");
           return;
         }
-        this.itemDetail['mon'] = mon;
         this.itemDetail['destinationPort'] = this.capitalizeFirstLetter(this.itemDetail['destinationPort']);
         if (this.taskType=="Add"){
             this.itemDetail['month']
@@ -277,12 +308,12 @@ updateBaseUnit(unit){
     }
 
     delete(){
+      console.log("deleting ..");
       if(this.activeProductHeader.indexOf('Plan for ')>0){
          this.deleteCurrentPlan();
          return;
       }
       var id = this.activeProductHeader.split('-')[0];
-      console.log("deleting ... " + id);
       this.salesService.deleteSalesPlanById(id,this.selectedYear,this.selectedMonth)
       .subscribe(
           response => {
@@ -342,6 +373,9 @@ updateBaseUnit(unit){
         });
     }
 
+  filterCurrency(txt){
+    this.currencies = this.currencyService.filterCurrency(txt,this.responseCurrency);
+  }
 
     getItemNameBrandList(){
       this.miscService.getItemNameBrandList()
@@ -375,8 +409,11 @@ updateBaseUnit(unit){
            // this.createNewRevision(this.revision);
           break;
         case (selected == 'deleteRevision') :
-           this.activeProductHeader = 'Sales Plan for ' +  this.selectedMonth + '/' + this.selectedYear;
-           jQuery('#itemModal').modal('show');
+            var modalInfo = {"title" : "Sales Plan", "msg" : 'Sales Plan for ' +  this.selectedMonth + '/' + this.selectedYear,"task" :"dcp"};
+            this.activeProductHeader = "Sales Plan for ";
+            this.utilService.showModalState(modalInfo);
+            
+          // jQuery('#itemModal').modal('show');
           break;
         default:
           console.log(selected);

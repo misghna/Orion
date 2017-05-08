@@ -69,8 +69,7 @@ export class DocHandoverComponent implements OnInit {
       this.headers = [{'name':'No','value':'id','j':'x'},{'name':'Inv No.','value':'invNo','j':'l'},
                       {'name':'BL','value':'bl','j':'l'},{'name':'Submitted by','value':'receivedFrom','j':'l'},
                       {'name':'Recipient','value':'receivedBy','j':'l'},{'name':'Document List','value':'docs','j':'c'},
-                      {'name':'Received On','value':'receivedOn','j':'cd'},{'name':'Returned To','value':'returnedTo','j':'c'},
-                      {'name':'Returned On','value':'returnedOn','j':'cd'},{'name':'Status','value':'status','j':'l'}];
+                      {'name':'Handover On','value':'receivedOn','j':'cd'},{'name':'Status','value':'status','j':'l'}];
         
         this.activeShippingId = this.route.snapshot.params['id'];
         this.loadAll();
@@ -168,6 +167,14 @@ filterOrder(txt){
         }
         if(this.itemDetail['orderRef']==null){
           this.popAlert("Error","danger","Please select InvNo or Bl from the list");
+          return;
+        }
+        if(this.itemDetail['receivedFrom']==this.itemDetail['receivedBy']){
+          this.popAlert("Error","danger","Submitter and Recipient can not be the same person");
+          return;
+        }
+        if(this.itemDetail['receivedFrom']!="My Self" && this.itemDetail['receivedBy']!="My Self"){
+          this.popAlert("Error","danger","Either Submitter or Recipient must be your self");
           return;
         }
         if (this.taskType=="Add"){

@@ -78,6 +78,11 @@ import { InvoiceFormatService } from './invoice-format/invoice-format.service';
 import { ExporterInvoiceComponent } from './exporter-invoice/exporter-invoice.component';
 import { ChartsModule } from 'ng2-charts';
 import { CashFlowComponent } from './cash-flow/cash-flow.component';
+import { CashFlowService } from './cash-flow/cash-flow.service';
+import { ExporterQuoteComponent } from './exporter-quote/exporter-quote.component';
+import { ExporterQuoteService } from './exporter-quote/exporter-quote.service';
+import { AccessControlService } from './access-control/access-control.service';
+
 
 export function httpFactory(backend: XHRBackend, defaultOptions: RequestOptions, utilService:UtilService) {
             return new HttpInterceptor(backend, defaultOptions,utilService);}
@@ -100,15 +105,16 @@ export function httpFactory(backend: XHRBackend, defaultOptions: RequestOptions,
                 DocumentComponent,DigitsOnly,NumberOnly, ContainerComponent,
                 PortFeeComponent, StatusComponent, ApprovalComponent, MiscComponent, CurrencyComponent, 
                 AddressBookComponent, BudgetComponent, DocTrackingComponent, TerminalComponent, EstimateComponent,DateDiffPipe,
-                DocHandoverComponent, NotificationComponent, AccessControlComponent, AddressBookComponent, InvoiceFormatComponent, ExporterInvoiceComponent, CashFlowComponent
+                DocHandoverComponent, NotificationComponent, AccessControlComponent, AddressBookComponent, InvoiceFormatComponent, ExporterInvoiceComponent, CashFlowComponent,ExporterQuoteComponent
                  ],
   providers:[AuthGuard,UtilService,UserService,AppSettings,MiscService,
-            SalesPlanService,OrdersService,DocumentService,
+            SalesPlanService,OrdersService,DocumentService,CashFlowService,
             BidService,PaymentService,ShippingService,HomeService,
             ContainerService,PortFeeService,ApprovalService,StatusService,
             MiscSettingService,CurrencyService,AddressBookService,LicenseService,
             DocTrackingService,TerminalService,EstimateService,BudgetService,
             DocHandoverService,NotificationService,InvoiceFormatService,
+            ExporterQuoteService,AccessControlService,
         {
           provide: Http,
           useFactory: httpFactory,

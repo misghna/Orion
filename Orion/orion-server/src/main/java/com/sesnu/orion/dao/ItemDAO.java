@@ -28,7 +28,7 @@ public interface ItemDAO {
 	
 	public List<String> getBrandList();
 	
-	public List<String> getNameBrandList();
+	public List<String> getLatestNameBrandList();
 
 	public void deleteByRev(String rev);
 	

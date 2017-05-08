@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sesnu.orion.dao.AccessHistoryDAO;
 import com.sesnu.orion.web.model.AccessHistory;
+import com.sesnu.orion.web.model.AccessView;
 import com.sesnu.orion.web.model.Location;
 @SuppressWarnings("unchecked")
 @Transactional
@@ -95,6 +96,21 @@ public class AccessHistoryDAOImpl implements AccessHistoryDAO {
 		String sql = "select distinct ip from access_history where ip not in (select distinct ip from locations where (lat is not null and lng is not null) or trials < 3)";
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
 		return (List<String>) query.list();
+	}
+
+	@Override
+	public List<AccessView> getAllAccess() {
+		String hql = "from AccessView where lat is not null and lng is not null";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		return (List<AccessView>) query.list();
+	}
+
+	@Override
+	public List<AccessView> getAccessByUser(String userName) {
+		String hql = "from AccessView where fullname = :fullname and lat is not null and lng is not null";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql)
+				.setString("fullname", userName);
+		return (List<AccessView>) query.list();
 	}
 
 	

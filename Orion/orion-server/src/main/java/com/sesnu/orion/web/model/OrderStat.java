@@ -1,6 +1,8 @@
 package com.sesnu.orion.web.model;
 
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -19,12 +21,25 @@ public class OrderStat {
 	
 	@Column(name = "bid")
 	private Long bid;
-	
-	@Column(name = "type")
-	private String type;
 		
 	@Column(name = "bl")
 	private String bl;
+	
+	@Column(name = "bid_approval")
+	private String bidApproval;
+	
+	@Column(name = "margin_stat")
+	private String marginStat;
+	
+	@Column(name = "ata")
+	private Date ata;
+	
+	@Column(name = "cont_qnt")
+	private Integer contQnt;
+	
+	@Column(name = "returned_count")
+	private Integer contReturnedCount;
+	
 
 	public Long getId() {
 		return id;
@@ -50,14 +65,6 @@ public class OrderStat {
 		this.bid = bid;
 	}
 
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
 	public String getBl() {
 		return bl;
 	}
@@ -65,6 +72,47 @@ public class OrderStat {
 	public void setBl(String bl) {
 		this.bl = bl;
 	}
+
+	public String getBidApproval() {
+		return bidApproval;
+	}
+
+	public void setBidApproval(String bidApproval) {
+		this.bidApproval = bidApproval;
+	}
+
+	public String getMarginStat() {
+		return marginStat;
+	}
+
+	public void setMarginStat(String marginStat) {
+		this.marginStat = marginStat;
+	}
+
+	public Date getAta() {
+		return ata;
+	}
+
+	public void setAta(Date ata) {
+		this.ata = ata;
+	}
+
+	public Integer getContReturnedCount() {
+		return contReturnedCount;
+	}
+
+	public void setContReturnedCount(Integer contReturnedCount) {
+		this.contReturnedCount = contReturnedCount;
+	}
+
+	public Integer getContQnt() {
+		return contQnt;
+	}
+
+	public void setContQnt(Integer contQnt) {
+		this.contQnt = contQnt;
+	}
+	
 	
 	
 	

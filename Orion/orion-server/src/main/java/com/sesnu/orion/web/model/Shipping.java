@@ -33,6 +33,9 @@ public class Shipping {
 	@Column(name = "item_origin")
 	private String itemOrigin;
 	
+	@Column(name = "loading_port")
+	private String loadingPort;
+	
 	@Column(name = "terminal")
 	private String terminal;
 	
@@ -151,6 +154,15 @@ public class Shipping {
 	public void setAta(Date ata) {
 		this.ata = ata;
 	}
+
+	public String getLoadingPort() {
+		return loadingPort;
+	}
+
+	public void setLoadingPort(String loadingPort) {
+		this.loadingPort = loadingPort;
+	}
+	
 	
 
 

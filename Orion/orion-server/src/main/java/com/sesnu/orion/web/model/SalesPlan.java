@@ -49,6 +49,9 @@ public class SalesPlan {
 	@Column(name = "month")
 	private String month;
 	
+	@Column(name = "currency")
+	private String currency;
+	
 	@Column(name = "mon")
 	private int mon;
 	
@@ -60,21 +63,21 @@ public class SalesPlan {
 	
 	public SalesPlan(){}
 	
-	public SalesPlan(SalesView sv){
-		this.id = sv.getId();
-		this.itemId = sv.getItemId();
-		this.baseSize = sv.getBaseSize();
-		this.baseUnit=sv.getBaseUnit();
-		this.qtyPerPack=sv.getQtyPerPack();
-		this.pckPerCont=sv.getPckPerCont();
-		this.contSize = sv.getContSize();
-		this.contQnt = sv.getContQnt();
-		this.cif=sv.getCif();
-		this.destinationPort=sv.getDestinationPort();
-		this.month = sv.getMonth();
-		this.year=sv.getYear();
-		this.updatedOn=sv.getUpdatedOn();
-	}
+//	public SalesPlan(SalesView sv){
+//		this.id = sv.getId();
+//		this.itemId = sv.getItemId();
+//		this.baseSize = sv.getBaseSize();
+//		this.baseUnit=sv.getBaseUnit();
+//		this.qtyPerPack=sv.getQtyPerPack();
+//		this.pckPerCont=sv.getPckPerCont();
+//		this.contSize = sv.getContSize();
+//		this.contQnt = sv.getContQnt();
+//		this.cif=sv.getCif();
+//		this.destinationPort=sv.getDestinationPort();
+//		this.month = sv.getMonth();
+//		this.year=sv.getYear();
+//		this.updatedOn=sv.getUpdatedOn();
+//	}
 
 	public Long getId() {
 		return id;
@@ -188,6 +191,14 @@ public class SalesPlan {
 
 	public void setMon(int mon) {
 		this.mon = mon;
+	}
+
+	public String getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(String currency) {
+		this.currency = currency;
 	}
 	
 	

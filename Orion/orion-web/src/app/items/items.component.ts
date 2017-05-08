@@ -53,8 +53,8 @@ export class ItemsComponent implements OnInit {
    }
 
   ngOnInit() {
-      this.headers = [{'name':'Id','value':'id','j':'x'}, {'name':'Product','value':'name','j':'l'},{'name':'Brand','value':'brand','j':'l'},
-                      {'name':'Type','value':'type','j':'l'},
+      this.headers = [{'name':'Id','value':'id','j':'x'}, {'name':'Item Id','value':'itemId','j':'l'},{'name':'Product','value':'name','j':'l'},
+                      {'name':'Brand','value':'brand','j':'l'},{'name':'Type','value':'type','j':'l'},
                       {'name':'HSCode', 'value':'hsCode','j':'c'}, {'name':'Financial Service','value':'financialServices','j':'c'},
                       {'name':'Consumer Tax','value':'consumerTax','j':'c'},{'name':'Stamp tax','value': 'stampTax','j':'c'},
                       {'name':'Fees','value':'fees','j':'c'}, {'name':'Others','value':'others','j':'c'},{'name':'Total','value':'total','j':'c'},

@@ -55,6 +55,9 @@ public class BidView {
 	@Column(name = "remark")
 	private String remark;
 	
+	@Column(name = "item_origin")
+	private String itemOrigin;
+	
 	@Column(name = "inv_no")
 	private String invNo;
 	
@@ -195,6 +198,18 @@ public class BidView {
 	public void setProformaInvNo(String proformaInvNo) {
 		this.proformaInvNo = proformaInvNo;
 	}
+
+	public String getItemOrigin() {
+		return itemOrigin;
+	}
+
+	public void setItemOrigin(String itemOrigin) {
+		this.itemOrigin = itemOrigin;
+	}
+
+
+
+
 
 	
 }

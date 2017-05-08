@@ -20,6 +20,7 @@ import com.sesnu.orion.dao.ItemDAO;
 import com.sesnu.orion.dao.OrderDAO;
 import com.sesnu.orion.dao.ShippingDAO;
 import com.sesnu.orion.dao.OrderDAO;
+import com.sesnu.orion.web.model.ExporterQuote;
 import com.sesnu.orion.web.model.Item;
 import com.sesnu.orion.web.model.Order;
 import com.sesnu.orion.web.model.OrderView;
@@ -70,6 +71,9 @@ public class OrderController {
 			case "inTerminal" :
 				orders = orderDao.listByIdList(shipDao.inTerminalList());
 				break;
+			case "shipped" :
+				orders = orderDao.getShippedOrders();
+				break;
 			default:
 				response.sendError(400,Util.parseError("Invalid Order Param"));
 				return null;
@@ -96,6 +100,8 @@ public class OrderController {
 				response.sendError(404);
 				return null;
 			}
+		}else if(monthStr.toLowerCase().equals("all")){
+			month =0;
 		}else{
 			month =Util.getMonth(monthStr.trim());
 		}
@@ -114,13 +120,14 @@ public class OrderController {
 			@PathVariable("year") int year,@PathVariable("month") String month)
 			throws Exception {
 		
-		OrderView ord = orderDao.getOrderByInvNo(order.getInvNo());
+		OrderView ord = orderDao.getOrderViewByInvNo(order.getInvNo());
 		if(ord!=null){
 			response.sendError(400,Util.parseError("Invoice number is already assigned"));
 			return null;
 		}
 		order.setUpdatedOn(Util.parseDate(new Date(),"/"));
 		order.setId(null);
+		order.setStatus("Unsigned");
 		order.setCreatedOn(new Date());
 		orderDao.saveOrUpdate(order);
 		
@@ -146,7 +153,7 @@ public class OrderController {
 			@PathVariable("month") String month)
 			throws Exception {
 		
-		OrderView ord = orderDao.getOrderByInvNo(order.getInvNo());
+		OrderView ord = orderDao.getOrderViewByInvNo(order.getInvNo());
 		if(ord!=null && ord.getId()!=order.getId()){
 			response.sendError(400,Util.parseError("Invoice number is already assigned"));
 			return null;
@@ -229,6 +236,10 @@ public class OrderController {
 		}
 		response.sendError(400);
 		return null;
+	}
+	
+	private void updateExporterQuote(Order order){
+		ExporterQuote quote = new ExporterQuote();
 	}
 	
 }

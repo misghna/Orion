@@ -59,7 +59,7 @@ public class StatusDAOImpl implements StatusDAO {
 
 	@Override
 	public List<Required> listRequired(String type,String itemType) {
-		String hql = "from Required where type = :type and (itemType = :itemType or itemType = 'all')";
+		String hql = "from Required where type = :type and (itemType = :itemType or itemType = 'all') order by id desc";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql)
 		.setString("itemType",itemType)
 		.setString("type", type);

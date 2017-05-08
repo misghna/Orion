@@ -30,7 +30,7 @@ public class CronJob {
         Thread.sleep(delay);
      
      // check pending verifications
-        gmailInbox.checkConfirmation();
+      //  gmailInbox.checkConfirmation();
         
         //send notification if any
         notifService.checkNotification();

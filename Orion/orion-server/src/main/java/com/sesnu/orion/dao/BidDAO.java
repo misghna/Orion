@@ -14,7 +14,7 @@ public interface BidDAO {
 
 	public void saveOrUpdate(Bid bid);
 	
-	public List<Bid> getBidWinner(long orderRef);
+	public Bid getBidWinner(long orderRef);
 	
 	public List<Bid> setBidWinner(long bidId);
 

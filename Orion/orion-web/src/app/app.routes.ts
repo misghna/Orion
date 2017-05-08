@@ -32,6 +32,7 @@ import { AccessControlComponent } from './access-control/access-control.componen
 import { InvoiceFormatComponent } from './invoice-format/invoice-format.component';
 import { ExporterInvoiceComponent } from './exporter-invoice/exporter-invoice.component';
 import { CashFlowComponent } from './cash-flow/cash-flow.component';
+import { ExporterQuoteComponent } from './exporter-quote/exporter-quote.component';
 
 // Define which component should be loaded based on the current URL
 export const routes: Routes = [
@@ -39,6 +40,7 @@ export const routes: Routes = [
   // { path: '',   component: HomeComponent, canActivate: [AuthGuard] },
   // { path: 'login',  component: LoginComponent },
   // { path: 'logout',  component: LoginComponent },
+
   { path: 'setting/items',  component: ItemsComponent },
   { path: 'setting/users',  component: UsersComponent },
   { path: 'setting/legalization',  component: PortFeeComponent },
@@ -47,13 +49,17 @@ export const routes: Routes = [
   { path: 'setting/addressBook',  component: AddressBookComponent },
   { path: 'setting/terminal',  component: TerminalComponent },
   { path: 'setting/accessControl',  component: AccessControlComponent },
-   { path: 'setting/invoiceFormat',  component: InvoiceFormatComponent },
+  { path: 'setting/invoiceFormat',  component: InvoiceFormatComponent },
   
+  { path: 'exporter/bid/:id',  component: BidComponent },
+  { path: 'exporter/margin',  component: ExporterQuoteComponent },
+  { path: 'exporter/invoices/:id',  component: ExporterInvoiceComponent },
+
   { path: 'status/:id',  component: StatusComponent },
   { path: 'finance/approval/:id',  component: ApprovalComponent },
   { path: 'finance/payment/:id',  component: PaymentComponent },
   { path: 'finance/estimator/:id',  component: EstimateComponent },
-  { path: 'finance/exporterInvoices/:id',  component: ExporterInvoiceComponent },
+  
   { path: 'finance/budget/:id',  component: BudgetComponent },
   { path: 'finance/salesPlan',  component: SalesPlanComponent },
   { path: 'finance/cashFlow',  component: CashFlowComponent },
@@ -62,16 +68,14 @@ export const routes: Routes = [
   { path: 'import/order/:id',  component: OrdersComponent },
   { path: 'import/shipping/:id',  component: ShippingComponent },
   { path: 'import/container/:id',  component: ContainerComponent },
-  { path: 'import/bid/:id',  component: BidComponent },
+  
   
   { path: 'document/license/:id',  component: LicenseComponent },
   { path: 'document/docTracking/:id',  component: DocTrackingComponent },
   { path: 'document/uploaded/:id',  component: DocumentComponent },
   { path: 'document/handover/:id',  component: DocHandoverComponent },
-  
 
- { path: 'notification',  component: NotificationComponent },
-  
+  { path: 'notification',  component: NotificationComponent },
 
   { path: 'open/register',  component: RegisterComponent },
   { path: 'open/passrenew',  component: PassRenewComponent },

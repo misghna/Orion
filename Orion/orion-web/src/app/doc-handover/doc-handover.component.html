@@ -62,9 +62,9 @@
             <ul id="{{item.id.toString() + '-' + item.receivedBy}}" #dropDownBox class="dropdown-menu dropdown-menu-right" 
                  aria-labelledby="dropdownMenu2">
                 <li><a #edit_item (click)="loadAll()">Refresh</a></li>
-                <li *ngIf="item.status!='Returned'"><a #edit_item (click)="markAsReturned(edit_item.parentElement.parentElement.id);activeOrderId=item.orderRef">Mark as Returned</a></li>
+               <!--<li *ngIf="item.status!='Returned'"><a #edit_item (click)="markAsReturned(edit_item.parentElement.parentElement.id);activeOrderId=item.orderRef">Mark as Returned</a></li>-->
                  <li role="separator" class="divider"></li>
-                <li><a #deleteitem (click)="triggerDelModal($event)">Delete</a></li>
+                <li *ngIf="item.status!='Confirmed'"><a #deleteitem (click)="triggerDelModal($event)">Delete</a></li>
             </ul>
             </div>
         </td>
@@ -119,13 +119,25 @@
             </ul>        
           </div>    
         </td>
-        <td><textarea #unit class="form-control txt-flat " rows="2" placeholder="Auto" readonly [(ngModel)]="itemDetail.receivedFrom" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <!--<td><textarea #unit class="form-control txt-flat " rows="2" placeholder="Auto" readonly [(ngModel)]="itemDetail.receivedFrom" [ngModelOptions]="{standalone: true}"></textarea></td> -->
+        <td>
+            <div class="btn-group ">
+            <button type="button" class="btn btn-default dropdown-toggle editFormMargin noBorder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{itemDetail.receivedFrom}} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li ><a (click)="itemDetail.receivedFrom= 'My Self'">My Self</a></li>
+                <li *ngFor="let agent of fwAgents"><a (click)="itemDetail.receivedFrom= agent.name">{{agent.name}}</a></li>
+            </ul>
+            </div>
+        </td>
         <td>
             <div class="btn-group ">
             <button type="button" class="btn btn-default dropdown-toggle editFormMargin noBorder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 {{itemDetail.receivedBy}} <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
+                <li ><a (click)="itemDetail.receivedBy= 'My Self'">My Self</a></li>
                 <li *ngFor="let agent of fwAgents"><a (click)="itemDetail.receivedBy= agent.name">{{agent.name}}</a></li>
             </ul>
             </div>

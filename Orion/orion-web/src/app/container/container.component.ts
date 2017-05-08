@@ -3,7 +3,7 @@ import { MiscService } from '../service/misc.service';
 import { FilterNamePipe } from '../pipes/pipe.filterName';
 import { ContainerService } from '../container/container.service';
 import { UtilService } from '../service/util.service';
-import { ShippingService } from '../shipping/shipping.service';
+import { OrdersService } from '../orders/orders.service';
 import { AddressBookService } from '../address-book/address-book.service';
 import {MiscSettingService} from '../misc/misc-service.service'
 
@@ -34,11 +34,12 @@ export class ContainerComponent implements OnInit {
   filterQuery = "";
   bntOption = "Search";
   selectedDate;activeShippingId;activeOrderId;
-  activeOrder= {}; filteredSalesPlanList=[]; allOrders;shippingList; allShippingList;
+  activeOrder= {}; filteredSalesPlanList=[]; OrderList; allOrderList;
 
   constructor(private utilService :UtilService,private contService:ContainerService, private el: ElementRef,
-              private shipService:ShippingService ,public route: ActivatedRoute,public router:Router,
+              private ordersService:OrdersService ,public route: ActivatedRoute,public router:Router,
               private addBookService :AddressBookService, private miscService :MiscSettingService) {
+
           utilService.currentSearchTxt$.subscribe(txt => {this.search(txt);});
           utilService.currentdelItem$.subscribe(opt => { this.delete();}); 
           this.optionsList = [{'name':'Add Container','value':'addNew'}];
@@ -77,6 +78,7 @@ export class ContainerComponent implements OnInit {
   ngOnInit() {
       this.headers = [{'name':'No','value':'id','j':'x'},{'name':'BL','value':'bl','j':'l'},
                       {'name':'Cont Size','value':'contSize','j':'c'},{'name':'Container Id','value':'contNo','j':'l'},
+                      {'name':'Pack qty','value':'packQty','j':'c'},{'name':'Gross weight(Kg)','value':'grossWeight','j':'l'},
                       {'name':'Transporter','value':'transporter','j':'c'},{'name':'Destination','value':'destination','j':'c'},
                       {'name':'Offload Date','value':'offloadDate','j':'cd'},{'name':'Recv. Voucher No','value':'recvVoucherNo','j':'c'},
                       {'name':'Cont return date','value':'contReturnDate','j':'cd'},{'name':'Used Days','value':'totalDays','j':'c'},
@@ -132,11 +134,11 @@ updateNameBrand(nameBrand){
 }
 
 getAllShiping(){
-      this.shipService.get('all')
+      this.ordersService.getAllOrders('shipped')
       .subscribe(
           response => {
-              this.shippingList = response; 
-              this.allShippingList=response;
+              this.allOrderList = response; 
+              this.OrderList = response;
           },
           error => {
                console.error("order not found!");          
@@ -226,9 +228,9 @@ updateBaseUnit(unit){
 
    filterShipByBl(bl){
         if(bl.length<1){
-          return this.allOrders;
+          this.OrderList = this.allOrderList;
         }
-        this.shippingList = this.allShippingList.filter(item => (
+        this.OrderList = this.allOrderList.filter(item => (
             (item.bl.toLowerCase().indexOf(bl.toLowerCase()) !== -1) ));
     }
 

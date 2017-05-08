@@ -21,6 +21,7 @@ import com.sesnu.orion.dao.BudgetDAO;
 import com.sesnu.orion.dao.ItemDAO;
 import com.sesnu.orion.dao.SalesPlanDAO;
 import com.sesnu.orion.web.model.Item;
+import com.sesnu.orion.web.model.Order;
 import com.sesnu.orion.web.model.OrderView;
 import com.sesnu.orion.web.model.SalesPlan;
 import com.sesnu.orion.web.model.SalesView;
@@ -69,12 +70,9 @@ public class BudgetController {
 	
 	private Budget generateBudget(SalesView sp){
 		Budget budget = new Budget(sp);
-		OrderView order = new OrderView(sp);
-		Bid bid = new Bid();
-		bid.setTotalBid(sp.getPckPerCont()*sp.getContQnt()*sp.getCif());
-		bid.setCurrency("USD");
+		Order order = new Order(sp);
 	    Item item = itemDao.get(sp.getItemId());
-		Estimate est = estService.totalEstimate(order, null, bid, item);
+		Estimate est = estService.totalEstimate(order, null, item);
 		
 		JSONObject detail = est.getDetails();		
 		budget.setBromangol(Double.parseDouble(((JSONObject)detail.get("Bromangol")).get("Total").toString()));

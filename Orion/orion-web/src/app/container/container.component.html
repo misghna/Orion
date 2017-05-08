@@ -80,8 +80,8 @@
                 placeholder="Inv No" (keyup)="filterShipByBl(bl.value);" 
                 [(ngModel)]="itemDetail.bl" [ngModelOptions]="{standalone: true}"></textarea> 
             <ul class="dropdown-menu item-name">
-              <li *ngFor="let ship of shippingList">
-                   <a (click)="itemDetail.bl=ship.bl;itemDetail.orderRef=ship.orderRef">{{ship.bl}}</a>
+              <li *ngFor="let order of OrderList">
+                   <a (click)="itemDetail.bl=order.bl;itemDetail.orderRef=order.id;itemDetail.contSize=order.contSize;itemDetail.packQty=order.pckPerCont">{{order.bl}}</a>
               </li>                         
             </ul>        
           </div>    
@@ -100,6 +100,8 @@
             </div>
         </td>
         <td><textarea class="form-control txt-flat" rows="2"  placeholder="Cont Id" required [(ngModel)]="itemDetail.contNo" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <td><textarea class="form-control txt-flat" rows="2"  placeholder="Pack Qty" required [(ngModel)]="itemDetail.packQty" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <td><textarea class="form-control txt-flat" rows="2"  placeholder="Gross Weight" required [(ngModel)]="itemDetail.grossWeight" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td>
             <div class="btn-group ">
             <button type="button" class="btn btn-default dropdown-toggle editFormMargin noBorder"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

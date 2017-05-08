@@ -30,6 +30,12 @@ public class Container {
 	@Column(name = "cont_no")
 	private String contNo;
 	
+	@Column(name = "pack_qty")
+	private Integer packQty;
+	
+	@Column(name = "gross_weight")
+	private Double grossWeight;
+	
 	@Column(name = "remark")
 	private String remark;
 	
@@ -163,7 +169,24 @@ public class Container {
 	public void setRecvVoucherNo(String recvVoucherNo) {
 		this.recvVoucherNo = recvVoucherNo;
 	}
-	
+
+	public Double getGrossWeight() {
+		return grossWeight;
+	}
+
+	public void setGrossWeight(Double grossWeight) {
+		this.grossWeight = grossWeight;
+	}
+
+	public Integer getPackQty() {
+		return packQty;
+	}
+
+	public void setPackQty(Integer packQty) {
+		this.packQty = packQty;
+	}
+
+
 	
 	
 	

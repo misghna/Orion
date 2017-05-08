@@ -81,6 +81,7 @@
       
       <tr [class.hidden]="hideAddNewForm" class="inputFormTr">
         <td class="text-center" ><span class="glyphicon glyphicon-remove-circle closeAddForm" aria-hidden="true" style="margin-top:5px"></span></td>    
+        <td><textarea id="name" #name class="form-control txt-flat" rows="1"  placeholder="Item Id" required [(ngModel)]="itemDetail.itemId" [ngModelOptions]="{standalone: true}"></textarea></td>
         <td><textarea id="name" #name class="form-control txt-flat" rows="1"  placeholder="Product Name" required [(ngModel)]="itemDetail.name" [ngModelOptions]="{standalone: true}"></textarea></td>
         <td><textarea id="name" #brand class="form-control txt-flat" rows="1"  placeholder="Brand" required [(ngModel)]="itemDetail.brand" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td>

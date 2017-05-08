@@ -46,8 +46,8 @@ import com.sesnu.orion.web.utility.Util;
 @Controller
 public class StatusController {
 
-	static List<String> MUST_DOCS = Arrays.asList(new String []{"Order Initiated","Proforma Invoice","Supplier Selected",
-																"Order Authorization","Commercial Invoice","Item Shipped"});
+	static List<String> MUST_DOCS = Arrays.asList(new String []{"Order Initiated","Supplier Selected","Order Approved","E. Margin Approved",
+																"Item Shipped","Item Arrived","Container returned"});
 
 	
 	@Autowired
@@ -138,17 +138,34 @@ public class StatusController {
 			if(os.getBid() != null){
 				orderStatList.add("Supplier Selected");
 			}
+			
+			if(os.getBidApproval()!=null && os.getBidApproval().equals("Approved")){
+				orderStatList.add("Order Approved");
+			}
 
+			if(os.getMarginStat()!=null && os.getMarginStat().equals("Approved")){
+				orderStatList.add("E. Margin Approved");
+			}
+			
+			if(os.getAta()!=null){
+				orderStatList.add("Item Arrived");
+			}
+			
 			if(os.getBl() != null){
 				orderStatList.add("Item Shipped");
-			}	
-						
-			//*** finished docs
-			for (OrderStat ost : orderStat) {
-				if(ost.getType()!=null){
-					orderStatList.add(ost.getType());
-				}
 			}
+			
+			if(os.getContReturnedCount() != null && os.getContQnt()!=null && 
+					os.getContReturnedCount() >= os.getContQnt()){
+				orderStatList.add("Container returned");
+			}
+						
+//			//*** finished docs
+//			for (OrderStat ost : orderStat) {
+//				if(ost.getType()!=null){
+//					orderStatList.add(ost.getType());
+//				}
+//			}
 			
 			JSONObject jo = null;
 			for (String mustDoc : MUST_DOCS) {

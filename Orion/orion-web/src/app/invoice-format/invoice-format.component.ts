@@ -70,7 +70,6 @@ export class InvoiceFormatComponent implements OnInit {
 
 triggerDelModal(event){
     event.preventDefault();
-    console.log("triigered");
     var modalInfo = {"title" : "Order", "msg" : this.activeProductHeader.split('-')[1],"task" :"myTask"};
     this.utilService.showModalState(modalInfo);
 }

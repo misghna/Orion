@@ -3,11 +3,8 @@ package com.sesnu.orion.dao;
 import java.math.BigInteger;
 import java.util.List;
 
-import com.sesnu.orion.web.model.Item;
 import com.sesnu.orion.web.model.Order;
 import com.sesnu.orion.web.model.OrderView;
-import com.sesnu.orion.web.model.SalesPlan;
-import com.sesnu.orion.web.model.SalesView;
 
 
 
@@ -21,7 +18,7 @@ public interface OrderDAO {
 	
 	public List<OrderView> getOrderByTime(int year,String month);
 	
-	public OrderView getOrderByInvNo(String invNo);
+	public OrderView getOrderViewByInvNo(String invNo);
 	
 	public List<OrderView> listAll() ;
 		
@@ -40,5 +37,13 @@ public interface OrderDAO {
 	public String getLatest();
 	
 	public BigInteger newOrdersCount(long itemId);
+	
+	public List<OrderView> getShippedOrders();
+	
+	public Order getOrder(long id);
+	
+	public List<Order> listAllOrders() ;
+	
+	public Order getOrderByInvNo(String invNo);
 	
 }

@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -42,6 +43,13 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.encrypt.Encryptors;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
@@ -181,7 +189,7 @@ public class Util {
 	
 	
 	public void sendText(String txt,String phoneNo) {
-        String message = "[Anseba web] \n" + txt;
+        String message = "[Anseba limitada] \n" + txt;
         String phoneNumber = phoneNo;
         Map<String, MessageAttributeValue> smsAttributes = 
                 new HashMap<String, MessageAttributeValue>();
@@ -341,5 +349,31 @@ public class Util {
 		}
 		return user;
 	}
+	
+		
+	public JSONObject getExchangeRates(String base, Set<String> currencies) 
+			throws ClientProtocolException, IOException, org.json.simple.parser.ParseException{
+		StringBuffer sb = new StringBuffer();
+		for (String curr : currencies) {
+			sb.append(base + curr + "=X+");
+		}
+		String url = "http://finance.yahoo.com/d/quotes.csv?e=.csv&f=sl1d1t1&s="+ sb.toString();
+		HttpClient client = HttpClientBuilder.create().build();
+		HttpGet request = new HttpGet(url.replaceAll(" ", ""));
+		
+		HttpResponse response = client.execute(request);
+		BufferedReader rd = new BufferedReader(
+			new InputStreamReader(response.getEntity().getContent()));
+		
+		String line = "";
+		JSONObject ex = new JSONObject();
+		while ((line = rd.readLine()) != null) {
+			String[] exchange = line.split(",");
+			ex.put(exchange[0].toString().replace("\"", "").replace("=X", ""), exchange[1]);
+		}
+		return ex;
+		
+	}
+	
 }
 

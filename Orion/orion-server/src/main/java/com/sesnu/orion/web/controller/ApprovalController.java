@@ -27,6 +27,7 @@ import com.sesnu.orion.web.model.Approval;
 import com.sesnu.orion.web.model.ApprovalView;
 import com.sesnu.orion.web.model.Bid;
 import com.sesnu.orion.web.model.Notification;
+import com.sesnu.orion.web.model.Order;
 import com.sesnu.orion.web.model.OrderView;
 import com.sesnu.orion.web.model.Payment;
 import com.sesnu.orion.web.model.User;
@@ -48,6 +49,7 @@ public class ApprovalController {
 	@Autowired private PaymentDAO payDao;
 	@Autowired private ReportService repoService;
 	@Autowired private NotificationDAO notifDao;
+	@Autowired private OrderDAO orderDao;
 	
 	@RequestMapping(value = "/api/user/approval/{orderRef}", method = RequestMethod.GET)
 	public @ResponseBody List<ApprovalView> byId(@PathVariable("orderRef") String orderRef,
@@ -108,14 +110,23 @@ public class ApprovalController {
 		aprv.setStatus("pending");
 		aprv.setRequestedOn(new Date());
 		aprvDao.saveOrUpdate(aprv);
-		
+				
 		if(aprv.getType().trim().equals("Order Authorization")){
+			sendReqNotif(user,aprv,"Order Authorization");
 			Bid bid = bidDao.get(aprv.getForId());
 			bid.setApproval("Pending Approval");
 			bidDao.saveOrUpdate(bid);
 			response.sendError(200,"ok");
 			return "success";
+		}else if(aprv.getType().trim().equals("Exporter Margin")){
+			sendReqNotif(user,aprv,"Exporter Margin");
+			Order order = orderDao.getOrder(aprv.getForId());
+			order.setStatus("Pending Approval");
+			orderDao.saveOrUpdate(order);
+			response.sendError(200,"ok");
+			return "success";
 		}else{
+			sendReqNotif(user,aprv,"Payment(" + aprv.getForName() + ")");
 			Payment pay = payDao.get(aprv.getForId());
 			pay.setStatus("Pending Approval");
 			payDao.saveOrUpdate(pay);
@@ -124,6 +135,18 @@ public class ApprovalController {
 			return "success";
 		}
 
+	}
+	
+	private void sendReqNotif(User requester,Approval aprv,String type){
+		User approver= userDao.getUserByName(aprv.getApprover());
+		Order order = orderDao.getOrder(aprv.getOrderRef());
+		StringBuilder msg = new StringBuilder();
+		msg.append("Hello  "+approver.getFullname()+",\n\n ");
+		msg.append(requester.getFullname() + " is requesting your approval for " + type + "\n");
+		msg.append("this request is with regards to Order ref " + order.getInvNo() + " of " + order.getItem() + "(" + order.getBrand() + ")");
+		String emailPostFix = ("\n\n Do not replay to this email, this is an automated message.\n\n Thank you!!");
+		util.sendText(msg.toString(), approver.getPhone());
+		Util.sendMail("Approval Request", approver.getEmail() ,msg.toString() + emailPostFix);
 	}
 	
 	private User getActiveUser(HttpServletRequest request){
@@ -153,24 +176,49 @@ public class ApprovalController {
 			return null;
 		}
 		
+		if(aprv.getStatus().indexOf("Void")>-1){
+			response.sendError(400,Util.parseError("This request is void, please create new request"));
+			return null;
+		}
+		
 		User user= getActiveUser(request);	
 		if(!aprv.getApprover().equals(user.getFullname())){
 			response.sendError(400,Util.parseError("Only " + aprv.getApprover() + " can approve this request."));
 			return null;
 		}
 		
+		List<ApprovalView> aprList = aprvDao.listByOrderRef(aprv.getOrderRef());
+		for (ApprovalView ap : aprList) {
+			if(ap.getStatus().equals("Approved") && ap.getType().equals(aprv.getType()) && 
+					(ap.getType().equals("Order Authorization") || ap.getType().equals("Exporter Margin"))){
+				response.sendError(400,Util.parseError("A identical request has been already approved, check for duplicates"));
+				return null;
+			}
+			
+		}
+		
+		
 		aprv.setStatus("Approved");
 		aprv.setApprovedOn(new Date());
 		aprvDao.saveOrUpdate(aprv);
 		
 		if(aprv.getType().equals("Order Authorization")){
+		//	sendAprvNotif(user,aprv,"Order Authorization");
 			Bid bid = bidDao.get(aprv.getForId());
 			bid.setApproval("Approved");
 			bidDao.saveOrUpdate(bid);
 			repoService.generateOrderAuthReport(aprv,"actual");
 			
 			return "success";
+		}else if(aprv.getType().equals("Exporter Margin")){
+		//	sendAprvNotif(user,aprv,"Exporter Margin");
+			Order order = orderDao.getOrder(aprv.getForId());
+			order.setStatus("Approved");
+			orderDao.saveOrUpdate(order);
+			repoService.generateExporterAprvReport(aprv,"actual");			
+			return "success";
 		}else{
+		//	sendAprvNotif(user,aprv,"Payment(" + aprv.getForName() + ")");
 			Payment pay = payDao.get(aprv.getForId());
 			pay.setStatus("Approved");
 			payDao.saveOrUpdate(pay);
@@ -185,6 +233,20 @@ public class ApprovalController {
 		
 	}
 	
+	
+//	private void sendAprvNotif(User requester,Approval aprv,String type){
+//		User approver= userDao.getUserByName(aprv.getApprover());
+//		Order order = orderDao.getOrder(aprv.getOrderRef());
+//		StringBuilder msg = new StringBuilder();
+//		msg.append("Hello  "+requester.getFullname()+",\n\n ");
+//		msg.append(approver.getFullname() + " has approved your request for " + type + "\n");
+//		msg.append("this approval is with regards to Order ref " + order.getInvNo() + " of " + order.getItem() + "(" + order.getBrand() + ")");
+//		String emailPostFix = ("\n\n Do not replay to this email, this is an automated message.\n\n Thank you!!");
+//		util.sendText(msg.toString(), approver.getPhone());
+//		Util.sendMail("Approval Request", approver.getEmail() ,msg.toString() + emailPostFix);
+//	}
+	
+	
 	@RequestMapping(value = "/api/user/approval/void/{id}", method = RequestMethod.PUT)
 	public @ResponseBody List<ApprovalView> updateItem(HttpServletResponse response,
 			@PathVariable("id") long id)
@@ -198,8 +260,13 @@ public class ApprovalController {
 		ap.setStatus("Void");
 		
 		aprvDao.saveOrUpdate(ap);
+		if(ap.getType().equals("Exporter Margin")){
+			Order order = orderDao.getOrder(ap.getForId());
+			order.setStatus("Unsigned");
+			orderDao.saveOrUpdate(order);
+		}
 		
-		List<ApprovalView> aprvls = aprvDao.listByOrderRef(ap.getOrderRef());
+		List<ApprovalView> aprvls = aprvDao.listAll();
 		if(aprvls.size()>0){
 			return aprvls;
 		}
@@ -207,25 +274,6 @@ public class ApprovalController {
 		return null;
 
 	}
-	
-	
-
-//	@RequestMapping(value = "/api/user/approval/{id}", method = RequestMethod.DELETE)
-//	
-//	public @ResponseBody List<ApprovalView> deleteItem(@PathVariable("id") long id,
-//			HttpServletResponse response) throws Exception {
-//		
-//		Approval aprv = aprvDao.get(id);
-//		if(aprv != null){
-//			aprvDao.delete(aprv);
-//			List<ApprovalView> pays = aprvDao.listByOrderRef(aprv.getOrderRef());
-//			if(pays.size()>0){
-//				return pays;
-//			}
-//		}
-//		response.sendError(400);
-//		return null;
-//	}
 	
 		
 

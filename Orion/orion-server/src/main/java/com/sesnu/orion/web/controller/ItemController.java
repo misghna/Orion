@@ -86,7 +86,7 @@ public class ItemController {
 	
 	@RequestMapping(value = "/api/user/item/nameBrand", method = RequestMethod.GET)
 	public @ResponseBody List<String> nameBrand() {				
-		return itemDao.getNameBrandList();
+		return itemDao.getLatestNameBrandList();
 	}
 	
 	@RequestMapping(value = "/api/user/item/revisions", method = RequestMethod.POST)

@@ -106,6 +106,7 @@ export class BidComponent implements OnInit {
                       {'name':'Total (CNF)', 'value':'totalBid','j':'cr'}, 
                       {'name':'Payment Method','value':'paymentMethod','j':'c'},
                       {'name':'Est Transit Days','value':'estTransitDays','j':'c'},
+                      {'name':'Origin(City)','value':'itemOrigin','j':'c'},
                       {'name':'Selected','value':'selected','j':'c'},{'name':'Approval','value':'approval','j':'c'},
                       {'name':'Updated On','value':'updatedOn','j':'c'}];
       

@@ -23,7 +23,7 @@ export class SalesPlanService {
   }
 
    duplicatePlan(body){
-        var url = this.baseUrl + 'api/admin/salesPlan/duplicatePlan';
+        var url = this.baseUrl + 'api/user/salesPlan/duplicatePlan';
         let headerContent = new Headers();      
         headerContent.append("Content-Type", "application/json");
         return this.http.post(url, body, { headers: headerContent })
@@ -33,24 +33,24 @@ export class SalesPlanService {
   addSalesPlan(body,year,month){
     let headerContent = new Headers();
     headerContent.append("Content-Type", "application/json");
-    return this.http.post(this.baseUrl + 'api/admin/salesPlan/' + year + '/' + month, body, { headers: headerContent })
+    return this.http.post(this.baseUrl + 'api/user/salesPlan/' + year + '/' + month, body, { headers: headerContent })
             .map(res => res.json());
   }
 
   updateSalesPlan(body,year,month){
     let headerContent = new Headers();
     headerContent.append("Content-Type", "application/json");
-    return this.http.put(this.baseUrl + 'api/admin/salesPlan/' + year + '/' + month, body, { headers: headerContent })
+    return this.http.put(this.baseUrl + 'api/user/salesPlan/' + year + '/' + month, body, { headers: headerContent })
             .map(res => res.json());
   }
 
   deleteSalesPlanById(planId,year,month) {
-    return this.http.delete(this.baseUrl + 'api/admin/salesPlan/' + planId + '/' + year + '/' + month)
+    return this.http.delete(this.baseUrl + 'api/user/salesPlan/' + planId + '/' + year + '/' + month)
       .map(res => res.json());
   }
 
   deleteSalesPlan(year,month) {
-    return this.http.delete(this.baseUrl + 'api/admin/salesPlan/' + year + '/' + month)
+    return this.http.delete(this.baseUrl + 'api/user/salesPlan/' + year + '/' + month)
       .map(res => res.json());
   }
   

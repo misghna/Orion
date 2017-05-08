@@ -10,7 +10,7 @@ import com.sesnu.orion.web.model.ShippingView;
 
 public interface ShippingDAO {
 	
-	public List<ShippingView> listByOrderId(long orderRef);
+	public ShippingView getByOrderId(long orderRefId);
 	
 	public List<ShippingView> listAll();
 	

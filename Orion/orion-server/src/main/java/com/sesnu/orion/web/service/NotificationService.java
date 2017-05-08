@@ -120,12 +120,14 @@ public class NotificationService {
 		msg.append("\n\n you are getting this notification, becase you have set it in your notification profile.");
 		msg.append("\n\n Do not replay to this email, this is an automated message.\n\n Thank you!!");
 		StringBuffer receiver = new StringBuffer();
-		for (User user : users) {		
-			receiver.append(user.getEmail() + ",");	
+		if(users.size()>0){
+			for (User user : users) {		
+				receiver.append(user.getEmail() + ",");	
+			}
+			String allRecipients = receiver.toString();
+			allRecipients = allRecipients.substring(0,allRecipients.length()-1);
+			Util.sendMail("EriAngo Notification", allRecipients, msg.toString());
 		}
-		String allRecipients = receiver.toString();
-		allRecipients = allRecipients.substring(0,allRecipients.length()-1);
-		Util.sendMail("EriAngo Notification", allRecipients, msg.toString());		
 	}
 	
 	private void smsNotification(List<User> users, String mainMsg,Long orderRef){

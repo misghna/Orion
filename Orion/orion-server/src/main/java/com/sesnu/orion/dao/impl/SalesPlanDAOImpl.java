@@ -43,13 +43,16 @@ public class SalesPlanDAOImpl implements SalesPlanDAO {
 			}else{
 				hql += "(year =" + year1 + " and mon >=" + mon1 + " and mon <=12) or (year =" + year2 + " and mon >=1 and mon <="+mon2+")";
 			}
-			System.out.println(hql);
 			query = sessionFactory.getCurrentSession().createQuery(hql);
+		}else if(month.toLowerCase().equals("all")){
+			hql = "from SalesView where year = :year";
+			query = sessionFactory.getCurrentSession().createQuery(hql)
+					.setParameter("year",year);
 		}else{
 			hql = "from SalesView where year = :year and month = :month";
-			query = sessionFactory.getCurrentSession().createQuery(hql);
-			query.setParameter("year",year);
-			query.setParameter("month",month);
+			query = sessionFactory.getCurrentSession().createQuery(hql)
+				.setParameter("year",year)
+				.setParameter("month",month);
 		}
 		
 		return (List<SalesView>) query.list();
@@ -105,6 +108,27 @@ public class SalesPlanDAOImpl implements SalesPlanDAO {
 		query.setMaxResults(1);
 		if(query.list().size()>0){
 		return (String) query.list().get(0);
+		}
+		return null;
+	}
+	
+	@Override
+	public List estimatedCashFlow(int year,String destination){
+		String hql = "select Sum(pckPerCont*contQnt*cif),mon,currency,month from SalesPlan where year = :year group by month,currency,mon order by mon";
+		Query query = null;		
+		if(!destination.equals("All")){
+			hql = "select Sum(pckPerCont*contQnt*cif),mon,currency,month from SalesPlan where year = :year and destinationPort = :destinationPort"
+					+ " group by month,currency,mon order by mon";
+			 query = sessionFactory.getCurrentSession().createQuery(hql).
+					setInteger("year", year).
+					setString("destinationPort", destination);
+		}else{
+			 query = sessionFactory.getCurrentSession().createQuery(hql).
+					setInteger("year", year);
+		}
+		
+		if(query.list().size()>0){
+			return query.list();
 		}
 		return null;
 	}

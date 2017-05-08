@@ -83,7 +83,8 @@ export class ShippingComponent implements OnInit {
   ngOnInit() {
       this.headers = [{'name':'No','value':'id','j':'x'},{'name':'Inv No','value':'invNo','j':'c'},
                       {'name':'Cont Qnt','value':'contQnt','j':'c'},{'name':'BL','value':'bl','j':'c'},
-                      {'name':'Item Origin','value':'itemOrigin','j':'l'},{'name':'Terminal','value':'terminal','j':'l'},
+                      {'name':'Loading Port','value':'loadingPort','j':'c'},
+                      {'name':'Origin Country','value':'itemOrigin','j':'l'},{'name':'Terminal','value':'terminal','j':'l'},
                       {'name':'Shipping agency','value':'shipAgency','j':'c'},{'name':'ETD','value':'etd','j':'c'},
                       {'name':'ETA', 'value':'eta','j':'c'},{'name':'ATA', 'value':'ata','j':'c'},
                       {'name':'Remakr','value':'remark','j':'c'},{'name':'Updated On','value':'updatedOn','j':'c'}];

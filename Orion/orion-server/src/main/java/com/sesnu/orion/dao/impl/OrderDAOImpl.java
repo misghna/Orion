@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sesnu.orion.dao.OrderDAO;
-import com.sesnu.orion.web.model.Item;
 import com.sesnu.orion.web.model.Order;
 import com.sesnu.orion.web.model.OrderView;
 @SuppressWarnings("unchecked")
@@ -46,8 +45,8 @@ public class OrderDAOImpl implements OrderDAO {
 		
 		String hql = "from OrderView " + getDateRange(year,month);
 		Query query = sessionFactory.getCurrentSession().createQuery(hql)
-		.setInteger("year",year)
-		.setInteger("month",month);
+		.setInteger("year",year);
+		if(month!=0) query.setInteger("month",month);
 		return (List<OrderView>) query.list();
 
 	}	
@@ -62,12 +61,12 @@ public class OrderDAOImpl implements OrderDAO {
 	}
 	
 	@Override
-	public OrderView getOrderByInvNo(String invNo) {
+	public Order getOrderByInvNo(String invNo) {
 		
-		String hql = "from OrderView where lower(invNo) = :invNo";
+		String hql = "from Order where lower(invNo) = :invNo";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql)
 		.setString("invNo",invNo.toLowerCase());
-		List<OrderView> result =  (List<OrderView>) query.list();
+		List<Order> result =  (List<Order>) query.list();
 		if(result.size()>0){
 			return result.get(0);
 		}
@@ -85,12 +84,21 @@ public class OrderDAOImpl implements OrderDAO {
 	}
 	
 	@Override
-	public List<OrderView> getOrderByTime(int year,String month) {
-
-		String hql = "from Order OrderView year = :year and month = :month";
+	public OrderView getOrderViewByInvNo(String invNo) {
+		String hql = "from OrderView where lower(invNo) = :invNo";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql)
+		.setString("invNo",invNo.toLowerCase());
+		List<OrderView> result =  (List<OrderView>) query.list();
+		if(result.size()>0){
+			return result.get(0);
+		}
+		return null;
+	}
+	
+	@Override
+	public List<OrderView> getShippedOrders() {
+		String hql = "from OrderView where bl != null";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
-		query.setParameter("year",year);
-		query.setParameter("month",month);
 		return (List<OrderView>) query.list();
 	}	
 	
@@ -156,6 +164,30 @@ public class OrderDAOImpl implements OrderDAO {
 		.setLong("itemId",itemId);
 		return  (BigInteger) query.list().get(0);
 	}
+
+	@Override
+	public Order getOrder(long id) {
+		return (Order) sessionFactory.getCurrentSession().get(Order.class, id);
+	}
+
+	@Override
+	public List<Order> listAllOrders() {
+		String hql = "from Order";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		return (List<Order>) query.list();
+	}
+
+	@Override
+	public List<OrderView> getOrderByTime(int year,String month) {
+
+		String hql = "from Order Order year = :year and month = :month";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setParameter("year",year);
+		query.setParameter("month",month);
+		return (List<OrderView>) query.list();
+	}
+	
+
 	
 	
 }

@@ -3,6 +3,7 @@ package com.sesnu.orion.dao;
 import java.util.List;
 
 import com.sesnu.orion.web.model.AccessHistory;
+import com.sesnu.orion.web.model.AccessView;
 import com.sesnu.orion.web.model.Location;
 
 
@@ -30,5 +31,9 @@ public interface AccessHistoryDAO {
 	public List<Location> listFailedLocations();
 	
 	public List<String> listNewIps();
+	
+	public List<AccessView> getAllAccess();
+	
+	public List<AccessView> getAccessByUser(String userName);
 	
 }

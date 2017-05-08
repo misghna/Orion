@@ -31,7 +31,7 @@ export class HttpInterceptor extends Http {
 
 
     post(url: string, body: string, options?: RequestOptionsArgs): Observable<Response> {
-        console.log("overriding ...");
+      //  console.log("overriding ...");
         return this.intercept(super.post(url, body, options));
     }
 

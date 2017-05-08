@@ -94,7 +94,7 @@ triggerDelModal(event){
           },
           error => {
             if(error.status==404){
-               this.popAlert("Info","Info","Client/WH is not yet added!");          
+               this.popAlert("Info","Info","Address is not yet added!");          
             }else{
                this.popAlert("Error","danger","Something went wrong, please try again later!");          
             }
@@ -169,7 +169,7 @@ triggerDelModal(event){
       .subscribe(
           response => {
               this.setData(response);  
-              this.popAlert("Info","success","Setting Agency successfully deteled!"); 
+              this.popAlert("Info","success","Address successfully deteled!"); 
           },
           error => {
               this.popAlert("Error","danger","Something went wrong, please try again later!");

@@ -27,6 +27,7 @@ import com.sesnu.orion.dao.StatusDAO;
 import com.sesnu.orion.web.model.Bid;
 import com.sesnu.orion.web.model.Estimate;
 import com.sesnu.orion.web.model.Item;
+import com.sesnu.orion.web.model.Order;
 import com.sesnu.orion.web.model.OrderView;
 import com.sesnu.orion.web.model.PayView;
 import com.sesnu.orion.web.model.Payment;
@@ -85,12 +86,12 @@ public class PaymentController {
 	public @ResponseBody List<PayView> addItem(HttpServletResponse response,@RequestBody Payment pay)
 			throws Exception {
 		
-		List<ShippingView> ships = shipDao.listByOrderId(pay.getOrderRef());
-		if(ships.size()==0 && !pay.getName().equals("DU License")){
+		ShippingView ship = shipDao.getByOrderId(pay.getOrderRef());
+		if(ship!=null && !pay.getName().equals("DU License")){
 			response.sendError(400, Util.parseError("Item not yet marked as shipped"));
 			return null;
 		}
-		OrderView order = orderDAO.get(pay.getOrderRef());
+		Order order = orderDAO.getOrder(pay.getOrderRef());
 		
 		pay.setEstimate(calcEstimate(order,pay).getValue());
 		pay.setUpdatedOn(Util.parseDate(new Date(),"/"));
@@ -162,7 +163,7 @@ public class PaymentController {
 
 	
 	@SuppressWarnings("unchecked")
-	private Estimate calcEstimate(OrderView order, Payment pay){
+	private Estimate calcEstimate(Order order, Payment pay){
 		Estimate est=null;
 		Bid bid = null;
 		switch(pay.getName()){
@@ -181,30 +182,19 @@ public class PaymentController {
 			case "Shipping Agency Fee" :
 				return estService.legalization(order,pay);
 			case "Customs Fee" :
-				 bid = getBidWinner(order.getId());
-				if(bid !=null){
-					Item item = itemDao.get(order.getItemId());
-					return estService.customs(bid.getTotalBid(),bid.getCurrency(), item);
-				}
-				return null;
+				Item item = itemDao.get(order.getItemId());
+				return estService.customs(order.getTotalPrice(),order.getCurrency(), item);
 			case "Port Fee" :
 				return estService.port(order);
 			case "Terminal Fee" :
-				 bid = getBidWinner(order.getId());
-				if(bid !=null){
-					return estService.terminal(order, bid.getTotalBid());
-				}
-				return null;
+				return estService.terminal(order);
 			case "Transportation Fee" :
 				return estService.transport(order);
 			case "Detention Fee" :
 				return estService.penality(order);
 			case "Closing FA Fee" :
-				 bid = getBidWinner(order.getId());
-				if(bid !=null){
-					return estService.forwardingAgent(bid);
-				}
-				return null;
+				return estService.forwardingAgent(order);
+
 			default:
 					break;			
 		}
@@ -212,13 +202,13 @@ public class PaymentController {
 		return est;
 	}
 	
-	private Bid getBidWinner(long orderId){
-		List<Bid> bids = bidDao.getBidWinner(orderId);
-		if(bids.size()>0){
-			return bids.get(0);
-		}
-		return null;
-	}
+//	private Bid getBidWinner(long orderId){
+//		Bid bid = bidDao.getBidWinner(orderId);
+//		if(bid !=null){
+//			return bid;
+//		}
+//		return null;
+//	}
 		
 
 }

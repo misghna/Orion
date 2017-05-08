@@ -66,6 +66,12 @@ public class PayView {
 	
 	@Column(name = "currency")
 	private String curr;
+	
+	@Column(name = "month")
+	private int month;
+	
+	@Column(name = "year")
+	private int year;
 
 	
 	
@@ -203,6 +209,22 @@ public class PayView {
 
 	public void setContId(String contId) {
 		this.contId = contId;
+	}
+
+	public int getMonth() {
+		return month;
+	}
+
+	public void setMonth(int month) {
+		this.month = month;
+	}
+
+	public int getYear() {
+		return year;
+	}
+
+	public void setYear(int year) {
+		this.year = year;
 	}
 
 

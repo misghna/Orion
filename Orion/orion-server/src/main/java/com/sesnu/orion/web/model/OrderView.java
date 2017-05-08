@@ -51,7 +51,7 @@ public class OrderView {
 	private int contSize;
 	
 	@Column(name = "cont_qnt")
-	private int contQnt;
+	private Integer contQnt;
 	
 	@Column(name = "latest_eta")
 	private Date latestETA;
@@ -177,11 +177,11 @@ public class OrderView {
 		this.contSize = contSize;
 	}
 
-	public int getContQnt() {
+	public Integer getContQnt() {
 		return contQnt;
 	}
 
-	public void setContQnt(int contQnt) {
+	public void setContQnt(Integer contQnt) {
 		this.contQnt = contQnt;
 	}
 

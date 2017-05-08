@@ -53,7 +53,7 @@ export class OrdersComponent implements OnInit {
 
           utilService.currentdelItem$.subscribe(opt => { this.delete();}); 
 
-          this.monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN","JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+          this.monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN","JUL", "AUG", "SEP", "OCT", "NOV", "DEC","ALL"];
           
           this.pageName;
           this.hideLoader=true;
@@ -172,7 +172,9 @@ updateBudgetRef(plan){
   this.itemDetail['baseSize'] = plan['baseSize'];
   this.itemDetail['baseUnit'] = plan['baseUnit'];
   this.itemDetail['qtyPerPack'] = plan['qtyPerPack'];
+  this.itemDetail['pckPerCont'] = plan['pckPerCont']; 
   this.itemDetail['contSize'] = plan['contSize'];
+  this.itemDetail['contQnt'] = plan['contQnt'];
   this.itemDetail['itemOrigin'] = plan['itemOrigin'];
   this.itemDetail['destinationPort'] = plan['destinationPort'];
   
@@ -380,7 +382,7 @@ getCustomOrder(state){
             this.orderService.addOrder(this.itemDetail,year,month)
             .subscribe(
                 response => {
-                    this.popAlert("Info","success","Item successfully added!");
+                    this.popAlert("Info","success","Order successfully added!");
                     this.setData(response);  
                     this.hideAddNewForm = true;  
                 },
@@ -437,7 +439,7 @@ getCustomOrder(state){
       .subscribe(
           response => {
               this.setData(response);  
-              this.popAlert("Info","success","Plan successfully deteled!"); 
+              this.popAlert("Info","success","Order successfully deteled!"); 
           },
           error => {
               this.setData([]);
@@ -464,7 +466,7 @@ getCustomOrder(state){
             .subscribe(
                 response => {
                     this.hideAddNewForm = true;
-                    this.popAlert("Info","success","Item successfully updated!");
+                    this.popAlert("Info","success","Order successfully updated!");
                     this.setData(response);     
                 },
                 error => {      

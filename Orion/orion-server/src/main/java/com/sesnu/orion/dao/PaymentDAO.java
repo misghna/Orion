@@ -19,6 +19,8 @@ public interface PaymentDAO {
 	public Payment get(long id);
 
 	public void delete(Payment pay);
+	
+	public List getPaymentHistogram(int year,String dest);
 
 
 	

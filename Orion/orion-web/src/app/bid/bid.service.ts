@@ -21,6 +21,12 @@ export class BidService {
       .map(res => res.json());
   }
 
+  getBidWinner(orderRefId) {
+    var url = this.baseUrl + 'api/user/bid/winner/' + orderRefId;
+    return this.http.get(url,[{ withCredentials: true }])
+      .map(res => res.json());
+  }
+
   add(body){
     let headerContent = new Headers();
     headerContent.append("Content-Type", "application/json");

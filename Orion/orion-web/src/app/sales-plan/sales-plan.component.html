@@ -55,7 +55,9 @@
             <span class="caret"></span>
           </button>
           <ul id="monthSelector" #monthSelector class="dropdown-menu " aria-labelledby="dropdownMenu2" >
-            <li *ngFor ="let month of monthNames" (click)="selectedMonth = month"><a >{{month}}</a></li>
+            <li *ngFor ="let month of monthNames" (click)="selectedMonth = month.name"><a>
+                {{month.name}}
+            </a></li>
           </ul>
       </div>
     </td>
@@ -162,6 +164,30 @@
         </td>
         
         <td><textarea name="contQnt" #unit class="form-control txt-flat middletext" rows="2" numberonly placeholder="cont Qty" required [(ngModel)]="itemDetail.contQnt" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <td>
+         <div class="dropdown">
+            <textarea id="curr" #curr class="dropdown-toggle form-control txt-flat middletext" data-toggle="dropdown" rows="2"  
+                placeholder="Currency" (keyup)="filterCurrency(curr.value)" 
+                [(ngModel)]="itemDetail.currency" [ngModelOptions]="{standalone: true}"></textarea>           
+            <ul class="dropdown-menu item-name">
+              <li>
+                <table class="table table-striped tableFont" style="width:250px">
+                  <thead><tr>
+                   <th class="text-center">Country</th>
+                   <th class="text-center">Currency</th>
+                   <th class="text-center">Abbrev</th>
+                   </tr></thead>
+                <tr *ngFor = "let curr of currencies" 
+                  (click)="itemDetail.currency = curr.abrevation">
+                  <td >{{curr.country}}</td>
+                  <td>{{curr.currency}}</td>
+                  <td>{{curr.abrevation}}</td>
+                </tr>
+                </table> 
+              </li>
+            </ul>          
+          </div>    
+        </td>
         <td><textarea name="cif" #cif class="form-control txt-flat middletext" rows="2"  digitsonly placeholder="cif" required [(ngModel)]="itemDetail.cif" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td>
             <div class="btn-group ">
@@ -179,7 +205,10 @@
             <textarea id="monthNameTxt" #monthName class="dropdown-toggle form-control txt-flat middletext" data-toggle="dropdown" rows="2"  
                 placeholder="Month" required [(ngModel)]="itemDetail.month" [ngModelOptions]="{standalone: true}"></textarea>
             <ul class="dropdown-menu item-name">
-              <li *ngFor = "let name of monthNames" (click)="updateMonthName(name)"><a>{{name}}</a></li>
+              <li *ngFor = "let month of monthNames" >
+                <a><input type="checkbox" #ck [(ngModel)]="month.sel" [ngModelOptions]="{standalone: true}"
+                     (mouseup)="updateMonthName(month.name)"><span style='margin-right:1.25em; display:inline-block;' ></span>{{month.name}}</a>
+                </li>
             </ul>
           </div>    
           </td>

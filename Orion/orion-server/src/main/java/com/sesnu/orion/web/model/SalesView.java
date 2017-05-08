@@ -13,7 +13,6 @@ import org.hibernate.annotations.NamedNativeQuery;
 
 @Entity
 @Table(name = "SALES_PLAN_VIEW")
-//@NamedNativeQuery(name = "findUniqueCameronsInOrder", query = "select * from sales_view", resultClass = SalesView.class)
 public class SalesView {
 	
 	@Id
@@ -45,6 +44,9 @@ public class SalesView {
 	
 	@Column(name = "cont_qnt")
 	private int contQnt;
+
+	@Column(name = "currency")
+	private String currency;
 	
 	@Column(name = "cif")
 	private double cif;
@@ -202,6 +204,14 @@ public class SalesView {
 
 	public void setItemType(String itemType) {
 		this.itemType = itemType;
+	}
+
+	public String getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(String currency) {
+		this.currency = currency;
 	}
 	
 	

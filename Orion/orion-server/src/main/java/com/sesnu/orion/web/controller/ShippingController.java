@@ -1,6 +1,7 @@
 package com.sesnu.orion.web.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -45,7 +46,9 @@ public class ShippingController {
 		if(orderRef.equals("all")){
 			shippings= shipDao.listAll();
 		}else{
-			shippings= shipDao.listByOrderId(Long.parseLong(orderRef));
+			shippings = new ArrayList<ShippingView>();
+			ShippingView ship = shipDao.getByOrderId(Long.parseLong(orderRef));
+			shippings.add(ship);
 		}
 		if(shippings.size()>0){
 			return shippings;
@@ -76,13 +79,13 @@ public class ShippingController {
 			return null;
 		}
 				
-		List<ShippingView> shipings = shipDao.listByOrderId(shipping.getOrderRef());
-		if(shipings.size()>0){
+		ShippingView shiping = shipDao.getByOrderId(shipping.getOrderRef());
+		if(shiping!=null){
 			response.sendError(400,Util.parseError("Shipping detail for this order(Inv No) already exists"));
 			return null;
 		}
 		
-		shipings = shipDao.listByBL(shipping.getBl());
+		List<ShippingView> shipings = shipDao.listByBL(shipping.getBl());
 		if(shipings.size()>0){
 			response.sendError(400,Util.parseError("Specified BL already exists"));
 			return null;
@@ -93,11 +96,15 @@ public class ShippingController {
 		shipDao.saveOrUpdate(shipping);
 
 		List<ShippingView> shippings=null;
+		
 		if(state.equals("all")){
 			shippings = shipDao.listAll();
 		}else{
-			shippings = shipDao.listByOrderId(shipping.getOrderRef());
+			shiping = shipDao.getByOrderId(shipping.getOrderRef());
+			shippings = new ArrayList<ShippingView>();
+			shippings.add(shiping);
 		}
+		
 		if(shippings.size()>0){
 			return shippings;
 		}
@@ -120,14 +127,14 @@ public class ShippingController {
 			return null;
 		}
 		
-		List<ShippingView> shipings = shipDao.listByOrderId(shipping.getOrderRef());
-		System.out.println("existing " + shipings.get(0).getId() + " new " +  shipping.getId());
-		if(shipings.size()>0 && !shipings.get(0).getId().equals(shipping.getId())){
+		ShippingView shiping = shipDao.getByOrderId(shipping.getOrderRef());
+		System.out.println("existing " + shiping.getId() + " new " +  shipping.getId());
+		if(shiping!=null && !shiping.getId().equals(shipping.getId())){
 			response.sendError(400,Util.parseError("Shipping detail for this order already exists!"));
 			return null;
 		}
 		
-		shipings = shipDao.listByBL(shipping.getBl());
+		List<ShippingView> shipings = shipDao.listByBL(shipping.getBl());
 		if(shipings.size()>0 && !shipings.get(0).getId().equals(shipping.getId())){
 			response.sendError(400,Util.parseError("Specified BL already exists"));
 			return null;
@@ -140,8 +147,10 @@ public class ShippingController {
 		if(state.equals("all")){
 			shippings = shipDao.listAll();
 		}else{
-			shippings = shipDao.listByOrderId(shipping.getOrderRef());
-		}
+			shiping = shipDao.getByOrderId(shipping.getOrderRef());
+			shippings = new ArrayList<ShippingView>();
+			shippings.add(shiping);
+			}
 		if(shippings.size()>0){
 			return shippings;
 		}
@@ -165,8 +174,11 @@ public class ShippingController {
 			if(state.equals("all")){
 				shippings = shipDao.listAll();
 			}else{
-				shippings = shipDao.listByOrderId(shipping.getOrderRef());
+				ShippingView shiping = shipDao.getByOrderId(shipping.getOrderRef());
+				shippings = new ArrayList<ShippingView>();
+				shippings.add(shiping);
 			}
+			
 			if(shippings.size()>0){
 				return shippings;
 			}else{

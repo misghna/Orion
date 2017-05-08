@@ -40,7 +40,8 @@ public class AuthProvider implements AuthenticationProvider  {
 		String email = authentication.getName();
 		String password = authentication.getCredentials().toString();
 		System.out.println("credentials" + email + "-" + password);
-		AccessHistory accessHistory = new AccessHistory(0l,request.getRemoteHost(),"denied");
+		String ip = request.getHeader("X-Forwarded-For")!=null?request.getHeader("X-Forwarded-For"):request.getRemoteAddr();
+		AccessHistory accessHistory = new AccessHistory(0l,ip,"denied");
 		if(email ==null || password ==email){
 			accessDao.save(accessHistory);
 			return null;

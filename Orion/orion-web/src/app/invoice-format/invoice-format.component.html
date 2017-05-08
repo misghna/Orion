@@ -53,16 +53,17 @@
             </td>
         <td class="text-center" >
             <div class="dropdown" style="border: 0">
-            <button id= "{{item.id.toString() + '-' + item.name}}" #dropButton class="btn btn-default dropdown-toggle"
+            <button id= "{{item.id.toString() + '-' + item.exporter + '(' + item.invoiceType + ')'}}" #dropButton class="btn btn-default dropdown-toggle"
                 (click)="activeProductHeader = dropButton.id"
                  style="border:0px solid transparent !important;background-color:transparent" type="button" id="dropdownMenu2"
                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                 <span class="caret"></span>
             </button>
-            <ul id="{{item.id.toString() + '-' + item.name}}" #dropDownBox class="dropdown-menu dropdown-menu-right" 
+            <ul id="{{item.id.toString() + '-' + item.exporter}}" #dropDownBox class="dropdown-menu dropdown-menu-right" 
                  aria-labelledby="dropdownMenu2">
-                  <li><a (click)="preview(item)">Preview</a></li>
+                  <li><a (click)="preview(item)">Preview</a></li>                  
                   <li><a #edit_item (click)="editItem(edit_item.parentElement.parentElement.id);activeOrderId=item.orderRef">Edit</a></li>
+                  <li><a href="{{'/api/user/invoiceFormat/download/' + item.id}}" download>Download</a></li>
                   <li role="separator" class="divider"></li>
                 <li><a #deleteitem (click)="triggerDelModal($event)">Delete</a></li>
             </ul>
@@ -80,7 +81,7 @@
                 {{itemDetail.exporter}} <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
-                <li><a (click)="itemDetail.exporter='Omega'">Generic</a></li>
+                <li><a (click)="itemDetail.exporter='Generic'">Generic</a></li>
                 <li><a (click)="itemDetail.exporter='Omega'">Omega</a></li>
                 <li><a (click)="itemDetail.exporter='Kalina'">Kalina</a></li>
             </ul>

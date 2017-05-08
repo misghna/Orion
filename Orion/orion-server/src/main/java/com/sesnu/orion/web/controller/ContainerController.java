@@ -100,20 +100,20 @@ public class ContainerController {
 	}
 	
 	private Container setTotalDays(Container container){
-		List<ShippingView> shippings= shipDao.listByOrderId(container.getOrderRef());
+		ShippingView ship= shipDao.getByOrderId(container.getOrderRef());
 		Long interval =null;
-		if(container.getContReturnDate()!=null && shippings.size()>0){
+		if(container.getContReturnDate()!=null && ship!=null){
 			long retDate = container.getContReturnDate().getTime();
-			if(shippings.get(0).getAta()!=null){
-				 if(shippings.get(0).getAta().getTime() >= retDate){
+			if(ship.getAta()!=null){
+				 if(ship.getAta().getTime() >= retDate){
 					 return null;
 				 }
-				 interval = (new Interval(shippings.get(0).getAta().getTime(), retDate)).toDuration().getStandardDays();
-			}else if(shippings.get(0).getEta()!=null){
-				 if(shippings.get(0).getEta().getTime() >= retDate){
+				 interval = (new Interval(ship.getAta().getTime(), retDate)).toDuration().getStandardDays();
+			}else if(ship.getEta()!=null){
+				 if(ship.getEta().getTime() >= retDate){
 					 return null;
 				 }
-				 interval = (new Interval(shippings.get(0).getEta().getTime(), retDate)).toDuration().getStandardDays();
+				 interval = (new Interval(ship.getEta().getTime(), retDate)).toDuration().getStandardDays();
 			}
 		}		
 		if(interval!=null)container.setTotalDays(Integer.parseInt(interval.toString()));

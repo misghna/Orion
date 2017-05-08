@@ -24,8 +24,9 @@ public interface SalesPlanDAO {
 	
 	public boolean isExists(SalesPlan salesPlan);
 	
-	public String getLatest();
+	public String getLatest();	
 	
+	public List estimatedCashFlow(int year,String destination);
 
 
 	

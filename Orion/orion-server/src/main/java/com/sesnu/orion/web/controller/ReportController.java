@@ -39,9 +39,10 @@ public class ReportController {
 			preview = report.generateOrderAuthReport(app,"preview");
 		}else if(app.getType().equals("Payment")){
 			preview = report.generatePayAuthReport(app,"preview");									
+		}else if(app.getType().equals("Exporter Margin")){
+			preview = report.generateExporterAprvReport(app,"preview");									
 		}
 		
-		System.out.println("path ********* " + getClass().getClassLoader().getResource("").getPath());
 		return preview;
 	}
 	

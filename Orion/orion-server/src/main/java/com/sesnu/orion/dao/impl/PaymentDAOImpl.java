@@ -59,7 +59,30 @@ public class PaymentDAOImpl implements PaymentDAO {
 	public void delete(Payment pay) {
 		sessionFactory.getCurrentSession().delete(pay);		
 	}
+	
+	
+	public List getPaymentHistogram(int year,String dest){
+		String destQry ="";
+		if(!dest.equals("All")){
+			String hql = "select distinct id from Order where destinationPort = :destinationPort";
+			Query query = sessionFactory.getCurrentSession().createQuery(hql)
+			.setString("destinationPort",dest);
+			List<Long> destIds = (List<Long>) query.list();
+			if(destIds.size()>0){
+				destQry = " and orderRef in " + destIds.toString().replace("[", "(").replace("]", ")");
+			}else{
+				return null;
+			}
+			
+		}
+		
+		String hql = "select sum(paymentAmount) as amount, month,curr from PayView where year = :year " + destQry + " group by month,curr";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql)
+		.setInteger("year",year);
+		return (List<PayView>) query.list();
+	}
 
+	
 
 
 	

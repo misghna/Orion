@@ -18,9 +18,9 @@
             <br>  <br>
             <div class="dropdown" style="width:90%"> 
             <textarea id="itemName" #itemName class="dropdown-toggle form-control txt-flat middletext" data-toggle="dropdown" rows="2"  style="width:90%"
-                placeholder="Select Order - Invoice No" required (keyup)="filterName(itemName.value)" 
+                placeholder="Select Order - Invoice No" required (keyup)="filterName(itemName.value);notLoaded = true"
                 [(ngModel)]="invoice.invNo" [ngModelOptions]="{standalone: true}"></textarea>
-            <ul class="dropdown-menu item-name">
+            <ul class="dropdown-menu item-name;notLoaded = true">
               <li *ngFor = "let order of allOrders" (click)="invoice.invNo=order.invNo"><a>{{order.invNo}}</a></li>
             </ul>
           </div>   
@@ -28,24 +28,28 @@
               <button type="button" style="width:100%" class="btn btn-default dropdown-toggle editFormMargin noBorder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   {{invoice.type}} <span class="caret"></span>
               </button>
-              <ul class="dropdown-menu">         
-                  <li><a (click)="invoice.type = 'Proforma Invoice'">Proforma Invoice</a></li>
-                  <li><a (click)="invoice.type = 'Commercial Invoice'">Commercial Invoice</a></li>
-                  <li><a (click)="invoice.type= 'Packing List'">Packing List</a></li>
+              <ul class="dropdown-menu">
+                  <li><a style="background-color:#F0F0F0 ">Invoice Types</a></li>
+                   <li role="separator" class="divider"></li>
+                  <li><a (click)="invoice.type = 'Proforma Invoice';notLoaded = true">Proforma Invoice</a></li>
+                  <li><a (click)="invoice.type = 'Commercial Invoice';notLoaded = true">Commercial Invoice</a></li>
+                  <li><a (click)="invoice.type= 'Packing List';notLoaded = true">Packing List</a></li>
               </ul>
             </div>
-            <div class="btn-group " style="width:90%">
+             <div class="btn-group " style="width:90%">
               <button type="button" style="width:100%" class="btn btn-default dropdown-toggle editFormMargin noBorder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  {{invoice.exporter}} <span class="caret"></span>
+                  {{invoice.font}} <span class="caret"></span>
               </button>
-              <ul class="dropdown-menu">         
-                  <li *ngFor="let address of addresses"><a (click)="invoice.exporter = address.name">{{address.name}}</a></li>
+              <ul class="dropdown-menu">
+                  <li><a style="background-color:#F0F0F0 ">Font</a></li>
+                   <li role="separator" class="divider"></li>
+                  <li><a (click)="updateFont('Courier New')">Courier New</a></li>
+                  <li><a (click)="updateFont('Times New Roman')">Times New Roman</a></li>
+                  <li><a (click)="updateFont('Arial')">Arial</a></li>
               </ul>
             </div>
-            <button (click)="openInvoice()" class="btn btn-default" style="margin-top:5px;width:90%">Open</button>
-            <button (click)="save()" class="btn btn-default" style="margin-top:5px;width:90%">Save Changes</button>
-            <button (click)="generateInvoice()" class="btn btn-default" style="margin-top:5px;width:90%">Create New</button>
-            <button id="apprv" class="btn btn-default" style="margin-top:5px;width:90%">Request Approval</button>
+            <button (click)="generateInvoice()" class="btn btn-default" style="margin-top:5px;width:90%">Create Invoice</button>
+            <button (click)="generatePdf()" [class.hidden]="notLoaded" class="btn btn-default" style="margin-top:5px;width:90%">Archive as PDF</button>
          </div>
          
           <div class="col-sm-9" style="background-color:white;">
@@ -57,7 +61,9 @@
               <td><button id="saveBtn"  class="btn btn-default" style="width:100%">Change</button></td>   
              </tr></table>
           </div>
-          <div #invoiceHtml id="invoiceHtml" [class.hidden]="notLoaded">></div>
+          <div #invoiceHtml id="invoiceHtml" style="height:700px;" [class.hidden]="notLoaded" [innerHTML]="invoiceHtmlContent">
+
+          </div>
           <div  [class.hidden]="!notLoaded" style="width:100%; font-size:30px;margin-top:200px;color:gray;text-align:center;opacity: .3;"> Open or Create New Invoice</div>
          </div>
        </div>

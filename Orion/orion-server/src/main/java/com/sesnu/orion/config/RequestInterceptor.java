@@ -12,6 +12,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import com.sesnu.orion.dao.MiscSettingDAO;
 import com.sesnu.orion.web.model.User;
 import com.sesnu.orion.web.utility.ConfigFile;
+import com.sesnu.orion.web.utility.Util;
 
 public class RequestInterceptor extends HandlerInterceptorAdapter{
 	
