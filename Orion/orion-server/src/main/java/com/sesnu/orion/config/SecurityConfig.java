@@ -62,7 +62,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		        // page security policy
 		        .antMatchers("/").access("hasRole('User')")
 		        .antMatchers("/import/**").access("hasRole('User')")
-		        .antMatchers("/clearing/**").access("hasRole('User')")	
+		        .antMatchers("/exporter/**").access("hasRole('User')")	
 		        .antMatchers("/document/**").access("hasRole('User')")
 		        .antMatchers("/report/**").access("hasRole('User')")
 		        .antMatchers("/other/**").access("hasRole('User')")	

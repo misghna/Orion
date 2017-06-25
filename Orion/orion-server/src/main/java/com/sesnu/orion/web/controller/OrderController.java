@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JSONObject;
@@ -19,11 +20,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.sesnu.orion.dao.ItemDAO;
 import com.sesnu.orion.dao.OrderDAO;
 import com.sesnu.orion.dao.ShippingDAO;
+import com.sesnu.orion.dao.UserDAO;
 import com.sesnu.orion.dao.OrderDAO;
 import com.sesnu.orion.web.model.ExporterQuote;
 import com.sesnu.orion.web.model.Item;
 import com.sesnu.orion.web.model.Order;
 import com.sesnu.orion.web.model.OrderView;
+import com.sesnu.orion.web.model.User;
 import com.sesnu.orion.web.model.Order;
 import com.sesnu.orion.web.model.Order;
 import com.sesnu.orion.web.utility.Util;
@@ -33,11 +36,10 @@ import com.sesnu.orion.web.utility.Util;
 public class OrderController {
 
 	
-	@Autowired
-	OrderDAO orderDao;
+	@Autowired OrderDAO orderDao;
 	@Autowired Util util;
 	@Autowired ShippingDAO shipDao;
-	
+	@Autowired UserDAO userDao;
 
 	@RequestMapping(value = "/api/user/order/{id}", method = RequestMethod.GET)
 	public @ResponseBody OrderView items(@PathVariable("id") long id,
@@ -154,7 +156,7 @@ public class OrderController {
 			throws Exception {
 		
 		OrderView ord = orderDao.getOrderViewByInvNo(order.getInvNo());
-		if(ord!=null && ord.getId()!=order.getId()){
+		if(ord!=null && !ord.getId().equals(order.getId())){
 			response.sendError(400,Util.parseError("Invoice number is already assigned"));
 			return null;
 		}
@@ -181,20 +183,29 @@ public class OrderController {
 	@RequestMapping(value = "/api/admin/order/{id}/{year}/{month}", method = RequestMethod.DELETE)
 	
 	public @ResponseBody List<OrderView> deleteItem(@PathVariable("id") long id,@PathVariable("year") int year,
-			@PathVariable("month") String month,HttpServletResponse response) throws Exception {
-		System.out.println("caling **********************");
+			@PathVariable("month") String month,HttpServletResponse response,HttpServletRequest request) throws Exception {
+		
 		OrderView sp = orderDao.get(id);
+		User user = util.getActiveUser(request, userDao);
+		
 		if(sp != null){
+			Order order = orderDao.getOrder(id);
+			if(!user.getRole().equalsIgnoreCase("Admin") && order.getStatus().equals("Approved")){
+				response.sendError(400,Util.parseError("Only Admin can delete approved orders"));
+				return null;
+			}
+			
+			
 			orderDao.delete(id);
-			List<OrderView> Orders = orderDao.list(year,Util.getMonth(month.trim()));
-			if(Orders.size()>0){
-				return Orders;
-			}else{
+//			List<OrderView> Orders = orderDao.list(year,Util.getMonth(month.trim()));
+//			if(Orders.size()>0){
+//				return Orders;
+//			}else{
 				String latestTime = orderDao.getLatest();
 				if(latestTime!=null){
 				year = Integer.parseInt(latestTime.split("-")[0]);
 				month = latestTime.split("-")[1].toString();
-				Orders = orderDao.list(year,Util.getMonth(month.trim()));
+				List<OrderView> Orders = orderDao.list(year,Util.getMonth(month.trim()));
 				if(Orders.size()>0){
 					return Orders;
 				}else{
@@ -205,7 +216,7 @@ public class OrderController {
 					response.sendError(404);
 					return null;
 				}
-			}
+	//		}
 		}
 		response.sendError(400);
 		return null;
@@ -213,10 +224,16 @@ public class OrderController {
 	
 	@RequestMapping(value = "/api/admin/order/{year}/{month}", method = RequestMethod.DELETE)
 	public @ResponseBody List<OrderView> deleteOrder(@PathVariable("year") int year,
-			@PathVariable("month") String month,HttpServletResponse response) throws Exception {
+			@PathVariable("month") String month,HttpServletResponse response,HttpServletRequest request) throws Exception {
+		
 		
 		List<OrderView> sp =  orderDao.list(year,Util.getMonth(month.trim()));
 		if(sp != null){
+			User user = util.getActiveUser(request, userDao);
+			if(!user.getRole().equalsIgnoreCase("Admin")){
+				response.sendError(400,Util.parseError("Only Admin can delete approved orders"));
+				return null;
+			}
 			orderDao.deleteByTime(year, month);
 			String latestTime = orderDao.getLatest();
 			if(latestTime!=null){

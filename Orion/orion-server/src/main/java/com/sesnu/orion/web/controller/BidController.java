@@ -139,7 +139,12 @@ public class BidController {
 		}
 		
 		if(bid.getEstTransitDays()==null){
-			response.sendError(400, Util.parseError("Estimated Transit Days is a must for a selected bidder!"));
+			response.sendError(400, Util.parseError("Estimated Transit Days is mandatory for a selected bidder!"));
+			return null;
+		}
+		
+		if(bid.getEstDueDate()==null){
+			response.sendError(400, Util.parseError("Estimated Due Date	is mandatory for a selected bidder!"));
 			return null;
 		}
 		

@@ -38,7 +38,7 @@ public class Budget {
 	private int qtyPerPack;
 	
 	@Column(name = "pck_per_cont")
-	private int pckPerCont;
+	private Double pckPerCont;
 	
 	@Column(name = "cont_size")
 	private int contSize;
@@ -178,11 +178,11 @@ public class Budget {
 		this.qtyPerPack = qtyPerPack;
 	}
 
-	public int getPckPerCont() {
+	public Double getPckPerCont() {
 		return pckPerCont;
 	}
 
-	public void setPckPerCont(int pckPerCont) {
+	public void setPckPerCont(Double pckPerCont) {
 		this.pckPerCont = pckPerCont;
 	}
 

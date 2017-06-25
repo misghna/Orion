@@ -79,7 +79,7 @@ public class PaymentDAOImpl implements PaymentDAO {
 		String hql = "select sum(paymentAmount) as amount, month,curr from PayView where year = :year " + destQry + " group by month,curr";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql)
 		.setInteger("year",year);
-		return (List<PayView>) query.list();
+		return query.list();
 	}
 
 	

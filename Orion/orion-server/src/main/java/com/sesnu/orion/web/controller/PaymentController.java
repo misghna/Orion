@@ -1,6 +1,7 @@
 package com.sesnu.orion.web.controller;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -54,7 +55,8 @@ public class PaymentController {
 	@Autowired private EstimatorService estService;
 	@Autowired private ItemDAO itemDao;
 	
-
+	private static List<String> shipNotReq = Arrays.asList(new String[]{"DU License","Import Permit","Item Cost","Ocean Fright Free"});
+	
 	@RequestMapping(value = "/api/user/pay/{orderRef}", method = RequestMethod.GET)
 	public @ResponseBody List<PayView> items(@PathVariable("orderRef") String orderRef,
 			HttpServletResponse response) throws IOException {
@@ -87,7 +89,7 @@ public class PaymentController {
 			throws Exception {
 		
 		ShippingView ship = shipDao.getByOrderId(pay.getOrderRef());
-		if(ship!=null && !pay.getName().equals("DU License")){
+		if(ship==null && !shipNotReq.contains(pay.getName())){
 			response.sendError(400, Util.parseError("Item not yet marked as shipped"));
 			return null;
 		}
@@ -162,7 +164,6 @@ public class PaymentController {
 	}
 
 	
-	@SuppressWarnings("unchecked")
 	private Estimate calcEstimate(Order order, Payment pay){
 		Estimate est=null;
 		Bid bid = null;
@@ -202,13 +203,6 @@ public class PaymentController {
 		return est;
 	}
 	
-//	private Bid getBidWinner(long orderId){
-//		Bid bid = bidDao.getBidWinner(orderId);
-//		if(bid !=null){
-//			return bid;
-//		}
-//		return null;
-//	}
 		
 
 }

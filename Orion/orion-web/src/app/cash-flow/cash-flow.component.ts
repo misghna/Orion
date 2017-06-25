@@ -30,7 +30,8 @@ export class CashFlowComponent implements OnInit {
 
   public lineChartData:Array<any> = [
     {data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], label: 'Estimated'},
-    {data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], label: 'Actual'}
+    {data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], label: 'Actual'},
+    {data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], label: 'ItemCost'}
   ];
 
   public lineChartOptions = {

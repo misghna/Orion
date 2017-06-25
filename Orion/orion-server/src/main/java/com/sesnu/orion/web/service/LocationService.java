@@ -28,7 +28,6 @@ public class LocationService {
 			String locationApi = config.getProp().getProperty("ipLocationUrl");
 			List<String> ips = accessDoa.listNewIps();
 			if(ips.size()<1)return;
-		//	System.out.println("checking locations " + ips.size());
 			for (String ip : ips) {
 				HttpResponse response = http.get(locationApi + "/" + ip);
 				if(response.getStatusLine().getStatusCode()==200){

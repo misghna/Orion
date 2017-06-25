@@ -102,10 +102,11 @@ export class BidComponent implements OnInit {
       this.headers = [{'name':'No','value':'id','j':'x'},{'name':'Order Inv. No','value':'invNo','j':'l'},
                       {'name':'Proforma Inv. No','value':'proformaInvNo','j':'l'},
                       {'name':'Supplier','value':'supplier','j':'l'},{'name':'Currency','value':'currency','j':'l'},
-                      {'name':'FOB','value':'fob','j':'cr'},{'name':'CIF','value':'cifCnf','j':'cr'},
+                      {'name':'FOB/Pack','value':'fob','j':'cr'},{'name':'CIF/Pack','value':'cifCnf','j':'cr'},
                       {'name':'Total (CNF)', 'value':'totalBid','j':'cr'}, 
                       {'name':'Payment Method','value':'paymentMethod','j':'c'},
                       {'name':'Est Transit Days','value':'estTransitDays','j':'c'},
+                      {'name':'Est Due Date','value':'estDueDate','j':'dc'},
                       {'name':'Origin(City)','value':'itemOrigin','j':'c'},
                       {'name':'Selected','value':'selected','j':'c'},{'name':'Approval','value':'approval','j':'c'},
                       {'name':'Updated On','value':'updatedOn','j':'c'}];

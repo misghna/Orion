@@ -36,6 +36,9 @@ public class Container {
 	@Column(name = "gross_weight")
 	private Double grossWeight;
 	
+	@Column(name = "net_weight")
+	private Double netWeight;
+	
 	@Column(name = "remark")
 	private String remark;
 	
@@ -184,6 +187,14 @@ public class Container {
 
 	public void setPackQty(Integer packQty) {
 		this.packQty = packQty;
+	}
+
+	public Double getNetWeight() {
+		return netWeight;
+	}
+
+	public void setNetWeight(Double netWeight) {
+		this.netWeight = netWeight;
 	}
 
 

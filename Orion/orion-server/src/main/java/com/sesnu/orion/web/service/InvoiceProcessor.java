@@ -124,7 +124,7 @@ public class InvoiceProcessor {
 			data.put("ITEM_PACKING", "Packing " + order.getBaseSize() + "" + order.getBaseUnit() + "X" + order.getQtyPerPack());
 			data.put("ITEM_PSC_PER_CONTAINER", order.getPckPerCont() + "pck/Container");
 			data.put("CONTAINERS_DETAIL", order.getContQnt() + "X" + order.getContSize() + "' Containers");
-			int totalPacks = order.getQtyPerPack() * order.getPckPerCont() * order.getContQnt() ;
+			int totalPacks = (int) Math.ceil(order.getQtyPerPack() * order.getPckPerCont() * order.getContQnt()) ;
 			data.put("UNIT_QUANTITY", totalPacks + "(packs)");			
 			data.put("NO_OF_CONTAINERS", order.getContQnt().toString());
 			data.put("BILL_OF_LOADING",  ship!=null && ship.getBl()!=null?ship.getBl():"");

@@ -90,9 +90,18 @@ export class FileUploadComponent implements OnInit {
         setTimeout(() => {
           if(this.uploadType=='multi'){
              this.uploader.clearQueue();
-          }  
+          } 
+          window.location.reload(true);  
       }, 2000)  
     }
+
+    this.uploader.onErrorItem = (item:any, response:any, status:any, headers:any) => {
+      console.log(status);
+      this.popAlert("Error","Danger","File upload failed [max file size allowed is 10Mb]"); 
+      this.utilService.setLoaderState(false);
+    };
+
+
   }
 
 changeType(i,type){

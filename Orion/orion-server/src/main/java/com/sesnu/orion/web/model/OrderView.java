@@ -45,7 +45,7 @@ public class OrderView {
 	private Integer qtyPerPack;
 	
 	@Column(name = "pck_per_cont")
-	private Integer pckPerCont;
+	private Double pckPerCont;
 	
 	@Column(name = "cont_size")
 	private int contSize;
@@ -161,11 +161,11 @@ public class OrderView {
 		this.qtyPerPack = qtyPerPack;
 	}
 
-	public Integer getPckPerCont() {
+	public Double getPckPerCont() {
 		return pckPerCont;
 	}
 
-	public void setPckPerCont(Integer pckPerCont) {
+	public void setPckPerCont(Double pckPerCont) {
 		this.pckPerCont = pckPerCont;
 	}
 

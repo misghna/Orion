@@ -39,8 +39,7 @@ public class ItemController {
 	public @ResponseBody List<Item> addItem(HttpServletResponse response,@RequestBody Item item)
 			throws Exception {
 		if(item.getRevision()==null){
-			response.sendError(400,"invalid revision no");
-			return null;
+			item.setRevision(new Date());
 		}
 		item.setUpdatedOn(Util.parseDate(new Date(),"-"));
 		itemDao.saveOrUpdate(item);

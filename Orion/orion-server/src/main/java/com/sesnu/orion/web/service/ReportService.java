@@ -124,7 +124,7 @@ public class ReportService {
 		pricePerPack = pricePerPack/cur.getRate();
 		pricePerPack = (double) (Math.round (pricePerPack * 100.0)/100);
 		editedHtml = editedHtml.replace("LANDED_COST_TO_WH",pricePerPack.toString());
-		Double totalEstPrice = pricePerPack * 1.12;
+		Double totalEstPrice = (double) (Math.round (pricePerPack * 1.12* 100.0)/100);
 		editedHtml = editedHtml.replace("COST_PLUS_MRG",totalEstPrice.toString());
 		String emailTo = appr.getRequestedBy() + " [" + (userDao.getUserByName(appr.getRequestedBy())).getEmail() + "]";
 		String emailCC = appr.getApprover() + " [" + (userDao.getUserByName(appr.getApprover())).getEmail() + "]";

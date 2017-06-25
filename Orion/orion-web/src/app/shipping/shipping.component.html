@@ -60,7 +60,7 @@
     <tr>
         <th class="text-center"
             [ngClass]="{
-            'text-center' : tableHeader.j=='c' || tableHeader.j=='x',
+            'text-center' : tableHeader.j=='c' || tableHeader.j=='x'|| tableHeader.j=='cd',
             'text-left' : tableHeader.j=='l'
             }"
          *ngFor="let tableHeader of headers; let i = index"> 
@@ -77,14 +77,15 @@
          <td class="text-center"
             [ngClass]="{
             'text-center' : tableHeader.j=='c',
+            'text-center' : tableHeader.j=='cd',
             'text-left' : tableHeader.j=='l',
             'hidden' : tableHeader.j=='x'
             }"
          *ngFor="let tableHeader of headers; let i = index">
-              <div *ngIf = "tableHeader.value != 'eta' && tableHeader.value != 'etd' "> 
+              <div *ngIf = "tableHeader.j != 'cd'"> 
                 {{item[tableHeader.value]}}
               </div>
-              <div *ngIf = "tableHeader.value == 'eta' || tableHeader.value == 'etd'"> 
+              <div *ngIf = "tableHeader.j == 'cd'"> 
                 {{item[tableHeader.value] | date: 'dd/MM/yyyy'}}
               </div>
             </td>
@@ -113,7 +114,7 @@
         <td class="text-center" ><span class="glyphicon glyphicon-remove-circle closeAddForm" aria-hidden="true" style="margin-top:5px"></span></td>
        <td>
          <div class="dropdown">
-          <textarea id="invNo" #invNo class="dropdown-toggle form-control txt-flat" data-toggle="dropdown" rows="2"  
+          <textarea id="invNo" #invNo class="dropdown-toggle form-control txt-flat middletext" data-toggle="dropdown" rows="2"  
                 placeholder="Inv No" (keyup)="filterOrderByInvNo(invNo.value);itemDetail.invNo=invNo.value" 
                 [(ngModel)]="itemDetail.invNo" [ngModelOptions]="{standalone: true}"></textarea> 
             <ul class="dropdown-menu item-name">
@@ -125,8 +126,7 @@
         </td>
         <td><textarea #unit class="form-control txt-flat middletext" rows="2" readonly placeholder="Cont Qnt" required [(ngModel)]="itemDetail.contQnt" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td><textarea #unit class="form-control txt-flat middletext" rows="2"  placeholder="BL" required [(ngModel)]="itemDetail.bl" [ngModelOptions]="{standalone: true}"></textarea></td> 
-        <td><textarea #unit class="form-control txt-flat middletext" rows="2"  placeholder="Origin Country" required [(ngModel)]="itemDetail.itemOrigin" [ngModelOptions]="{standalone: true}"></textarea></td> 
-        <td><textarea #unit class="form-control txt-flat middletext" rows="2"  placeholder="Terminal" required [(ngModel)]="itemDetail.loadingPort" [ngModelOptions]="{standalone: true}"></textarea></td> -->
+        <td><textarea #unit class="form-control txt-flat middletext" rows="2"  placeholder="Loading Port" required [(ngModel)]="itemDetail.loadingPort" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td>
             <div class="btn-group ">
             <button type="button" class="btn btn-default dropdown-toggle editFormMargin noBorder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

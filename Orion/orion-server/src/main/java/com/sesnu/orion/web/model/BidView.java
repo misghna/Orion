@@ -1,6 +1,8 @@
 package com.sesnu.orion.web.model;
 
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -66,6 +68,9 @@ public class BidView {
 	
 	@Column(name = "selected")
 	private boolean selected;
+	
+	@Column(name = "estimated_due_date")
+	private Date estDueDate;
 
 	public Long getId() {
 		return id;
@@ -205,6 +210,14 @@ public class BidView {
 
 	public void setItemOrigin(String itemOrigin) {
 		this.itemOrigin = itemOrigin;
+	}
+
+	public Date getEstDueDate() {
+		return estDueDate;
+	}
+
+	public void setEstDueDate(Date estDueDate) {
+		this.estDueDate = estDueDate;
 	}
 
 

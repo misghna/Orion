@@ -34,6 +34,9 @@ public class ContainerView {
 	@Column(name = "pack_qty")
 	private Integer packQty;
 	
+	@Column(name = "net_weight")
+	private Double netWeight;
+	
 	@Column(name = "gross_weight")
 	private Double grossWeight;
 	
@@ -245,6 +248,18 @@ public class ContainerView {
 
 	public void setPackQty(Integer packQty) {
 		this.packQty = packQty;
+	}
+
+
+
+	public Double getNetWeight() {
+		return netWeight;
+	}
+
+
+
+	public void setNetWeight(Double netWeight) {
+		this.netWeight = netWeight;
 	}
 
 

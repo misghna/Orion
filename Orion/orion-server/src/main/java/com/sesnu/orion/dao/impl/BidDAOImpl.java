@@ -13,6 +13,7 @@ import com.sesnu.orion.dao.OrderDAO;
 import com.sesnu.orion.web.model.Bid;
 import com.sesnu.orion.web.model.BidView;
 import com.sesnu.orion.web.model.Order;
+import com.sesnu.orion.web.model.PayView;
 @SuppressWarnings("unchecked")
 @Transactional
 @Repository
@@ -79,7 +80,39 @@ public class BidDAOImpl implements BidDAO {
 		return (List<BidView>) query.list();
 	}	
 	
+	public List getItemCostHistogram(int year,String dest){
+//		String hql = "select sum(totalBid), to_char(estDueDate, 'MM') as month,currency from Bid";
+//		hql += " where EXTRACT(year FROM 'estDueDate') = :year and approval = 'Approved'";
+//		if(!dest.equals("ALL")){
+//			hql += " and order_ref in (select id from Order where destinationPort= :desPort)";		 
+//		}
+//		hql += " group by month, currency order by month asc";
+//		
+//		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+//		query.setInteger("year", year);
+//		
+//		if(!dest.equals("ALL")){
+//			query.setString("desPort", dest);
+//		}
+		
+		String sql = "select sum(total_bid), to_char(estimated_due_date, 'MM') as month,currency from bid"; 
+		sql += " where EXTRACT(year FROM \"estimated_due_date\") = :year and approval = 'Approved'";
+		if(!dest.equals("All")){
+			sql += " and order_ref in (select id from orders where destination_port= :destPort)";
+		}
+		sql += " group by month, currency";
+		sql += " order by month asc";
 	
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		query.setInteger("year", year);
+		
+		if(!dest.equals("All")){
+			query.setString("destPort", dest);
+		}
+		return query.list();
+	}
+	
+
 	
 	
 }

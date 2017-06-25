@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.sesnu.orion.dao.BidDAO;
 import com.sesnu.orion.dao.ItemDAO;
 import com.sesnu.orion.dao.OrderDAO;
 import com.sesnu.orion.dao.PaymentDAO;
@@ -62,8 +63,9 @@ public class CashFlowController {
 	@Autowired Util util;
 	@Autowired OrderDAO orderDao;
 	@Autowired PaymentDAO payDao;
-
+	@Autowired BidDAO bidao;
 	
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/api/user/cashFlow", method = RequestMethod.POST)
 	public @ResponseBody JSONArray cashFlow(HttpServletResponse response,
 			@RequestBody JSONObject param) throws IOException {
@@ -76,8 +78,10 @@ public class CashFlowController {
 		
 		List actualList =  payDao.getPaymentHistogram(year, param.get("dest").toString());
 		
+		List ItemCostList =  bidao.getItemCostHistogram(year, param.get("dest").toString());
+		
 		try{
-			fetchExchangeRates(estimateList,actualList, baseCurr);
+			fetchExchangeRates(estimateList,actualList,ItemCostList, baseCurr);
 		}catch(Exception e){
 			response.sendError(500, "error when getting exchange rates");
 			return null;
@@ -97,13 +101,27 @@ public class CashFlowController {
 		actual.put("label", "Actual");
 		result.add(actual);
 		
+		JSONObject itemCost = new JSONObject();
+		itemCost.put("data", parseCashFlow(ItemCostList,cummulative,baseCurr));
+		itemCost.put("label", "ItemCost");
+		result.add(itemCost);
+		
 		return result;
 	}
 	
 
 	
+	private JSONArray getEmpty(){
+		JSONArray ja = new JSONArray();
+		for (int i = 0; i < 12; i++) {
+			ja.add(0);
+		}
+		return ja;
+	}
 	
-	private void fetchExchangeRates(List estimateList, List actualList,String baseCurr) throws ClientProtocolException, IOException, ParseException {
+	private void fetchExchangeRates(List estimateList, List actualList,List itemCostList,String baseCurr)
+			throws ClientProtocolException, IOException, ParseException {
+		
 		Set<String> currencies = new HashSet<String>();
 		
 		if(estimateList!=null){
@@ -125,6 +143,17 @@ public class CashFlowController {
 				}
 			}
 		}
+		
+		if(itemCostList!=null){
+			for (Object obj : itemCostList) {
+				Object[] records = (Object[]) obj;
+				String currency = (String) records[2];
+				if(!baseCurr.equals(currency)){
+					currencies.add(currency);
+				}
+			}
+		}
+		
 		if(currencies.size()>0){
 			exchangeRates = util.getExchangeRates(baseCurr, currencies);
 		}
@@ -132,9 +161,10 @@ public class CashFlowController {
 	}
 
 
-
-
 	private JSONArray parseCashFlow(List list,boolean cummlative,String baseCurr){
+		if(list==null || list.size()==0){
+			return getEmpty();
+		}
 		double totalVal = 0;
 		JSONArray result = new JSONArray();
 		for (int month=1 ;  month<13 ; month++) {
@@ -154,9 +184,9 @@ public class CashFlowController {
 		if(list!=null){
 			for (Object object : list) {
 				Object[] records = (Object[]) object;
-					Integer aMonth = (Integer) records[1];
+					Integer aMonth = Integer.parseInt(records[1].toString());
 					String currency = (String) records[2];
-					double amount = (double)records[0];;
+					double amount = Double.parseDouble(records[0].toString());
 					if(!currency.equals(baseCurr)){
 						double exchangeRate = Double.parseDouble(exchangeRates.get(baseCurr.concat(currency)).toString());
 						amount =  amount/exchangeRate;

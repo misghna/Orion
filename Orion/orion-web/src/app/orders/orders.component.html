@@ -138,7 +138,7 @@
                 [(ngModel)]="itemDetail.budgetRef" [ngModelOptions]="{standalone: true}"></textarea>
             
             <ul class="dropdown-menu item-name">
-               <li ><a (click)="updateBudgetRef('none')" >New order outside of budget</a></li>
+               <li ><a (click)="updateBudgetRef('none')" >==> New order outside of budget</a></li>
                <li role="separator" class="divider"></li>
               <li >
                 <table class="table table-striped tableFont" >
@@ -182,7 +182,7 @@
         <td><textarea name="brand" class="form-control txt-flat" rows="2" readonly placeholder="Brand" required 
         [(ngModel)]="itemDetail.brand" [ngModelOptions]="{standalone: true}"></textarea></td> 
    
-       <td><textarea name="baseSize" #size class="form-control txt-flat middletext" rows="2"  digitsonly placeholder="Base Size" required 
+       <td><textarea name="baseSize" #size class="form-control txt-flat middletext" rows="2"  numberonly placeholder="Base Size" required 
         [(ngModel)]="itemDetail.baseSize" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td>
           <div class="dropdown">
@@ -195,11 +195,13 @@
               <li (click)="updateBaseUnit('pcs')"><a>pcs</a></li>
               <li (click)="updateBaseUnit('ltr')"><a>ltr</a></li>
               <li (click)="updateBaseUnit('jar')"><a>jar</a></li>
+              <li (click)="updateBaseUnit('roll')"><a>roll</a></li>
+              <li (click)="updateBaseUnit('pallet')"><a>pallet</a></li>
             </ul>
           </div>    
         </td>
         <td><textarea name="qtyPerPack" #unit class="form-control txt-flat middletext" rows="2" numberonly placeholder="Qty/Pck" required [(ngModel)]="itemDetail.qtyPerPack" [ngModelOptions]="{standalone: true}"></textarea></td> 
-        <td><textarea name="pckPerCont" #unit class="form-control txt-flat middletext" rows="2" numberonly placeholder="pck/cont" required [(ngModel)]="itemDetail.pckPerCont" [ngModelOptions]="{standalone: true}"></textarea></td> 
+        <td><textarea name="pckPerCont" #unit class="form-control txt-flat middletext" rows="2" digits placeholder="pck/cont" required [(ngModel)]="itemDetail.pckPerCont" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td>
             <div class="btn-group">
             <button type="button" class="btn btn-default dropdown-toggle editFormMargin noBorder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

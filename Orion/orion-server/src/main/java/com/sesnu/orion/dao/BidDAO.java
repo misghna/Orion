@@ -24,6 +24,7 @@ public interface BidDAO {
 
 	public List<BidView> listAll();
 
+	public List getItemCostHistogram(int year,String dest);
 
 
 	

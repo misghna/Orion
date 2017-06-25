@@ -6,9 +6,26 @@
 		<title>Login page</title>
 		<!--  <link href="<c:url value='/static/css/bootstrap.css' />"  rel="stylesheet"></link> -->
 		<link href="<c:url value='/static/login.css' />" rel="stylesheet"></link>
+		
+		<style>
+			#backgra{
+				position: fixed;
+			    top: 0;
+			    left: 0;
+			    width: 100%;
+			    height: 100%;
+			    background-image: url('/static/frontPage.jpg');
+			    background-repeat: no-repeat;
+			    background-attachment: fixed;
+			    background-size: 100%;
+			    opacity: 0.1;
+			    filter:alpha(opacity=20);
+			}
+		</style>
 	</head>
 
 	<body>
+	<!-- 	<div id="backgra"></div> -->
 			<c:url var="loginUrl" value="/login" />
 			<form id="login" action="${loginUrl}" method="post" class="form-horizontal">
 			    <h1>Log In</h1>

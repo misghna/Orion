@@ -45,13 +45,16 @@
             'hidden' : tableHeader.j=='x'
             }"
          *ngFor="let tableHeader of headers; let i = index">
-         <div *ngIf = "tableHeader.value != 'selected' && tableHeader.j != 'cr'"> 
+         <div *ngIf = "tableHeader.value != 'selected' && tableHeader.j != 'cr' && tableHeader.j != 'dc'"> 
             {{item[tableHeader.value]}}
           </div>
            <div *ngIf = "tableHeader.j == 'cr'"> 
                 {{item[tableHeader.value] | number:'.2-2'}}
           </div>
-          <div *ngIf = "tableHeader.value == 'selected' && item.selected== true && tableHeader.j != 'cr'" > 
+          <div *ngIf = "tableHeader.j == 'dc'"> 
+                {{item[tableHeader.value] | date: 'dd/MM/yyyy'}}
+          </div>
+          <div *ngIf = "tableHeader.value == 'selected' && item.selected== true && tableHeader.j != 'cr' && tableHeader.j != 'dc'" > 
             <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
           </div>
             </td>
@@ -130,6 +133,7 @@
         <td><textarea class="form-control txt-flat middletext" rows="2" readonly placeholder="Auto"  [(ngModel)]="itemDetail.totalBid" [ngModelOptions]="{standalone: true}"></textarea></td> 
         <td><textarea class="form-control txt-flat middletext" rows="2"  placeholder="Payment Method" required [(ngModel)]="itemDetail.paymentMethod" [ngModelOptions]="{standalone: true}"></textarea></td>
         <td><textarea class="form-control txt-flat middletext" rows="2"  digitsonly placeholder="Est Transit Days" required [(ngModel)]="itemDetail.estTransitDays" [ngModelOptions]="{standalone: true}"></textarea></td>
+        <td><input type="date" class="form-control txt-flat middletext"  [(ngModel)]="itemDetail.estDueDate" [ngModelOptions]="{standalone: true}"/></td>
         <td><textarea class="form-control txt-flat middletext" rows="2"  placeholder="Item Origin" [(ngModel)]="itemDetail.itemOrigin" [ngModelOptions]="{standalone: true}"></textarea></td>
         <td><textarea class="form-control txt-flat middletext" rows="2" readonly placeholder="Auto" [(ngModel)]="itemDetail.status" [ngModelOptions]="{standalone: true}"></textarea></td>
         <td><textarea class="form-control txt-flat middletext" rows="2" readonly placeholder="Auto" [(ngModel)]="itemDetail.approval" [ngModelOptions]="{standalone: true}"></textarea></td>
